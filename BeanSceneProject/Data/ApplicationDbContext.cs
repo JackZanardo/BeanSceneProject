@@ -18,7 +18,7 @@ namespace BeanSceneProject.Data
         public DbSet<ReservationOrigin> ReservationOrigins { get; set; }
         public DbSet<Table> Tables { get; set; }
         public DbSet<Sitting> Sittings { get; set; }
-        public DbSet<SittingType> sittingTypes { get; set; }
+        public DbSet<SittingType> SittingTypes { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Person> People { get; set; }
 
