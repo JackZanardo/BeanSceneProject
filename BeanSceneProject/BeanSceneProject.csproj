@@ -28,7 +28,8 @@
     <Folder Include="Areas\Member\Data\" />
     <Folder Include="Areas\Member\Models\" />
     <Folder Include="Areas\Staff\Data\" />
-    <Folder Include="Areas\Staff\Models\" />
+    <Folder Include="Areas\Staff\Models\Sitting\" />
+    <Folder Include="Views\Reservation\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
