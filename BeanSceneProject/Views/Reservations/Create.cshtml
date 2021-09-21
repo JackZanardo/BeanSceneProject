@@ -28,28 +28,6 @@
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReservationStatus" class="control-label"></label>
-                <select asp-for="ReservationStatus" class="form-control"></select>
-                <span asp-validation-for="ReservationStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReservationOriginId" class="control-label"></label>
-                <select asp-for="ReservationOriginId" class ="form-control" asp-items="ViewBag.ReservationOriginId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="SittingId" class="control-label"></label>
-                <select asp-for="SittingId" class ="form-control" asp-items="ViewBag.SittingId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="PersonId" class="control-label"></label>
-                <select asp-for="PersonId" class ="form-control" asp-items="ViewBag.PersonId"></select>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

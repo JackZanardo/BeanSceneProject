@@ -52,10 +52,11 @@ namespace BeanSceneProject.Controllers
         // GET: Reservations/Create
         public IActionResult Create()
         {
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Id");
-            ViewData["ReservationOriginId"] = new SelectList(_context.ReservationOrigins, "Id", "Id");
-            ViewData["SittingId"] = new SelectList(_context.Sittings, "Id", "Id");
-            return View();
+            var m = new Models.Reservation.Create
+            {
+                ReservationOrigin = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name))
+            };
+            return View(m);
         }
 
         // POST: Reservations/Create
@@ -63,18 +64,23 @@ namespace BeanSceneProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Start,CustomerNum,Duration,Notes,ReservationStatus,ReservationOriginId,SittingId,PersonId")] Reservation reservation)
+        public async Task<IActionResult> Create(Models.Reservation.Create m)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(reservation);
+                var r = new Reservation
+                {
+                    Start = m.Start,
+                    SittingId = m.SittingId,
+                    CustomerNum = m.CustomerNum,
+                    Notes = m.Notes,
+                    ReservationOriginId = m.ReservationOriginId
+                };
+                _context.Add(r);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PersonId"] = new SelectList(_context.People, "Id", "Id", reservation.PersonId);
-            ViewData["ReservationOriginId"] = new SelectList(_context.ReservationOrigins, "Id", "Id", reservation.ReservationOriginId);
-            ViewData["SittingId"] = new SelectList(_context.Sittings, "Id", "Id", reservation.SittingId);
-            return View(reservation);
+            return View(m);
         }
 
         // GET: Reservations/Edit/5
