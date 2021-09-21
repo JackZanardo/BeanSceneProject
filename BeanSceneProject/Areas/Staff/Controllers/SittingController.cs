@@ -69,6 +69,24 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(sitting);
 
         }
+
+        //GET: Sittings/Edit/
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var sitting = await _context.Sittings.FindAsync(id);
+            if (sitting == null)
+            {
+                return NotFound();
+            }
+            ViewData["SittingType"] = new SelectList(_context.SittingTypes, "Id");
+            ViewData["Area"] = new SelectList(_context.Areas, "Id");
+            ViewData["Table"] = new SelectList(_context.Tables, "Id");
+            return View(sitting);
+        }
         
 
         
