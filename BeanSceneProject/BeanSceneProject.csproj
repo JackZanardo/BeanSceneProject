@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Reservation\**" />
+    <Content Remove="Views\Reservation\**" />
+    <EmbeddedResource Remove="Views\Reservation\**" />
+    <None Remove="Views\Reservation\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Data\NewFile.txt" />
   </ItemGroup>
 
@@ -28,7 +35,6 @@
     <Folder Include="Areas\Member\Data\" />
     <Folder Include="Areas\Member\Models\" />
     <Folder Include="Areas\Staff\Data\" />
-    <Folder Include="Views\Reservation\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 

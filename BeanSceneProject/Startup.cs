@@ -81,7 +81,7 @@ namespace BeanSceneProject
                 endpoints.MapControllerRoute(
                     name: "areas",
                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -89,13 +89,14 @@ namespace BeanSceneProject
             });
 
             CreateRoles(serviceProvider);
+            SeedAdmin(serviceProvider);
         }
 
         private void CreateRoles(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             string[] roleNames = { "Admin", "Member", "Staff" };
-            foreach(var roleName in roleNames)
+            foreach (var roleName in roleNames)
             {
                 Task<bool> roleExists = roleManager.RoleExistsAsync(roleName);
                 roleExists.Wait();
@@ -105,6 +106,36 @@ namespace BeanSceneProject
                     result.Wait();
                 }
             }
+        }
+
+        // HACK: bad passwords used here
+        // TODO: Delete this logic on deployment
+        private void SeedAdmin(IServiceProvider serviceProvider)
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            List<IdentityUser> baseAdmins = new List<IdentityUser>();
+            baseAdmins.Add(new IdentityUser
+            {
+                UserName = "Admin1",
+                Email = "SuperCombatWombat@protonmail.com"
+            });
+            baseAdmins.Add(new IdentityUser
+            {
+                UserName = "Admin2",
+                Email = "vincentrosslee@gmail.com"
+            });
+            foreach (var baseAdmin in baseAdmins)
+            {
+                if (userManager.FindByEmailAsync(baseAdmin.Email).Result == null)
+                {
+                    IdentityResult result = userManager.CreateAsync(baseAdmin, "admin").Result;
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(baseAdmin, "Admin").Wait();
+                    }
+                }
+            }
+
         }
     }
 }
