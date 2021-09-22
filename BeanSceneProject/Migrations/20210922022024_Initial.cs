@@ -82,7 +82,12 @@ namespace BeanSceneProject.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_StreetNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_StreetName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_Suburb = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address_PostCode = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -90,7 +95,7 @@ namespace BeanSceneProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "sittingTypes",
+                name: "SittingTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -99,7 +104,7 @@ namespace BeanSceneProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_sittingTypes", x => x.Id);
+                    table.PrimaryKey("PK_SittingTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -235,8 +240,8 @@ namespace BeanSceneProject.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SittingOpen = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SittingClose = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Open = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Close = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsClosed = table.Column<bool>(type: "bit", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     RestuarantId = table.Column<int>(type: "int", nullable: false),
@@ -253,9 +258,9 @@ namespace BeanSceneProject.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Sittings_sittingTypes_SittingTypeId",
+                        name: "FK_Sittings_SittingTypes_SittingTypeId",
                         column: x => x.SittingTypeId,
-                        principalTable: "sittingTypes",
+                        principalTable: "SittingTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -286,7 +291,7 @@ namespace BeanSceneProject.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Start = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomerNum = table.Column<int>(type: "int", nullable: false),
                     Duration = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -435,7 +440,7 @@ namespace BeanSceneProject.Migrations
                 name: "Areas");
 
             migrationBuilder.DropTable(
-                name: "sittingTypes");
+                name: "SittingTypes");
 
             migrationBuilder.DropTable(
                 name: "Restaurants");

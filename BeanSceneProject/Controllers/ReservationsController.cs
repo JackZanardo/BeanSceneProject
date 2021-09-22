@@ -54,7 +54,7 @@ namespace BeanSceneProject.Controllers
         {
             var m = new Models.Reservation.Create
             {
-                ReservationOrigin = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name))
+                Areas = new SelectList(_context.Areas.ToArray(),nameof(Area.Id), nameof(Area.Name))
             };
             return View(m);
         }
@@ -70,12 +70,12 @@ namespace BeanSceneProject.Controllers
             {
                 var r = new Reservation
                 {
-                    Start = m.Start,
-                    SittingId = m.SittingId,
+                    Start = m.StartDate.AddMinutes(m.StartTime),
                     CustomerNum = m.CustomerNum,
                     Notes = m.Notes,
                     ReservationOriginId = m.ReservationOriginId
                 };
+
                 _context.Add(r);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

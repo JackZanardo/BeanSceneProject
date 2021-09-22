@@ -1,4 +1,5 @@
 using BeanSceneProject.Data;
+using BeanSceneProject.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -30,16 +31,16 @@ namespace BeanSceneProject
         public void ConfigureServices(IServiceCollection services)
         {
             /*Cookie Authentication using OpenId API 19/09/2021 by Jack*/
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-                .AddCookie()
-                .AddOpenIdConnect(options =>
-                {
-                    options.SignInScheme = "Cookies";
-                });
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            //})
+            //    .AddCookie()
+            //    .AddOpenIdConnect(options =>
+            //    {
+            //        options.SignInScheme = "Cookies";
+            //    });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -90,6 +91,7 @@ namespace BeanSceneProject
 
             CreateRoles(serviceProvider);
             SeedAdmin(serviceProvider);
+            SeedData.Initialize(serviceProvider);
         }
 
         private void CreateRoles(IServiceProvider serviceProvider)
@@ -126,10 +128,13 @@ namespace BeanSceneProject
             });
             foreach (var baseAdmin in baseAdmins)
             {
-                if (userManager.FindByEmailAsync(baseAdmin.Email).Result == null)
+                Task<IdentityUser> userExists = userManager.FindByEmailAsync(baseAdmin.Email);
+                userExists.Wait();
+                if (userExists.Result == null)
                 {
-                    IdentityResult result = userManager.CreateAsync(baseAdmin, "admin").Result;
-                    if (result.Succeeded)
+                    Task<IdentityResult> result = userManager.CreateAsync(baseAdmin, "Admin*123");
+                    result.Wait();
+                    if (result.Result.Succeeded)
                     {
                         userManager.AddToRoleAsync(baseAdmin, "Admin").Wait();
                     }

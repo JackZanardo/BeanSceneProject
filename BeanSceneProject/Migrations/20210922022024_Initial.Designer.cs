@@ -4,14 +4,16 @@ using BeanSceneProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeanSceneProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210922022024_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,9 +82,6 @@ namespace BeanSceneProject.Migrations
                     b.Property<int>("CustomerNum")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
@@ -100,6 +99,9 @@ namespace BeanSceneProject.Migrations
 
                     b.Property<int>("SittingId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -152,20 +154,20 @@ namespace BeanSceneProject.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Close")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsClosed")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("Open")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("RestaurantId")
                         .HasColumnType("int");
 
                     b.Property<int>("RestuarantId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("SittingClose")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SittingOpen")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("SittingTypeId")
                         .HasColumnType("int");
@@ -191,7 +193,7 @@ namespace BeanSceneProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("sittingTypes");
+                    b.ToTable("SittingTypes");
                 });
 
             modelBuilder.Entity("BeanSceneProject.Data.Table", b =>
@@ -417,7 +419,7 @@ namespace BeanSceneProject.Migrations
             modelBuilder.Entity("BeanSceneProject.Data.Area", b =>
                 {
                     b.HasOne("BeanSceneProject.Data.Restaurant", "Restaurant")
-                        .WithMany()
+                        .WithMany("Areas")
                         .HasForeignKey("RestaurantId");
 
                     b.Navigation("Restaurant");
@@ -438,7 +440,7 @@ namespace BeanSceneProject.Migrations
                         .IsRequired();
 
                     b.HasOne("BeanSceneProject.Data.Sitting", "Sittings")
-                        .WithMany()
+                        .WithMany("Reservations")
                         .HasForeignKey("SittingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -450,10 +452,45 @@ namespace BeanSceneProject.Migrations
                     b.Navigation("Sittings");
                 });
 
+            modelBuilder.Entity("BeanSceneProject.Data.Restaurant", b =>
+                {
+                    b.OwnsOne("BeanSceneProject.Data.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("RestaurantId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                            b1.Property<int>("PostCode")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("State")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("StreetName")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("StreetNumber")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Suburb")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("RestaurantId");
+
+                            b1.ToTable("Restaurants");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RestaurantId");
+                        });
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("BeanSceneProject.Data.Sitting", b =>
                 {
                     b.HasOne("BeanSceneProject.Data.Restaurant", "Restaurant")
-                        .WithMany()
+                        .WithMany("Sittings")
                         .HasForeignKey("RestaurantId");
 
                     b.HasOne("BeanSceneProject.Data.SittingType", "SittingType")
@@ -532,6 +569,18 @@ namespace BeanSceneProject.Migrations
             modelBuilder.Entity("BeanSceneProject.Data.Area", b =>
                 {
                     b.Navigation("Tables");
+                });
+
+            modelBuilder.Entity("BeanSceneProject.Data.Restaurant", b =>
+                {
+                    b.Navigation("Areas");
+
+                    b.Navigation("Sittings");
+                });
+
+            modelBuilder.Entity("BeanSceneProject.Data.Sitting", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }
