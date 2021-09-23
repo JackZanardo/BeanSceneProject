@@ -24,7 +24,7 @@ namespace BeanSceneProject.Controllers
             var applicationDbContext = _context.Reservations
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
-                .Include(r => r.Sittings);
+                .Include(r => r.Sitting);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -39,7 +39,7 @@ namespace BeanSceneProject.Controllers
             var reservation = await _context.Reservations
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
-                .Include(r => r.Sittings)
+                .Include(r => r.Sitting)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (reservation == null)
             {
@@ -73,7 +73,7 @@ namespace BeanSceneProject.Controllers
                     Start = m.StartDate.AddMinutes(m.StartTime),
                     CustomerNum = m.CustomerNum,
                     Notes = m.Notes,
-                    ReservationOriginId = m.ReservationOriginId
+                    ReservationOriginId = _context.ReservationOrigins.FirstOrDefault(r => r.Name == "Website").Id
                 };
 
                 _context.Add(r);
@@ -151,7 +151,7 @@ namespace BeanSceneProject.Controllers
             var reservation = await _context.Reservations
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
-                .Include(r => r.Sittings)
+                .Include(r => r.Sitting)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (reservation == null)
             {
