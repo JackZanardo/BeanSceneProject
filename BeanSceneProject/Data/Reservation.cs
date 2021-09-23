@@ -19,7 +19,7 @@ namespace BeanSceneProject.Data
         public int ReservationOriginId { get; set; }
         public ReservationOrigin ReservationOrigin { get; set; }
         public int SittingId { get; set; }
-        public Sitting Sittings { get; set; }
+        public Sitting Sitting { get; set; }
         public int PersonId { get; set; }
         public Person Person { get; set; }
     }

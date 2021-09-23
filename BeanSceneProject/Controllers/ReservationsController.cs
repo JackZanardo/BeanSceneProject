@@ -24,7 +24,7 @@ namespace BeanSceneProject.Controllers
             var applicationDbContext = _context.Reservations
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
-                .Include(r => r.Sittings);
+                .Include(r => r.Sitting);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -39,7 +39,7 @@ namespace BeanSceneProject.Controllers
             var reservation = await _context.Reservations
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
-                .Include(r => r.Sittings)
+                .Include(r => r.Sitting)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (reservation == null)
             {
@@ -54,7 +54,7 @@ namespace BeanSceneProject.Controllers
         {
             var m = new Models.Reservation.Create
             {
-                ReservationOrigin = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name))
+                Areas = new SelectList(_context.Areas.ToArray(),nameof(Area.Id), nameof(Area.Name))
             };
             return View(m);
         }
@@ -70,12 +70,12 @@ namespace BeanSceneProject.Controllers
             {
                 var r = new Reservation
                 {
-                    Start = m.Start,
-                    SittingId = m.SittingId,
+                    Start = m.StartDate.AddMinutes(m.StartTime),
                     CustomerNum = m.CustomerNum,
                     Notes = m.Notes,
-                    ReservationOriginId = m.ReservationOriginId
+                    ReservationOriginId = _context.ReservationOrigins.FirstOrDefault(r => r.Name == "Website").Id
                 };
+
                 _context.Add(r);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -151,7 +151,7 @@ namespace BeanSceneProject.Controllers
             var reservation = await _context.Reservations
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
-                .Include(r => r.Sittings)
+                .Include(r => r.Sitting)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (reservation == null)
             {
