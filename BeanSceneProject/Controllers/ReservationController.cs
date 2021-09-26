@@ -22,7 +22,7 @@ namespace BeanSceneProject.Controllers
             var m = new Models.Reservation.Create
             {
                 Areas = new SelectList(_context.Areas.ToArray(), nameof(Area.Id), nameof(Area.Name)),
-
+                StartTimes = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Open))
             };
             return View(m);
         }
@@ -33,7 +33,6 @@ namespace BeanSceneProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                int sittingId = _context.Sittings.FirstOrDefault(s => (s.Open <= m.Start && s.Close >= (m.Start))).Id;
                 var personController = new PersonController(_context);
                 var person = personController.FindOrCreatePerson(m.Email, m.FirstName, m.LastName, m.MobileNumber);
                 var r = new Reservation
@@ -44,7 +43,7 @@ namespace BeanSceneProject.Controllers
                     ReservationOriginId = _context.ReservationOrigins.FirstOrDefault(ro => ro.Name == "Website").Id,
                     Notes = m.Notes,
                     ReservationStatus = ReservationStatus.Pending,
-                    SittingId = sittingId,
+                    SittingId = m.SittingId,
                     PersonId = person.Id
                 };
                 _context.Add(r);

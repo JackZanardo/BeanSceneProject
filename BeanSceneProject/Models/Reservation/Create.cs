@@ -10,6 +10,8 @@ namespace BeanSceneProject.Models.Reservation
     public class Create
     {
         public DateTime Start { get; set; }
+        public int SittingId { get; set; }
+        public SelectList StartTimes { get; set; }
         public int CustomerNum { get; set; }
         public int Duration { get; set; }
         public string Notes { get; set; }
