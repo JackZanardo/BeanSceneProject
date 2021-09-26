@@ -1,6 +1,4 @@
-﻿using BeanSceneProject.Data;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,20 +9,26 @@ namespace BeanSceneProject.Models.Reservation
 {
     public class Create
     {
-        [Required(ErrorMessage ="Please select a date.")]
-        public DateTime StartDate { get; set; }
+        public DateTime Start { get; set; }
+        public int SittingId { get; set; }
+        public SelectList StartTimes { get; set; }
+        public int CustomerNum { get; set; }
+        public int Duration { get; set; }
+        public string Notes { get; set; }
 
-        [Required(ErrorMessage = "Please select a time.")]
-        public double StartTime { get; set; }
-
-        [Required(ErrorMessage ="Please select an area.")]
         public int AreaId { get; set; }
         public SelectList Areas { get; set; }
 
-        [Required(ErrorMessage ="Please enter number of guests.")]
-        public int CustomerNum { get; set; }
-        public string Notes { get; set; }
-        public int ReservationOriginId { get; set; }
+        [Required(ErrorMessage = "First Name required")]
+        public string FirstName { get; set; }
 
+        [Required(ErrorMessage = "Last Name required")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Email required")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Phone Number required")]
+        public string MobileNumber { get; set; }
     }
 }
