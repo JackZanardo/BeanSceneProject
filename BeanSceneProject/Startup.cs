@@ -31,16 +31,16 @@ namespace BeanSceneProject
         public void ConfigureServices(IServiceCollection services)
         {
             /*Cookie Authentication using OpenId API 19/09/2021 by Jack*/
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-                .AddCookie()
-                .AddOpenIdConnect(options =>
-                {
-                    options.SignInScheme = "Cookies";
-                });
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            //})
+            //    .AddCookie()
+            //    .AddOpenIdConnect(options =>
+            //    {
+            //        options.SignInScheme = "Cookies";
+            //    });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -75,6 +75,7 @@ namespace BeanSceneProject
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
@@ -119,12 +120,14 @@ namespace BeanSceneProject
             baseAdmins.Add(new IdentityUser
             {
                 UserName = "Admin1",
-                Email = "SuperCombatWombat@protonmail.com"
+                Email = "SuperCombatWombat@protonmail.com",
+                EmailConfirmed = true
             });
             baseAdmins.Add(new IdentityUser
             {
                 UserName = "Admin2",
-                Email = "vincentrosslee@gmail.com"
+                Email = "vincentrosslee@gmail.com",
+                EmailConfirmed = true
             });
             foreach (var baseAdmin in baseAdmins)
             {

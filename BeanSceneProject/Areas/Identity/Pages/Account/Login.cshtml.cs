@@ -85,7 +85,7 @@ namespace BeanSceneProject.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return RedirectToAction("Index", "Home", new { area = ""});
                 }
                 if (result.RequiresTwoFactor)
                 {
