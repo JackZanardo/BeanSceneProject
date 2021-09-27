@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BeanSceneProject.Areas.Staff.Controllers
 {
-    [Area("Staff"), Authorize(Roles = "Staff")]
+    [Area("Staff"), Authorize(Roles = "Staff,Admin")]
     public class HomeController : StaffAreaBaseController
     {
         public HomeController(ApplicationDbContext context) : base(context) {}

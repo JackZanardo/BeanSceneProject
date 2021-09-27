@@ -47,26 +47,32 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         //GET: Sittings/Create
         public IActionResult Create()
         {
-            ViewData["SittingType"] = new SelectList(_context.SittingTypes, "Id");
-            ViewData["Area"] = new SelectList(_context.Areas, "Id");
-            ViewData["Table"] = new SelectList(_context.Tables, "Id");
-            return View();
+            var m = new Models.Sitting.Create
+            {
+                SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name))
+            };
+            return View(m);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Open,Close,Capacity,RestuarantId,SittingTypeId")] Sitting sitting)
+        public async Task<IActionResult> Create(Models.Sitting.Create m)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sitting);
+                var s = new Sitting
+                {
+                    Open = m.Open,
+                    Close = m.Close,
+                    Capacity = m.Capacity,
+                    SittingTypeId = m.SittingTypeId
+                };
+                _context.Add(s);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SittingType"] = new SelectList(_context.SittingTypes, "Id");
-            ViewData["Area"] = new SelectList(_context.Areas, "Id");
-            ViewData["Table"] = new SelectList(_context.Tables, "Id");
-            return View(sitting);
+
+            return View(m);
 
         }
 
@@ -82,9 +88,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            ViewData["SittingType"] = new SelectList(_context.SittingTypes, "Id");
-            ViewData["Area"] = new SelectList(_context.Areas, "Id");
-            ViewData["Table"] = new SelectList(_context.Tables, "Id");
+
             return View(sitting);
         }
         
