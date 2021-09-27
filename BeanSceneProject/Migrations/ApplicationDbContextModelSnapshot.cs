@@ -61,7 +61,7 @@ namespace BeanSceneProject.Migrations
                     b.Property<string>("MobileNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasMaxLength(450)
                         .HasColumnType("int");
 
@@ -437,7 +437,7 @@ namespace BeanSceneProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BeanSceneProject.Data.Sitting", "Sittings")
+                    b.HasOne("BeanSceneProject.Data.Sitting", "Sitting")
                         .WithMany("Reservations")
                         .HasForeignKey("SittingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -447,7 +447,7 @@ namespace BeanSceneProject.Migrations
 
                     b.Navigation("ReservationOrigin");
 
-                    b.Navigation("Sittings");
+                    b.Navigation("Sitting");
                 });
 
             modelBuilder.Entity("BeanSceneProject.Data.Restaurant", b =>

@@ -31,16 +31,16 @@ namespace BeanSceneProject
         public void ConfigureServices(IServiceCollection services)
         {
             /*Cookie Authentication using OpenId API 19/09/2021 by Jack*/
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            //})
-            //    .AddCookie()
-            //    .AddOpenIdConnect(options =>
-            //    {
-            //        options.SignInScheme = "Cookies";
-            //    });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+                .AddCookie()
+                .AddOpenIdConnect(options =>
+                {
+                    options.SignInScheme = "Cookies";
+                });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
