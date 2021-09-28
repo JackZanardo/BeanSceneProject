@@ -86,7 +86,14 @@ namespace BeanSceneProject.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return RedirectToAction("Index", "Home", new { area = ""});
+                    if (await _userManager.IsInRoleAsync(user, "Admin") || await _userManager.IsInRoleAsync(user, "Staff"))
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "Staff" });
+                    }
+                    if (await _userManager.IsInRoleAsync(user, "Member"))
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "Member" });
+                    }
                 }
                 if (result.RequiresTwoFactor)
                 {
