@@ -1,5 +1,6 @@
 using BeanSceneProject.Data;
 using BeanSceneProject.Models;
+using BeanSceneProject.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +42,7 @@ namespace BeanSceneProject
             //    {
             //        options.SignInScheme = "Cookies";
             //    });
+            services.AddScoped<PersonService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
