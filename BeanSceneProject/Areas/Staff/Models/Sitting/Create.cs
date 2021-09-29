@@ -18,6 +18,9 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
         [Required]
         public int SittingTypeId { get; set; }
         public SelectList SittingTypes { get; set; }
+        [Required]
+        public int RestuarantId { get; set; }
+        public SelectList Restraunts { get; set; }
 
     }
 }

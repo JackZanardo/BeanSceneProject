@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeanSceneProject.Areas.Staff.Models.Reservation
 {
-    public class Edit
+    public class Update
     {
         public int Id { get; set; }
         public DateTime Start { get; set; }

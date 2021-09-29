@@ -20,7 +20,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             var applicationDbContext = _context.Sittings
                 .Include(s => s.SittingType)
-                .Include(s => s.Reservations);
+                .Include(s => s.Reservations)
+                .Include(s => s.Restaurant);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -49,6 +50,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             var m = new Models.Sitting.Create
             {
+                Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
                 SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name))
             };
             return View(m);
@@ -65,7 +67,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     Open = m.Open,
                     Close = m.Close,
                     Capacity = m.Capacity,
-                    SittingTypeId = m.SittingTypeId
+                    SittingTypeId = m.SittingTypeId,
+                    RestuarantId = m.RestuarantId
                 };
                 _context.Add(s);
                 await _context.SaveChangesAsync();
@@ -84,15 +87,73 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 return NotFound();
             }
             var sitting = await _context.Sittings.FindAsync(id);
+            var m = new Models.Sitting.Update
+            {
+                Id = sitting.Id,
+                Open = sitting.Open,
+                Close = sitting.Close,
+                Capacity = sitting.Capacity,
+                SittingTypeId = sitting.SittingTypeId,
+                SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name)),
+                RestuarantId = sitting.RestuarantId,
+                Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name))
+            };
             if (sitting == null)
             {
                 return NotFound();
             }
 
-            return View(sitting);
+            return View(m);
         }
-        
 
-        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Models.Sitting.Update m)
+        {
+            if (id != m.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var s = new Sitting
+                {
+                    Id = m.Id,
+                    Open = m.Open,
+                    Close = m.Close,
+                    Capacity = m.Capacity,
+                    SittingTypeId = m.SittingTypeId,
+                    RestuarantId = m.RestuarantId
+                };
+                try
+                {
+                    _context.Update(s);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SittingExists(s.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(m);
+        }
+
+
+        private bool SittingExists(int id)
+        {
+            return _context.Sittings.Any(e => e.Id == id);
+        }
+
     }
 }
