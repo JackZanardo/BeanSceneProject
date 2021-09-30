@@ -36,13 +36,30 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             var sitting = await _context.Sittings
                 .Include(s => s.SittingType)
                 .Include(s => s.Reservations)
+                .ThenInclude(r => r.Tables)
                 .FirstOrDefaultAsync(s => s.Id == id);
             if (sitting == null)
             {
                 return NotFound();
             }
-
-            return View(sitting);
+            var model = new Models.Sitting.Details
+            {
+                Id = sitting.Id,
+                Open = sitting.Open,
+                Close = sitting.Close,
+                IsClosed = sitting.IsClosed,
+                Capacity = sitting.Capacity,
+                Heads = sitting.Heads,
+                Reservations = sitting.Reservations.Count()
+            };
+            foreach(var r in sitting.Reservations)
+            {
+                foreach(var t in r.Tables)
+                {
+                    model.BookedTables.Add(t.Name);
+                }
+            }
+            return View(model);
         }
         
         //GET: Sittings/Create

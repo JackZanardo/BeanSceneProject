@@ -14,9 +14,9 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
         public int Capacity { get; set; }
         public int Heads { get; set; }
         public int Reservations { get; set; }
-        public int BookedTables { get; set; }
-        public int RestuarantId { get; set; }
-        public int SittingTypeId { get; set; }
+        public List<string> BookedTables { get; set; }
+        public string Restuarant { get; set; }
+        public string SittingType { get; set; }
 
 
     }
