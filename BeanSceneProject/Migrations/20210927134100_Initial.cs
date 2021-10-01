@@ -56,7 +56,7 @@ namespace BeanSceneProject.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", maxLength: 450, nullable: false)
+                    UserId = table.Column<int>(type: "int", maxLength: 450, nullable: true)
                 },
                 constraints: table =>
                 {

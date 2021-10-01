@@ -4,14 +4,16 @@ using BeanSceneProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeanSceneProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210927134100_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,14 +209,9 @@ namespace BeanSceneProject.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReservationId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AreaId");
-
-                    b.HasIndex("ReservationId");
 
                     b.ToTable("Tables");
                 });
@@ -515,10 +512,6 @@ namespace BeanSceneProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BeanSceneProject.Data.Reservation", null)
-                        .WithMany("Tables")
-                        .HasForeignKey("ReservationId");
-
                     b.Navigation("Area");
                 });
 
@@ -574,11 +567,6 @@ namespace BeanSceneProject.Migrations
                 });
 
             modelBuilder.Entity("BeanSceneProject.Data.Area", b =>
-                {
-                    b.Navigation("Tables");
-                });
-
-            modelBuilder.Entity("BeanSceneProject.Data.Reservation", b =>
                 {
                     b.Navigation("Tables");
                 });

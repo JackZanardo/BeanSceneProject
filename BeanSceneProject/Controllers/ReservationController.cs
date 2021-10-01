@@ -1,4 +1,5 @@
 ﻿using BeanSceneProject.Data;
+using BeanSceneProject.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -10,7 +11,11 @@ namespace BeanSceneProject.Controllers
 {
     public class ReservationController : BaseController
     {
-        public ReservationController(ApplicationDbContext context) : base(context) {}
+        private readonly PersonService _personService;
+        public ReservationController(ApplicationDbContext context, PersonService personService) : base(context) 
+        {
+            _personService = personService;
+        }
 
         public IActionResult Index()
         {
@@ -33,8 +38,14 @@ namespace BeanSceneProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                var personController = new PersonController(_context);
-                var person = personController.FindOrCreatePerson(m.Email, m.FirstName, m.LastName, m.MobileNumber);
+                var person = new Person
+                {
+                    Email = m.Email,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    MobileNumber = m.MobileNumber
+                };
+                person = await _personService.UpsertPersonAsync(person, false);
                 var r = new Reservation
                 {
                     Start = m.Start,

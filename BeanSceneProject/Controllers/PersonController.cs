@@ -15,25 +15,5 @@ namespace BeanSceneProject.Controllers
         {
             return View();
         }
-
-        public async Task<Person> FindOrCreatePerson(string email, string fName, string lName, string mobileNumber)
-        {
-            var person = await _context.People.FirstOrDefaultAsync(p => p.Email == email);
-            if (person == null)
-            {
-                person = new Person
-                {
-                    Email = email,
-                    FirstName = fName,
-                    LastName = lName,
-                    MobileNumber = mobileNumber
-                };
-                _context.People.Add(person);
-                await _context.SaveChangesAsync();
-                return person;
-            }
-            return person;
-
-        }
     }
 }

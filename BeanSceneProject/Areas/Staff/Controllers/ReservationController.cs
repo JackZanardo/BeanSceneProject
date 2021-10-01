@@ -100,7 +100,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            var m = new Models.Reservation.Edit
+            var m = new Models.Reservation.Update
             {
                 Id = reservation.Id,
                 Start = reservation.Start,
@@ -120,7 +120,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Models.Reservation.Edit m)
+        public async Task<IActionResult> Edit(int id, Models.Reservation.Update m)
         {
             if (id != m.Id)
             {
@@ -131,6 +131,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 var r = new Reservation
                 {
+                    Id = m.Id,
                     Start = m.Start,
                     SittingId = m.SittingId,
                     CustomerNum = m.CustomerNum,

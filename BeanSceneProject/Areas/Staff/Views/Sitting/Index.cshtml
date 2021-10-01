@@ -13,22 +13,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Open)
+                Open Time
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Close)
+                Close Time
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsClosed)
+                Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Capacity)
+                Capacity
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RestuarantId)
+                People booked
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SittingType)
+                Sitting Type
+            </th>
+            <th>
+                Restaurant
             </th>
             <th></th>
         </tr>
@@ -43,16 +46,20 @@
                 @Html.DisplayFor(modelItem => item.Close)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsClosed)
+                @if (item.IsClosed) { Html.DisplayText("Closed"); }
+                else { Html.DisplayText("Open"); }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Capacity)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RestuarantId)
+                @Html.DisplayFor(modelItem => item.Heads)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SittingType.Id)
+                @Html.DisplayFor(modelItem => item.SittingType.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Restaurant.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

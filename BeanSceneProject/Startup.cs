@@ -1,5 +1,6 @@
 using BeanSceneProject.Data;
 using BeanSceneProject.Models;
+using BeanSceneProject.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +42,7 @@ namespace BeanSceneProject
             //    {
             //        options.SignInScheme = "Cookies";
             //    });
+            services.AddScoped<PersonService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -75,6 +77,7 @@ namespace BeanSceneProject
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
@@ -119,12 +122,14 @@ namespace BeanSceneProject
             baseAdmins.Add(new IdentityUser
             {
                 UserName = "Admin1",
-                Email = "SuperCombatWombat@protonmail.com"
+                Email = "SuperCombatWombat@protonmail.com",
+                EmailConfirmed = true
             });
             baseAdmins.Add(new IdentityUser
             {
                 UserName = "Admin2",
-                Email = "vincentrosslee@gmail.com"
+                Email = "vincentrosslee@gmail.com",
+                EmailConfirmed = true
             });
             foreach (var baseAdmin in baseAdmins)
             {

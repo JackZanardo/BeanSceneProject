@@ -22,5 +22,6 @@ namespace BeanSceneProject.Data
         public Sitting Sitting { get; set; }
         public int PersonId { get; set; }
         public Person Person { get; set; }
+        public List<Table> Tables { get; set; } = new List<Table>();
     }
 }

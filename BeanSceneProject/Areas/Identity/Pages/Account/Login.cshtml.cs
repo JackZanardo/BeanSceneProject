@@ -81,11 +81,19 @@ namespace BeanSceneProject.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    if (await _userManager.IsInRoleAsync(user, "Admin") || await _userManager.IsInRoleAsync(user, "Staff"))
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "Staff" });
+                    }
+                    if (await _userManager.IsInRoleAsync(user, "Member"))
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "Member" });
+                    }
                 }
                 if (result.RequiresTwoFactor)
                 {
