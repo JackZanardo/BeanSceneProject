@@ -50,6 +50,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 IsClosed = sitting.IsClosed,
                 Capacity = sitting.Capacity,
                 Heads = sitting.Heads,
+                SittingType = sitting.SittingType.Name,
                 Reservations = sitting.Reservations.Count()
             };
             foreach(var r in sitting.Reservations)
