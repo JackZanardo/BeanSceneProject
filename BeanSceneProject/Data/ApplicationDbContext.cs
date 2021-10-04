@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,11 @@ namespace BeanSceneProject.Data
             builder.Entity<Person>()
                 .Property("UserId")
                 .HasMaxLength(450);
+
+            builder.Entity<Person>()
+                .HasOne<IdentityUser>()
+                .WithOne()
+                .HasForeignKey("Person", "UserId");
         }
     }
 }
