@@ -104,7 +104,11 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            var sitting = await _context.Sittings.FindAsync(id);
+            var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == id);
+            if (sitting == null)
+            {
+                return NotFound();
+            }
             var m = new Models.Sitting.Update
             {
                 Id = sitting.Id,
@@ -116,11 +120,6 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 RestuarantId = sitting.RestuarantId,
                 Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name))
             };
-            if (sitting == null)
-            {
-                return NotFound();
-            }
-
             return View(m);
         }
 
