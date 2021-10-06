@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using BeanSceneProject.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,11 @@ namespace BeanSceneProject.Models.Reservation
     {
         public DateTime Start { get; set; }
         public int SittingId { get; set; }
+        // TODO: Trying different options for bringing in sitting dates
         public SelectList StartTimes { get; set; }
+        public IList<Sitting> Sittings { get; set; }
+        public string SittingsJson { get; set; }
+
         public int CustomerNum { get; set; }
         public int Duration { get; set; }
         public string Notes { get; set; }
