@@ -22,8 +22,7 @@ namespace MsUnitTest
                 .UseInMemoryDatabase("BeanSceneDatabase")
                 .Options;
             var context = new ApplicationDbContext(options);
-            var userManager = new UserManager();
-            var personService = new PersonService(context, );
+
         }
     }
 }
