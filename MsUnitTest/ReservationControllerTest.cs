@@ -1,6 +1,8 @@
 ﻿using BeanSceneProject.Controllers;
 using BeanSceneProject.Data;
 using BeanSceneProject.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,13 +15,14 @@ namespace MsUnitTest
     [TestClass]
     class ReservationControllerTest
     {
-        private ApplicationDbContext _dbContext;
-
-        public ReservationControllerTest()
+        [TestMethod]
+        public void RendersIndexView()
         {
-            _dbContext = new ApplicationDbContext(options =>
-                options.UseSqlServer(@"Server=localhost;Database=BeanSceneDatabase;Trusted_Connection=True;MultipleActiveResultSets=true")
-            );
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase("BeanSceneDatabase")
+                .Options;
+            var context = new ApplicationDbContext(options);
+
         }
     }
 }

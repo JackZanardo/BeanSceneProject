@@ -12,15 +12,24 @@ namespace BeanSceneProject.Areas.Staff.Controllers
     public class ReservationController : StaffAreaBaseController
     {
         public ReservationController(ApplicationDbContext context) : base(context) { }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? sittingId)
         {
+            if(sittingId == null)
+            {
+                return NotFound();
+            }
             var reservations = _context.Reservations
+                .Where(r => r.SittingId == sittingId)
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
                 .Include(r => r.Sitting)
                 .ThenInclude(s => s.Restaurant)
                 .ThenInclude(r => r.Areas)
                 .ThenInclude(a => a.Tables);
+            if (reservations == null)
+            {
+                return NotFound();
+            }
             return View(await reservations.ToListAsync());
         }
 
