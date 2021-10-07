@@ -68,6 +68,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             var m = new Models.Sitting.Create
             {
+                Open = DateTime.Today,
+                Close = DateTime.Today,
                 Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
                 SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name))
             };

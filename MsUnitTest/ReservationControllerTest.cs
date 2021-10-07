@@ -17,9 +17,9 @@ namespace MsUnitTest
 
         public ReservationControllerTest()
         {
-            _dbContext = new ApplicationDbContext(options =>
+            /*_dbContext = new ApplicationDbContext(options =>
                 options.UseSqlServer(@"Server=localhost;Database=BeanSceneDatabase;Trusted_Connection=True;MultipleActiveResultSets=true")
-            );
+            );*/
         }
     }
 }
