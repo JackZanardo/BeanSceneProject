@@ -68,8 +68,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             var m = new Models.Sitting.Create
             {
-                Open = DateTime.Today,
-                Close = DateTime.Today,
+                Open = DateTime.Today.AddHours(8),
+                Close = DateTime.Today.AddHours(11),
                 Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
                 SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name))
             };
@@ -106,7 +106,11 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            var sitting = await _context.Sittings.FindAsync(id);
+            var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == id);
+            if (sitting == null)
+            {
+                return NotFound();
+            }
             var m = new Models.Sitting.Update
             {
                 Id = sitting.Id,
@@ -118,11 +122,6 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 RestuarantId = sitting.RestuarantId,
                 Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name))
             };
-            if (sitting == null)
-            {
-                return NotFound();
-            }
-
             return View(m);
         }
 

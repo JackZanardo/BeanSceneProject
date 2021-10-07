@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BeanSceneProject.Controllers
@@ -26,6 +27,8 @@ namespace BeanSceneProject.Controllers
         {
             var m = new Models.Reservation.Create
             {
+                SittingsJson = JsonSerializer.Serialize(_context.Sittings.ToList()),
+                Sittings = _context.Sittings.ToList(),
                 Areas = new SelectList(_context.Areas.ToArray(), nameof(Area.Id), nameof(Area.Name)),
                 StartTimes = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Open))
             };
