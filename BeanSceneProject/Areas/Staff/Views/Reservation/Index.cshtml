@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BeanSceneProject.Data.Reservation>
+﻿@model BeanSceneProject.Areas.Staff.Models.Reservation.Index
 
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +7,7 @@
 <h1>Reservations</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-id="@Model.SittingId">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -34,7 +34,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Reservations)
         {
             <tr>
                 <td>

@@ -37,7 +37,8 @@ namespace BeanSceneProject.Data
             builder.Entity<Person>()
                 .HasOne<IdentityUser>()
                 .WithOne()
-                .HasForeignKey("Person", "UserId");
+                .HasForeignKey("Person", "UserId")
+                .IsRequired(false);
         }
     }
 }
