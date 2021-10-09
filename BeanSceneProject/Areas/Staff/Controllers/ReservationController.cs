@@ -1,4 +1,5 @@
 ﻿using BeanSceneProject.Data;
+using BeanSceneProject.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,11 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 {
     public class ReservationController : StaffAreaBaseController
     {
-        public ReservationController(ApplicationDbContext context) : base(context) { }
+        private readonly SittingService _sittingService;
+        public ReservationController(ApplicationDbContext context, SittingService sittingService) : base(context) 
+        {
+            _sittingService = sittingService;
+        }
         public async Task<IActionResult> Index(int? sittingId)
         {
             if(sittingId == null)
@@ -64,6 +69,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             var m = new Models.Reservation.Create
             {
                 SittingId = sittingId,
+                Start = _sittingService.GetSittingAsync((int)sittingId).Result.Open,
                 ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name)),
                 Areas = new SelectList(_context.Areas.ToArray(), nameof(Area.Id), nameof(Area.Name)),
                 Tables = new MultiSelectList(_context.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name))
