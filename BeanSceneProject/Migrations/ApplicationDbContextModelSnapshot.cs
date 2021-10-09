@@ -165,10 +165,7 @@ namespace BeanSceneProject.Migrations
                     b.Property<DateTime>("Open")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("RestaurantId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RestuarantId")
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
                     b.Property<int>("SittingTypeId")
@@ -505,7 +502,9 @@ namespace BeanSceneProject.Migrations
                 {
                     b.HasOne("BeanSceneProject.Data.Restaurant", "Restaurant")
                         .WithMany("Sittings")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeanSceneProject.Data.SittingType", "SittingType")
                         .WithMany()

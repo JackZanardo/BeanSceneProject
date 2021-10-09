@@ -22,5 +22,8 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
         [Required]
         public int RestuarantId { get; set; }
         public SelectList Restraunts { get; set; }
+
+        public bool IsClosed { get; set; }
+        public SelectList IsClosedSelect { get; set; }
     }
 }

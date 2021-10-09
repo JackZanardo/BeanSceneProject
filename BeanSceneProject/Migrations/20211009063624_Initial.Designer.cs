@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeanSceneProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210930000626_ReservationTables")]
-    partial class ReservationTables
+    [Migration("20211009063624_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -63,11 +63,15 @@ namespace BeanSceneProject.Migrations
                     b.Property<string>("MobileNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<string>("UserId")
                         .HasMaxLength(450)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("People");
                 });
@@ -163,10 +167,7 @@ namespace BeanSceneProject.Migrations
                     b.Property<DateTime>("Open")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("RestaurantId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RestuarantId")
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
                     b.Property<int>("SittingTypeId")
@@ -430,6 +431,13 @@ namespace BeanSceneProject.Migrations
                     b.Navigation("Restaurant");
                 });
 
+            modelBuilder.Entity("BeanSceneProject.Data.Person", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithOne()
+                        .HasForeignKey("BeanSceneProject.Data.Person", "UserId");
+                });
+
             modelBuilder.Entity("BeanSceneProject.Data.Reservation", b =>
                 {
                     b.HasOne("BeanSceneProject.Data.Person", "Person")
@@ -496,7 +504,9 @@ namespace BeanSceneProject.Migrations
                 {
                     b.HasOne("BeanSceneProject.Data.Restaurant", "Restaurant")
                         .WithMany("Sittings")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeanSceneProject.Data.SittingType", "SittingType")
                         .WithMany()

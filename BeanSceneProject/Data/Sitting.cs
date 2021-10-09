@@ -16,7 +16,7 @@ namespace BeanSceneProject.Data
         public int Available { get => Capacity - Heads; }
 
         //Relationships
-        public int RestuarantId { get; set; }
+        public int RestaurantId { get; set; }
         public Restaurant Restaurant { get; set; }
         public int SittingTypeId { get; set; }
         public SittingType SittingType { get; set; }

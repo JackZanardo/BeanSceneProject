@@ -26,11 +26,16 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .ThenInclude(s => s.Restaurant)
                 .ThenInclude(r => r.Areas)
                 .ThenInclude(a => a.Tables);
+            var m = new Models.Reservation.Index
+            {
+                SittingId = sittingId,
+                Reservations = await reservations.ToListAsync()
+            };
             if (reservations == null)
             {
                 return NotFound();
             }
-            return View(await reservations.ToListAsync());
+            return View(m);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -54,14 +59,14 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(reservation);
         }
 
-        public IActionResult Create()
+        public IActionResult Create(int? sittingId)
         {
             var m = new Models.Reservation.Create
             {
+                SittingId = sittingId,
                 ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name)),
-                Sittings = new SelectList(_context.Sittings.Where(s => s.IsClosed == false).ToArray(), nameof(Sitting.Id), nameof(Sitting.Open)),
                 Areas = new SelectList(_context.Areas.ToArray(), nameof(Area.Id), nameof(Area.Name)),
-                Tables = new SelectList(_context.Areas.ToArray(), nameof(Table.Id), nameof(Table.Name))
+                Tables = new MultiSelectList(_context.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name))
             };
             return View(m);
         }
@@ -75,7 +80,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 var r = new Reservation
                 {
                     Start = m.Start,
-                    SittingId = m.SittingId,
+                    SittingId = (int)m.SittingId,
                     CustomerNum = m.CustomerNum,
                     Duration = m.Duration,
                     ReservationOriginId = m.ReservationOriginId,

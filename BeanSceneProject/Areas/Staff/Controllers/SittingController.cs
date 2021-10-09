@@ -88,7 +88,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     Close = m.Close,
                     Capacity = m.Capacity,
                     SittingTypeId = m.SittingTypeId,
-                    RestuarantId = m.RestuarantId
+                    RestaurantId = m.RestuarantId,
+                    IsClosed = false
                 };
                 _context.Add(s);
                 await _context.SaveChangesAsync();
@@ -119,8 +120,14 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 Capacity = sitting.Capacity,
                 SittingTypeId = sitting.SittingTypeId,
                 SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name)),
-                RestuarantId = sitting.RestuarantId,
-                Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name))
+                RestuarantId = sitting.RestaurantId,
+                Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
+                IsClosed = sitting.IsClosed,
+                IsClosedSelect = new SelectList(new Dictionary<bool, string>()
+                {
+                    {false, "Open"},
+                    {true, "Closed"}
+                }, "Key", "Value")
             };
             return View(m);
         }
@@ -144,7 +151,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     Close = m.Close,
                     Capacity = m.Capacity,
                     SittingTypeId = m.SittingTypeId,
-                    RestuarantId = m.RestuarantId
+                    RestaurantId = m.RestuarantId,
+                    IsClosed = m.IsClosed
                 };
                 try
                 {
