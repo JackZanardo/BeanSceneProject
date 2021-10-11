@@ -174,5 +174,30 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return _context.Sittings.Any(e => e.Id == id);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == id);
+            if (sitting == null)
+            {
+                return NotFound();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == id);
+            Sitting s = _context.Sittings.Find(sitting);
+            _context.Sittings.Remove(s);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
