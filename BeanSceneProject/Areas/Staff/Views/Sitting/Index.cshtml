@@ -47,8 +47,14 @@
                 @Html.DisplayFor(modelItem => item.Close)
             </td>
             <td>
-                @if (item.IsClosed) { Html.DisplayText("Closed"); }
-                else { Html.DisplayText("Open"); }
+                @if (item.IsClosed)
+                {
+                    <span>Closed</span>
+                }
+                else
+                {
+                    <span>Open</span>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Capacity)
