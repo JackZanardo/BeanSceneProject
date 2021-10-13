@@ -193,19 +193,38 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            return RedirectToAction(nameof(Index));
+            var m = new Models.Sitting.Delete();
+            return View(m);
         }
 
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, Models.Sitting.Delete m)
         {
-            var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == id);
-            Sitting s = _context.Sittings.Find(sitting);
-            _context.Sittings.Remove(s);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (ModelState.IsValid)
+            {
+                Sitting s = _context.Sittings.Find(id);
+                try
+                {
+                    _context.Sittings.Remove(s);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SittingExists(s.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(m);
         }
     }
 }

@@ -1,0 +1,27 @@
+﻿@model BeanSceneProject.Areas.Staff.Models.Sitting.Delete
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h4>Delete</h4>
+<hr />
+<div class="row  justify-content-center">
+    <div class="col-md-4">
+        <form asp-action="Delete">
+            <div class="form-group justify-content-center p-1">
+                <input type="submit" value="Delete" class="btn btn-success btn-lg" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

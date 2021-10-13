@@ -250,8 +250,7 @@ namespace BeanSceneProject.Migrations
                     Close = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsClosed = table.Column<bool>(type: "bit", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
-                    RestuarantId = table.Column<int>(type: "int", nullable: false),
-                    RestaurantId = table.Column<int>(type: "int", nullable: true),
+                    RestaurantId = table.Column<int>(type: "int", nullable: false),
                     SittingTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -262,7 +261,7 @@ namespace BeanSceneProject.Migrations
                         column: x => x.RestaurantId,
                         principalTable: "Restaurants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Sittings_SittingTypes_SittingTypeId",
                         column: x => x.SittingTypeId,
