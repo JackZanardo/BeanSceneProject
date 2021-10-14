@@ -1,7 +1,9 @@
 ﻿using BeanSceneProject.Data;
+using BeanSceneProject.Models.Reservation;
 using BeanSceneProject.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +25,12 @@ namespace BeanSceneProject.Controllers
             return View();
         }
 
+        
         public IActionResult Create()
         {
             var m = new Models.Reservation.Create
             {
-                SittingsJson = JsonSerializer.Serialize(_context.Sittings.ToList()),
-                Sittings = _context.Sittings.ToList(),
-                Areas = new SelectList(_context.Areas.ToArray(), nameof(Area.Id), nameof(Area.Name)),
-                StartTimes = new SelectList(_context.Sittings.ToArray(), nameof(Sitting.Id), nameof(Sitting.Open))
+                StartDates = JsonSerializer.Serialize(_context.Sittings.Select(s => s.Open.Date).ToList())
             };
             return View(m);
         }
@@ -51,13 +51,11 @@ namespace BeanSceneProject.Controllers
                 person = await _personService.UpsertPersonAsync(person, false);
                 var r = new Reservation
                 {
-                    Start = m.Start,
                     CustomerNum = m.CustomerNum,
                     Duration = m.Duration,
                     ReservationOriginId = _context.ReservationOrigins.FirstOrDefault(ro => ro.Name == "Website").Id,
                     Notes = m.Notes,
                     ReservationStatus = ReservationStatus.Pending,
-                    SittingId = m.SittingId,
                     PersonId = person.Id
                 };
                 _context.Add(r);
@@ -65,6 +63,26 @@ namespace BeanSceneProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(m);
+        }
+
+        public JsonResult GetSittings(string jsonDate)
+        {
+            var date = DateTime.Parse(jsonDate).Date;
+            var sittings = _context.Sittings
+                .Include(s => s.SittingType)
+                .Where(s => s.Open.Date == date && s.IsClosed == false);
+            var sessions = new List<Session>();
+            foreach(var s in sittings)
+            {
+                sessions.Add(new Session
+                {
+                    Id = s.Id,
+                    InfoText = $"{s.Open.ToLongTimeString()} {s.SittingType.Name}"
+                });
+            }
+            var jsonSessions = JsonSerializer.Serialize(sessions);
+            
+            return new JsonResult(jsonSessions);
         }
     }
 }

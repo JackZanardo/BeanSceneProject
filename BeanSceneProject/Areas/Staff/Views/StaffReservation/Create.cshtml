@@ -1,4 +1,4 @@
-﻿@model BeanSceneProject.Areas.Staff.Models.Reservation.Create
+﻿@model BeanSceneProject.Areas.Staff.Models.StaffReservation.Create
 
 @{
     ViewData["Title"] = "Create";
@@ -28,6 +28,18 @@
                     <option value="">--Select Sitting Type--</option>
                 </select>
                 <span asp-validation-for="ReservationOriginId" class="text-danger">--Select Reservation Origin--</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerNum" class="control-label"></label>
+                <input asp-for="CustomerNum" class="form-control" type="datetime-local" />
+                <span asp-validation-for="CustomerNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TableId" class="control-label"></label>
+                <select asp-for="TableId" asp-items="Model.Tables" class="form-select">
+                    <option value="">--Select Sitting Type--</option>
+                </select>
+                <span asp-validation-for="TableId" class="text-danger">--Select Reservation Origin--</span>
             </div>
             <div class="form-group justify-content-center p-1">
                 <input type="submit" value="Create" class="btn btn-success btn-lg" />

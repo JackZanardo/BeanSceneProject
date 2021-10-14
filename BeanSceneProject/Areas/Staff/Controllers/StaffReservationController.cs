@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace BeanSceneProject.Areas.Staff.Controllers
 {
-    public class ReservationController : StaffAreaBaseController
+    public class StaffReservationController : StaffAreaBaseController
     {
         private readonly SittingService _sittingService;
-        public ReservationController(ApplicationDbContext context, SittingService sittingService) : base(context) 
+        public StaffReservationController(ApplicationDbContext context, SittingService sittingService) : base(context) 
         {
             _sittingService = sittingService;
         }
@@ -31,7 +31,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .ThenInclude(s => s.Restaurant)
                 .ThenInclude(r => r.Areas)
                 .ThenInclude(a => a.Tables);
-            var m = new Models.Reservation.Index
+            var m = new Models.StaffReservation.Index
             {
                 SittingId = sittingId,
                 Reservations = await reservations.ToListAsync()
@@ -66,7 +66,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         public IActionResult Create(int? sittingId)
         {
-            var m = new Models.Reservation.Create
+            var m = new Models.StaffReservation.Create
             {
                 SittingId = sittingId,
                 Start = _sittingService.GetSittingAsync((int)sittingId).Result.Open,
@@ -79,7 +79,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Models.Reservation.Create m)
+        public async Task<IActionResult> Create(Models.StaffReservation.Create m)
         {
             if (ModelState.IsValid)
             {
@@ -120,7 +120,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            var m = new Models.Reservation.Update
+            var m = new Models.StaffReservation.Update
             {
                 Id = reservation.Id,
                 Start = reservation.Start,
@@ -140,7 +140,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Models.Reservation.Update m)
+        public async Task<IActionResult> Edit(int id, Models.StaffReservation.Update m)
         {
             if (id != m.Id)
             {

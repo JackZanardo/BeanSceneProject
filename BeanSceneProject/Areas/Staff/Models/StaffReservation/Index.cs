@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BeanSceneProject.Data;
 
-namespace BeanSceneProject.Areas.Staff.Models.Reservation
+namespace BeanSceneProject.Areas.Staff.Models.StaffReservation
 {
     public class Index
     {
