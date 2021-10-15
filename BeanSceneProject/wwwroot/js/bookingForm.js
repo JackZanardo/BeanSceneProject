@@ -1,11 +1,16 @@
-﻿
+﻿//const { error } = require("jquery");
+
 
 $(document).ready(function () {
     var availableDates = $("#StartDates").val();
 
     $(function () {
         $("#StartDate").change(function () {
-            $("#SittingSelect").children('option:not(:first)').remove();
+            $("#StartDate").removeClass("is-invalid")
+            $("#SittingSelect").prop('disabled', true);
+            $("#SittingSelect").find('option:not(:first)').remove();
+            $("#StartTime").find('option:not(:first)').remove();
+            $("#StartTime").prop('disabled', true);
             $.ajax({
                 type: "POST",
                 url: "GetSittings",
@@ -15,7 +20,16 @@ $(document).ready(function () {
                         var o = new Option(session.InfoText, session.Id);
                         $(o).html(session.InfoText);
                         $("#SittingSelect").append(o);
+                        $("#SittingSelect").prop('disabled', false);
                     });
+                },
+                failure: function () {
+                    $("#StartDateHelp").text("No Sessions available");
+                    $("#StartDate").addClass("is-invalid");
+                },
+                error: function () {
+                    $("#StartDateHelp").text("No Sessions available");
+                    $("#StartDate").addClass("is-invalid");
                 }
             });
         });
@@ -41,6 +55,28 @@ $(document).ready(function () {
             return [false, "", ""];
         }
     }
+
+    $(function () {
+        $("#SittingSelect").change(function () {
+            $("#StartTime").find('option:not(:first)').remove();
+            $("#StartTime").prop('disabled', true);
+            if (!isNaN($("#SittingSelect").val())) {
+                $.ajax({
+                    type: "POST",
+                    url: "GetStartTimes",
+                    data: { "sittingId": $("#SittingSelect").val() },
+                    success: function (sessions) {
+                        $.each(JSON.parse(sessions), function (i, session) {
+                            var o = new Option(session.InfoText, session.Start);
+                            $(o).html(session.InfoText);
+                            $("#StartTime").append(o);
+                            $("#StartTime").prop('disabled', false);
+                        });
+                    }
+                });
+            }
+        });
+    });
 
 
 });

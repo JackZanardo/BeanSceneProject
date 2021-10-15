@@ -32,17 +32,29 @@
                 <input asp-for="Notes" class="form-control" type="text" />
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="CustomerNum" class="control-label"></label>
+                <input asp-for="CustomerNum" class="form-control" type="number" placeholder="2"/>
+                <span asp-validation-for="CustomerNum" class="text-danger"></span>
+            </div>
             <div>
                 <label asp-for="StartDates" class="control-label"></label>
                 <input class="form-control" type="text" id="StartDate" />
-                <span asp-validation-for="StartDates" class="text-danger"></span>
+                <span asp-validation-for="StartDates" class="text-danger" id="StartDateHelp"></span>
             </div>
             <div>
                 <label asp-for="SittingId" class="control-label"></label>
-                <select asp-for="SittingId" class="form-select" id="SittingSelect">
-                    <option></option>
+                <select asp-for="SittingId" class="form-select" id="SittingSelect" disabled>
+                    <option>Select a session</option>
                 </select>
-                <span asp-validation-for="SittingId" class="text-danger"></span>
+                <span asp-validation-for="SittingId" class="text-danger" id="SittingSelectHelp"></span>
+            </div>
+            <div>
+                <label asp-for="StartTime" class="control-label"></label>
+                <select asp-for="StartTime" class="form-select" id="StartTime" disabled>
+                    <option>Select a reservation time</option>
+                </select>
+                <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
         </form>
     </div>

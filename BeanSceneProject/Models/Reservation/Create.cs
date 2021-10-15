@@ -12,7 +12,9 @@ namespace BeanSceneProject.Models.Reservation
     {
         [Display(Name = "Date")]
         public string StartDates { get; set; }
-        
+
+        public string StartTime { get; set; }
+
         [Display(Name = "Session")]
         [Required(ErrorMessage = "Please select a session")]
         public int SittingId { get; set; }
