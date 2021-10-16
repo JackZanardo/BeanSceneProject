@@ -52,9 +52,16 @@
             <div>
                 <label asp-for="StartTime" class="control-label"></label>
                 <select asp-for="StartTime" class="form-select" id="StartTime" disabled>
-                    <option>Select a reservation time</option>
+                    <option value="">Select a reservation time</option>
                 </select>
                 <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Duration" class="control-label"></label>
+                <select asp-for="Duration" class="form-select" id="Duration" disabled>
+                    <option value="">Select a duration</option>
+                </select>
+                <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
         </form>
     </div>

@@ -79,7 +79,9 @@ namespace BeanSceneProject.Controllers
                 sessions.Add(new Session
                 {
                     Id = s.Id,
-                    InfoText = $"{s.Open.ToShortTimeString()} - {s.Close.ToShortTimeString()} {s.SittingType.Name}"
+                    InfoText = $"{s.Open.ToShortTimeString()} - {s.Close.ToShortTimeString()} {s.SittingType.Name}",
+                    SittingOpen = s.Open,
+                    SittingClose = s.Close
                 });
             }
             var jsonSessions = JsonSerializer.Serialize(sessions);
@@ -100,12 +102,13 @@ namespace BeanSceneProject.Controllers
                     InfoText = interval.ToShortTimeString(),
                     Start = interval
                 });
-                interval =  interval.AddMinutes(30);
+                interval =  interval.AddMinutes(15);
             }
 
             var jsonTimes = JsonSerializer.Serialize(times);
 
             return new JsonResult(jsonTimes);
         }
+
     }
 }

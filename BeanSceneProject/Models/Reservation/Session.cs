@@ -9,6 +9,8 @@ namespace BeanSceneProject.Models.Reservation
     {
         public int Id { get; set; }
         public string InfoText { get; set; }
+        public DateTime SittingOpen { get; set; }
+        public DateTime SittingClose { get; set; }
         public DateTime Start { get; set; }
         public int Duration { get; set; }
     }
