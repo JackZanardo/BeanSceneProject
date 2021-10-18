@@ -28,7 +28,6 @@
     <Folder Include="Areas\Member\Data\" />
     <Folder Include="Areas\Member\Models\" />
     <Folder Include="Areas\Staff\Data\" />
-    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>

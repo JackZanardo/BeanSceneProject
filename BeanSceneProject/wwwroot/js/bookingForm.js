@@ -7,34 +7,39 @@ $(document).ready(function () {
 
     $(function () {
         $("#StartDate").change(function () {
-            $("#StartDate").removeClass("is-invalid")
+            $("#StartDate").removeClass("is-invalid");
+            $("#StartDateHelp").empty();
             $("#SittingSelect").prop('disabled', true);
             $("#SittingSelect").find('option:not(:first)').remove();
             $("#StartTime").find('option:not(:first)').remove();
             $("#StartTime").prop('disabled', true);
-            sessions = ""
-            $.ajax({
-                type: "POST",
-                url: "GetSittings",
-                data: { "jsonDate": $("#StartDate").val() },
-                success: function (data) {
-                    sessions = JSON.parse(data);
-                    $.each(sessions, function (i, session) {
-                        var o = new Option(session.InfoText, session.Id);
-                        $(o).html(session.InfoText);
-                        $("#SittingSelect").append(o);
-                    });
-                    $("#SittingSelect").prop('disabled', false);
-                },
-                failure: function () {
-                    $("#StartDateHelp").text("No Sessions available");
-                    $("#StartDate").addClass("is-invalid");
-                },
-                error: function () {
-                    $("#StartDateHelp").text("No Sessions available");
-                    $("#StartDate").addClass("is-invalid");
-                }
-            });
+            $("#Duration").find('option:not(:first)').remove();
+            $("#Duration").prop('disabled', true);
+            sessions = "";
+            if ($("#StartDate").val()) {
+                $.ajax({
+                    type: "POST",
+                    url: "GetSittings",
+                    data: { "jsonDate": $("#StartDate").val() },
+                    success: function (data) {
+                        sessions = JSON.parse(data);
+                        $.each(sessions, function (i, session) {
+                            var o = new Option(session.InfoText, session.Id);
+                            $(o).html(session.InfoText);
+                            $("#SittingSelect").append(o);
+                        });
+                        $("#SittingSelect").prop('disabled', false);
+                    },
+                    failure: function () {
+                        $("#StartDateHelp").text("No Sessions available");
+                        $("#StartDate").addClass("is-invalid");
+                    },
+                    error: function () {
+                        $("#StartDateHelp").text("No Sessions available");
+                        $("#StartDate").addClass("is-invalid");
+                    }
+                });
+            }
         });
     });
 
@@ -63,30 +68,19 @@ $(document).ready(function () {
         $("#SittingSelect").change(function () {
             $("#StartTime").find('option:not(:first)').remove();
             $("#StartTime").prop('disabled', true);
-            sittingId = "";
+            $("#Duration").find('option:not(:first)').remove();
+            $("#Duration").prop('disabled', true);
             if (!isNaN($("#SittingSelect").val())) {
                 let sittingId = $("#SittingSelect").val();
-                let session = sessions.find(s => s.Id === sittingId);
-                let interval = Date.parse(session.SittingOpen);
-                while (interval < Date.parse(sitting.SittingClose)) {
+                let session = sessions.find(s => s.Id === parseInt(sittingId));
+                let interval = new Date(session.SittingOpen);
+                while (interval < Date.parse(session.SittingClose)) {
                     var o = new Option(formatAMPM(interval), interval);
                     $(o).html(formatAMPM(interval));
                     $("#StartTime").append(o);
                     interval = addMinutes(interval, 15);
                 }
                 $("#StartTime").prop('disabled', false);
-                $.ajax({
-                    type: "POST",
-                    url: "GetStartTimes",
-                    data: { "sittingId": $("#SittingSelect").val() },
-                    success: function (sessions) {
-                        $.each(JSON.parse(sessions), function (i, session) {
-                            var o = new Option(session.InfoText, session.Start);
-                            $(o).html(session.InfoText);
-                            $("#StartTime").append(o);    
-                        });
-                    }
-                });
             }
         });
     });
@@ -95,13 +89,32 @@ $(document).ready(function () {
         $("#StartTime").change(function () {
             $("#Duration").find('option:not(:first)').remove();
             $("#Duration").prop('disabled', true);
-            if ($("#StartTime").val() != "") {
+            if ($("#StartTime").val() != "" && !isNaN($("#SittingSelect").val())) {
                 let sittingId = $("#SittingSelect").val();
-                let session = sessions.find(s => s.Id === sittingId);
-                let interval = $("#StartTime").val();
-
+                let session = sessions.find(s => s.Id === parseInt(sittingId));
+                let interval = new Date($("#StartTime").val());
+                let duration = 15;
+                while (interval < Date.parse(session.SittingClose) && duration <= 90) {
+                    var o = new Option(duration + " minutes", duration);
+                    $(o).html(duration + " minutes");
+                    $("#Duration").append(o);
+                    duration += 15;
+                    interval = addMinutes(interval, 15);
+                }
+                $("#Duration").prop('disabled', false);
             }
         });
+    });
+
+    $(function () {
+        $("#Duration").change(function () {
+            if ($("#Duration").val() != "" && $("#StartTime").val() != "" && !isNaN($("#SittingSelect").val())) {
+                $("#Submit").prop('disabled', false);
+            }
+            else {
+                $("#Submit").prop('disabled', true);
+            }
+        })
     });
 
     function formatAMPM(date) {

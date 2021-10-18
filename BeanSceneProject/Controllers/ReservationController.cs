@@ -30,7 +30,7 @@ namespace BeanSceneProject.Controllers
         
         public IActionResult Create()
         {
-            var m = new Models.Reservation.Create
+            var m = new Create
             {
                 StartDates = JsonSerializer.Serialize(_context.Sittings.Select(s => s.Open.Date).ToList())
             };
@@ -89,6 +89,7 @@ namespace BeanSceneProject.Controllers
             return new JsonResult(jsonSessions);
         }
 
+        //This may not be necessary. Has been replaced with client side javascript
         public JsonResult GetStartTimes(string sittingId)
         {
             var sitting =  _sittingService.GetSittingAsync(Int32.Parse(sittingId));
