@@ -7,7 +7,7 @@
     <link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body class="bg">
+<body class="bg-light">
     <header class="bg-white">
         @if (User.IsInRole("Admin"))
         {
@@ -41,18 +41,18 @@
                             <a class="nav-link">Reports</a>
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" class="justify-content-end"/>
+                    <partial name="_LoginPartial"/>
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="page-footer text-muted p-2 bg-white fixed-bottom">
+    <footer class="page-footer text-muted p-1 bg-white fixed-bottom">
         <ul class="list-unstyled list-inline text-center">
             <li class="list-inline-item">
                 <a class="btn-floating mx-1">
@@ -80,7 +80,7 @@
                 </a>
             </li>
         </ul>
-        <div class="container border-top-1 border-success">
+        <div>
             Bean Scene Restaurant
         </div>
     </footer>

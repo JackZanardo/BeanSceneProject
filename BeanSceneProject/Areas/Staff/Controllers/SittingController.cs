@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BeanSceneProject.Areas.Staff.Controllers
@@ -69,10 +70,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             var m = new Models.Sitting.Create
             {
                 StartDate = DateTime.Today,
-                OpenTime = DateTime.Today.AddHours(8),
-                CloseTime = DateTime.Today.AddHours(11),
                 Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
-                SittingTypes = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name))
+                SittingTypes = JsonSerializer.Serialize(_context.SittingTypes.ToArray())
             };
             return View(m);
         }
@@ -85,7 +84,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 var s = new Sitting
                 {
-
+                    Open = m.StartDate.Add(m.OpenTime.TimeOfDay),
+                    Close = m.StartDate.Add(m.CloseTime.TimeOfDay),
                     Capacity = m.Capacity,
                     SittingTypeId = m.SittingTypeId,
                     RestaurantId = m.RestuarantId,
