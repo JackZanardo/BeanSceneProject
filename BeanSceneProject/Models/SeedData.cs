@@ -60,15 +60,27 @@ namespace BeanSceneProject.Models
                 List<SittingType> sittingTypes = new List<SittingType>();
                 sittingTypes.Add(new SittingType
                 {
-                    Name = "Breakfast"
+                    Name = "Breakfast",
+                    DefaultOpenTime = "08:00",
+                    DefaultCloseTime = "10:30"
                 });
                 sittingTypes.Add(new SittingType
                 {
-                    Name = "Lunch"
+                    Name = "Lunch",
+                    DefaultOpenTime = "11:30",
+                    DefaultCloseTime = "16:00"
                 });
                 sittingTypes.Add(new SittingType
                 {
-                    Name = "Dinner"
+                    Name = "Dinner",
+                    DefaultOpenTime = "17:00",
+                    DefaultCloseTime = "21:00"
+                });
+                sittingTypes.Add(new SittingType
+                {
+                    Name = "Special",
+                    DefaultOpenTime = "08:00",
+                    DefaultCloseTime = "17:00"
                 });
                 context.SittingTypes.AddRangeAsync(sittingTypes);
                 context.SaveChanges();
