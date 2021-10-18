@@ -8,10 +8,14 @@ $(document).ready(function () {
             if ($("#StartDate").val() == "") {
                 $("#OpenTime").prop("disabled", true);
                 $("#OpenTime").prop("disabled", true);
+                $("#StartDateHelp").text("Date must be selected");
+                $("#StartDateHelp").addClass("is-invalid");
             }
             else {
                 $("#OpenTime").prop("disabled", false);
                 $("#OpenTime").prop("disabled", false);
+                $("#StartDateHelp").text("");
+                $("#StartDateHelp").removeClass("is-invalid");
             }
         });
     });
