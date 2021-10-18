@@ -13,14 +13,21 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Open" class="control-label"></label>
-                <input asp-for="Open" class="form-control" type="datetime-local"/>
-                <span asp-validation-for="Open" class="text-danger"></span>
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" id="StartDate" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Close" class="control-label"></label>
-                <input asp-for="Close" class="form-control" type="datetime-local"/>
-                <span asp-validation-for="Close" class="text-danger"></span>
+                <label asp-for="OpenTime" class="control-label"></label>
+                <input asp-for="OpenTime" class="form-control" type="time" id="OpenTime" />
+                <span asp-validation-for="OpenTime" class="text-danger" id="OpenTimeHelp"></span>
+                <span class="text-warning" id="OpenTimeWarn"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CloseTime" class="control-label"></label>
+                <input asp-for="CloseTime" class="form-control" type="time" id="CloseTime" />
+                <span asp-validation-for="CloseTime" class="text-danger" id="CloseTimeHelp"></span>
+                <span class="text-warning" id="CloseTimeWarn"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SittingTypeId" class="control-label"></label>
@@ -38,11 +45,14 @@
             </div>
             <div>
                 <label asp-for="Capacity" class="control-label"></label>
-                <input asp-for="Capacity" class="form-control" type="number"/>
+                <input asp-for="Capacity" class="form-control" type="number" />
                 <span asp-validation-for="Capacity" class="text-danger"></span>
             </div>
             <div class="form-group justify-content-center p-1">
                 <input type="submit" value="Create" class="btn btn-success btn-lg" />
+                <button asp-action="Index" class="btn btn-warning btn-lg">
+                    Back to Sittings
+                </button>
             </div>
         </form>
     </div>
@@ -53,5 +63,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/sittingCreate.js"></script>
 }
