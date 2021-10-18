@@ -39,6 +39,14 @@ namespace BeanSceneProject.Data
                 .WithOne()
                 .HasForeignKey("Person", "UserId")
                 .IsRequired(false);
+
+            builder.Entity<SittingType>()
+                .Property("DefaultOpenTime")
+                .IsRequired(false);
+                                              
+            builder.Entity<SittingType>()
+                .Property("DefaultCloseTime")
+                .IsRequired(false);
         }
     }
 }

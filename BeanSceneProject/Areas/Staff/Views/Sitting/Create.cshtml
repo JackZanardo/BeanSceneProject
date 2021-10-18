@@ -1,57 +1,68 @@
 ﻿@model BeanSceneProject.Areas.Staff.Models.Sitting.Create
+@Html.HiddenFor(m => m.SittingTypes)
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Sitting</h4>
-<hr />
-<div class="row  justify-content-center">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div class="row justify-content-center">
+    <div class="col-6 bg-white">
+        <h2 class="px-2">Manage Sittings</h2>
+        <h3 class="px-2 text-center">Schedule New Sitting</h3>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-6 p-2 bg-white">
+        <form asp-action="Create" id="SittingCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Open" class="control-label"></label>
-                <input asp-for="Open" class="form-control" type="datetime-local"/>
-                <span asp-validation-for="Open" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Close" class="control-label"></label>
-                <input asp-for="Close" class="form-control" type="datetime-local"/>
-                <span asp-validation-for="Close" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SittingTypeId" class="control-label"></label>
-                <select asp-for="SittingTypeId" asp-items="Model.SittingTypes" class="form-select">
-                    <option value="">--Select Sitting Type--</option>
-                </select>
-                <span asp-validation-for="SittingTypeId " class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            <div class="form-group p-2">
                 <label asp-for="RestuarantId" class="control-label"></label>
-                <select asp-for="RestuarantId" asp-items="Model.Restraunts" class="form-select">
+                <select asp-for="RestuarantId" asp-items="Model.Restraunts" class="form-select" id="RestuarantSelect">
+                    <option value="">--Select Restuarant--</option>
+                </select>
+                <span asp-validation-for="RestuarantId" class="text-danger" id="RestuarantSelectHelp"></span>
+            </div>
+            <div class="form-group p-2">
+                <label asp-for="SittingTypeId" class="control-label"></label>
+                <select asp-for="SittingTypeId" class="form-select" id="SittingTypeSelect">
                     <option value="">--Select Sitting Type--</option>
                 </select>
-                <span asp-validation-for="RestuarantId" class="text-danger"></span>
+                <span asp-validation-for="SittingTypeId " class="text-danger" id="SittingTypeSelectHelp"></span>
             </div>
-            <div>
+            <div class="form-group p-2">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" id="StartDate" />
+                <span asp-validation-for="StartDate" class="text-danger" id="StartDateHelp"></span>
+            </div>
+            <div class="form-group p-2">
+                <label asp-for="OpenTime" class="control-label"></label>
+                <input asp-for="OpenTime" class="form-control" type="time" id="OpenTime" />
+                <span asp-validation-for="OpenTime" class="text-danger" id="OpenTimeHelp"></span>
+                <span class="text-warning" id="OpenTimeWarn"></span>
+            </div>
+            <div class="form-group p-2">
+                <label asp-for="CloseTime" class="control-label"></label>
+                <input asp-for="CloseTime" class="form-control" type="time" id="CloseTime" />
+                <span asp-validation-for="CloseTime" class="text-danger" id="CloseTimeHelp"></span>
+                <span class="text-warning" id="CloseTimeWarn"></span>
+            </div>
+            <div class="form-group p-2">
                 <label asp-for="Capacity" class="control-label"></label>
-                <input asp-for="Capacity" class="form-control" type="number"/>
-                <span asp-validation-for="Capacity" class="text-danger"></span>
+                <input asp-for="Capacity" class="form-control" type="number" id="Capacity" min="0" value="40"/>
+                <span asp-validation-for="Capacity" class="text-danger" id="CapacityHelp"></span>
+                <span class="text-warning" id="CapacityWarn"></span>
             </div>
-            <div class="form-group justify-content-center p-1">
-                <input type="submit" value="Create" class="btn btn-success btn-lg" />
+            <div class="form-group d-md-flex align-items-center justify-content-center p-1">
+                <input type="submit" value="Create" class="btn btn-success btn-lg m-1" style="width:50%" />
+                <button asp-action="Index" class="btn btn-warning btn-lg m-1" style="width:50%">
+                    Back to Sittings
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/sittingCreate.js"></script>
 }

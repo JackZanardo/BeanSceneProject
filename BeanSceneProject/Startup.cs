@@ -43,6 +43,7 @@ namespace BeanSceneProject
             //        options.SignInScheme = "Cookies";
             //    });
             services.AddScoped<PersonService>();
+            services.AddScoped<SittingService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

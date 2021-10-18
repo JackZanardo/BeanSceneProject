@@ -9,18 +9,32 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
 {
     public class Create
     {
-        [Required]
-        public DateTime Open { get; set; }
-        [Required]
-        public DateTime Close { get; set; }
-        [Required]
+        [Display(Name = "Sitting Date")]
+        [Required(ErrorMessage = "Sitting Date required")]
+        public DateTime StartDate { get; set; }
+
+        [Display(Name = "Open Time")]
+        [Required(ErrorMessage = "Open time required")]
+        public DateTime OpenTime { get; set; }
+
+        [Display(Name = "Close Time")]
+        [Required(ErrorMessage = "Close time required")]
+        public DateTime CloseTime { get; set; }
+
+        [Required(ErrorMessage = "Capacity required")]
         public int Capacity { get; set; }
-        [Required]
+
+        [Display(Name = "Sitting Type")]
+        [Required(ErrorMessage = "Sitting type required")]
         public int SittingTypeId { get; set; }
-        public SelectList SittingTypes { get; set; }
-        [Required]
+        public string SittingTypes { get; set; }
+
+        [Display(Name = "Restuarant")]
+        [Required(ErrorMessage = "Restuarant Required")]
         public int RestuarantId { get; set; }
         public SelectList Restraunts { get; set; }
+
+        public bool BulkCreate { get; set; }
 
     }
 }

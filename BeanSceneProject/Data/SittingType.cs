@@ -10,5 +10,8 @@ namespace BeanSceneProject.Data
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public string DefaultOpenTime { get; set; }
+        public string DefaultCloseTime { get; set; }
     }
 }
