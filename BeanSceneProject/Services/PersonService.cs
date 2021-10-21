@@ -33,7 +33,7 @@ namespace BeanSceneProject.Services
                 };
                 _context.People.Add(person);
             }
-            if (person != null && update)
+            else if (person != null && update)
             {
                 person.Email = data.Email;
                 person.FirstName = data.FirstName;
@@ -61,7 +61,7 @@ namespace BeanSceneProject.Services
                 };
                 _context.People.Add(person);
             }
-            if (person != null && update)
+            else if (person != null && update)
             {
                 person.Email = data.Email;
                 person.FirstName = data.FirstName;

@@ -1,12 +1,15 @@
 ﻿using BeanSceneProject.Data;
 using BeanSceneProject.Models.Reservation;
 using BeanSceneProject.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -16,8 +19,10 @@ namespace BeanSceneProject.Controllers
     {
         private readonly PersonService _personService;
         private readonly SittingService _sittingService;
-        public ReservationController(ApplicationDbContext context, PersonService personService, SittingService sittingService) : base(context) 
+        private readonly UserManager<IdentityUser> _userManager;
+        public ReservationController(ApplicationDbContext context, PersonService personService, SittingService sittingService, UserManager<IdentityUser> userManager) : base(context) 
         {
+            _userManager = userManager;
             _personService = personService;
             _sittingService = sittingService;
         }
@@ -50,7 +55,7 @@ namespace BeanSceneProject.Controllers
                     LastName = m.LastName,
                     MobileNumber = m.MobileNumber
                 };
-                person = await _personService.UpsertPersonAsync(person, false);
+                person = await _personService.UpsertPersonAsync(person, true);
                 var r = new Reservation
                 {
                     Start = DateTime.Parse(m.StartTime),
@@ -60,6 +65,53 @@ namespace BeanSceneProject.Controllers
                     Notes = m.Notes,
                     ReservationStatus = ReservationStatus.Pending,
                     PersonId = person.Id
+                };
+                _context.Add(r);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(m);
+        }
+
+        [Authorize(Roles = "Member")]
+        public IActionResult MemberCreate()
+        {
+            ClaimsPrincipal currentUser = this.User;
+            var user = _userManager.GetUserAsync(currentUser);
+            var person = _personService.GetPersonAsync(user.Result.Id);
+            var p = person.Result;
+            var m = new Create
+            {
+                Email = p.Email,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                MobileNumber = p.MobileNumber,
+                StartDates = JsonSerializer.Serialize(_context.Sittings.Select(s => s.Open.Date).ToList())
+            };
+            return View(m);
+        }
+
+        [Authorize(Roles = "Member")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MemberCreate(Create m)
+        {
+            if (ModelState.IsValid)
+            {
+                ClaimsPrincipal currentUser = this.User;
+                var user = _userManager.GetUserAsync(currentUser);
+                var person = _personService.GetPersonAsync(user.Result.Id);
+                var p = person.Result;
+
+                var r = new Reservation
+                {
+                    Start = DateTime.Parse(m.StartTime),
+                    CustomerNum = m.CustomerNum,
+                    Duration = m.Duration,
+                    ReservationOriginId = _context.ReservationOrigins.FirstOrDefault(ro => ro.Name == "Website").Id,
+                    Notes = m.Notes,
+                    ReservationStatus = ReservationStatus.Pending,
+                    PersonId = p.Id
                 };
                 _context.Add(r);
                 await _context.SaveChangesAsync();
