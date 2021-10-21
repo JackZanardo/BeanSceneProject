@@ -51,7 +51,7 @@
             @Html.DisplayNameFor(model => model.BookedTables)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BookedTables.Aggregate((t1, t2) => t1 + ", " + t2))
+            @Html.DisplayFor(model => model.BookedTables)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SittingType)

@@ -52,15 +52,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 Capacity = sitting.Capacity,
                 Heads = sitting.Heads,
                 SittingType = sitting.SittingType.Name,
-                Reservations = sitting.Reservations.Count()
+                Reservations = sitting.Reservations.Count(),
+                BookedTables = String.Join(", ",sitting.Reservations.Select(r => r.Tables.Select(t => t.Name)))
             };
-            foreach(var r in sitting.Reservations)
-            {
-                foreach(var t in r.Tables)
-                {
-                    model.BookedTables.Add(t.Name);
-                }
-            }
             return View(model);
         }
         
