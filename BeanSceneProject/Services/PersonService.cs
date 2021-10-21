@@ -73,5 +73,15 @@ namespace BeanSceneProject.Services
             await _context.SaveChangesAsync();
             return person;
         }
+
+        public async Task<Person> GetPersonAsync(string userId)
+        {
+            var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (person == null)
+            {
+                throw new Exception("No person with user Id found");
+            }
+            return person;
+        }
     }
 }
