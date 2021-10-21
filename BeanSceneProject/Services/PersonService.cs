@@ -39,6 +39,36 @@ namespace BeanSceneProject.Services
                 person.FirstName = data.FirstName;
                 person.LastName = data.LastName;
                 person.MobileNumber = data.MobileNumber;
+                _context.People.Update(person);
+            }
+            await _context.SaveChangesAsync();
+            return person;
+        }
+
+
+        public async Task<Person> UpsertPersonAsync(Person data, bool update, string userId)
+        {
+            var person = await _context.People.FirstOrDefaultAsync(p => p.Email == data.Email);
+            if (person == null)
+            {
+                person = new Person
+                {
+                    Email = data.Email,
+                    FirstName = data.FirstName,
+                    LastName = data.LastName,
+                    MobileNumber = data.MobileNumber,
+                    UserId = userId
+                };
+                _context.People.Add(person);
+            }
+            if (person != null && update)
+            {
+                person.Email = data.Email;
+                person.FirstName = data.FirstName;
+                person.LastName = data.LastName;
+                person.MobileNumber = data.MobileNumber;
+                person.UserId = userId;
+                _context.People.Update(person);
             }
             await _context.SaveChangesAsync();
             return person;

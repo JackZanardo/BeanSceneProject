@@ -170,6 +170,71 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(m);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var sitting = await _context.Sittings
+                .Include(s => s.SittingType)
+                .Include(s => s.Reservations)
+                .ThenInclude(r => r.Tables)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            if (sitting == null)
+            {
+                return NotFound();
+            }
+            var m = new Models.Sitting.Delete
+            {
+                Id = sitting.Id,
+                Open = sitting.Open,
+                Close = sitting.Close,
+                IsClosed = sitting.IsClosed,
+                Capacity = sitting.Capacity,
+                Heads = sitting.Heads,
+                SittingType = sitting.SittingType.Name,
+                Reservations = sitting.Reservations.Count()
+            };
+            foreach (var r in sitting.Reservations)
+            {
+                foreach (var t in r.Tables)
+                {
+                    m.BookedTables.Add(t.Name);
+                }
+            }
+            return View(m);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, Models.Sitting.Delete m)
+        {
+            if (ModelState.IsValid)
+            {
+                Sitting s = _context.Sittings.Find(id);
+                try
+                {
+                    _context.Sittings.Remove(s);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SittingExists(s.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(m);
+        }
 
         private bool SittingExists(int id)
         {

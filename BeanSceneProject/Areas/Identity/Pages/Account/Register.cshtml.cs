@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BeanSceneProject.Data;
+using BeanSceneProject.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,17 +25,23 @@ namespace BeanSceneProject.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
+        private readonly PersonService _personService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context,
+            PersonService personService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
+            _personService = personService;
         }
 
         [BindProperty]
@@ -49,6 +57,18 @@ namespace BeanSceneProject.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Display(Name = "First Name")]
+            [Required(ErrorMessage = "First Name required")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Last Name")]
+            [Required(ErrorMessage = "Last Name required")]
+            public string LastName { get; set; }
+
+            [Display(Name = "Phone number")]
+            [Required(ErrorMessage = "Phone Number required")]
+            public string MobileNumber { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -76,8 +96,19 @@ namespace BeanSceneProject.Areas.Identity.Pages.Account
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                var person = new Person
+                {
+                    Email = Input.Email,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    MobileNumber = Input.MobileNumber
+                };
+
                 if (result.Succeeded)
                 {
+                    person = await _personService.UpsertPersonAsync(person, true, user.Id);
+                    await _userManager.AddToRoleAsync(user, "Member");
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

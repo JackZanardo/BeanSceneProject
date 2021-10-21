@@ -1,0 +1,75 @@
+﻿@model BeanSceneProject.Models.Reservation.Create
+@Html.HiddenFor(d => d.StartDates)
+
+
+<h4>Make a booking</h4>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MobileNumber" class="control-label"></label>
+                <input asp-for="MobileNumber" class="form-control" />
+                <span asp-validation-for="MobileNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" type="text" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerNum" class="control-label"></label>
+                <input asp-for="CustomerNum" class="form-control" type="number" placeholder="2" />
+                <span asp-validation-for="CustomerNum" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="StartDates" class="control-label"></label>
+                <input class="form-control" type="text" id="StartDate" />
+                <span asp-validation-for="StartDates" class="text-danger" id="StartDateHelp"></span>
+            </div>
+            <div>
+                <label asp-for="SittingId" class="control-label"></label>
+                <select asp-for="SittingId" class="form-select" id="SittingSelect" disabled>
+                    <option>--Select a session--</option>
+                </select>
+                <span asp-validation-for="SittingId" class="text-danger" id="SittingSelectHelp"></span>
+            </div>
+            <div>
+                <label asp-for="StartTime" class="control-label"></label>
+                <select asp-for="StartTime" class="form-select" id="StartTime" disabled>
+                    <option value="">--Select a reservation time--</option>
+                </select>
+                <span asp-validation-for="StartTime" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Duration" class="control-label"></label>
+                <select asp-for="Duration" class="form-select" id="Duration" disabled>
+                    <option value="">--Select a duration--</option>
+                </select>
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            <div class="form-group justify-content-center p-1">
+                <input type="submit" value="Book" class="btn btn-success btn-lg" id="Submit" disabled />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/bookingForm.js"></script>
+}
