@@ -92,7 +92,7 @@ namespace BeanSceneProject.Areas.Identity.Pages.Account
                     }
                     if (await _userManager.IsInRoleAsync(user, "Member"))
                     {
-                        return RedirectToAction("Index", "Home", new { area = "Member" });
+                        return RedirectToAction("Index", "Home", new { area = "" });
                     }
                 }
                 if (result.RequiresTwoFactor)
