@@ -1,0 +1,54 @@
+﻿@model BeanSceneProject.Areas.Member.Models.History
+
+<div class="row justify-content-center">
+    <div class="col-12 bg-white">
+        <h2 class="px-2">Previous Reservations</h2>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-12 bg-white">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Time
+                    </th>
+                    <th>
+                        Restaurant
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Notes
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model.Reservations)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(i => item.Start.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.Start.ToShortTimeString())
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.Sitting.Restaurant.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.Sitting.SittingType.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.Notes)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -93,60 +93,10 @@ namespace BeanSceneProject
                 endpoints.MapRazorPages();
             });
 
-            CreateRoles(serviceProvider);
-            SeedAdmin(serviceProvider);
-            SeedData.Initialize(serviceProvider);
+            var seedData = new SeedData(serviceProvider);
+            seedData.Initialize();
+            
         }
 
-        private void CreateRoles(IServiceProvider serviceProvider)
-        {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            string[] roleNames = { "Admin", "Member", "Staff" };
-            foreach (var roleName in roleNames)
-            {
-                Task<bool> roleExists = roleManager.RoleExistsAsync(roleName);
-                roleExists.Wait();
-                if (!roleExists.Result)
-                {
-                    Task<IdentityResult> result = roleManager.CreateAsync(new IdentityRole(roleName));
-                    result.Wait();
-                }
-            }
-        }
-
-        // HACK: bad passwords used here
-        // TODO: Delete this logic on deployment
-        private void SeedAdmin(IServiceProvider serviceProvider)
-        {
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            List<IdentityUser> baseAdmins = new List<IdentityUser>();
-            baseAdmins.Add(new IdentityUser
-            {
-                UserName = "Admin1",
-                Email = "SuperCombatWombat@protonmail.com",
-                EmailConfirmed = true
-            });
-            baseAdmins.Add(new IdentityUser
-            {
-                UserName = "Admin2",
-                Email = "vincentrosslee@gmail.com",
-                EmailConfirmed = true
-            });
-            foreach (var baseAdmin in baseAdmins)
-            {
-                Task<IdentityUser> userExists = userManager.FindByEmailAsync(baseAdmin.Email);
-                userExists.Wait();
-                if (userExists.Result == null)
-                {
-                    Task<IdentityResult> result = userManager.CreateAsync(baseAdmin, "Admin*123");
-                    result.Wait();
-                    if (result.Result.Succeeded)
-                    {
-                        userManager.AddToRoleAsync(baseAdmin, "Admin").Wait();
-                    }
-                }
-            }
-
-        }
     }
 }
