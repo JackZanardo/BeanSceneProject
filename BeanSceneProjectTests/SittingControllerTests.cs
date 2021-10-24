@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace BeanSceneProjectTests
 {
     [TestClass]
-    class SittingControllerTests
+    public class SittingControllerTests
     {
-        private ApplicationDbContext _context;
-        private SittingController _controller;
+        private readonly ApplicationDbContext _context;
+        private readonly SittingController _controller;
 
         public SittingControllerTests()
         {
@@ -30,7 +30,6 @@ namespace BeanSceneProjectTests
         [TestMethod]
         public void IndexTestNotNull()
         {
-
             var result = _controller.Index();
 
             Assert.IsNotNull(result);
@@ -50,7 +49,6 @@ namespace BeanSceneProjectTests
             var result = _controller.Create(model);
 
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         }
 
         [TestMethod]
@@ -64,12 +62,13 @@ namespace BeanSceneProjectTests
                 SittingTypeId = _context.SittingTypes.FirstOrDefault(st => st.Name == "Lunch").Id,
                 Capacity = 40
             };
-            var result = _controller.Create(model);
+            var viewResult = _controller.Create(model);
+            viewResult.Wait();
+            var result = viewResult.Result;
 
-            var sitting = _context.Sittings.FirstOrDefault(s => s.Open == model.OpenTime);
+            var sitting = _context.Sittings.FirstOrDefaultAsync(s => s.Open == model.OpenTime);
 
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
             Assert.IsNotNull(sitting);
         }
 
@@ -80,7 +79,7 @@ namespace BeanSceneProjectTests
 
             var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Update
             {
-                Id = sitting.Id,
+                Sitting = sitting,
                 Open = sitting.Open,
                 Close = sitting.Close,
                 RestuarantId = sitting.RestaurantId,
@@ -89,13 +88,16 @@ namespace BeanSceneProjectTests
                 IsClosed = true
             };
 
-            var viewResult = _controller.Edit(sitting.Id, model);
-            var sittingResullt = _context.Sittings.FirstOrDefault(s => s.Id == sitting.Id);
+            var viewResult = _controller.Edit(model.Sitting.Id, model);
+            viewResult.Wait();
+            
+            var sittingResullt = _context.Sittings.FirstOrDefaultAsync(s => s.Id == model.Sitting.Id);
+            sittingResullt.Wait();
 
             Assert.IsNotNull(viewResult);
             Assert.IsNotNull(sittingResullt);
-            Assert.AreEqual(42, sittingResullt.Capacity);
-            Assert.IsTrue(sittingResullt.IsClosed);
+            Assert.AreEqual(42, sittingResullt.Result.Capacity);
+            Assert.IsTrue(sittingResullt.Result.IsClosed);
 
         }
     }
