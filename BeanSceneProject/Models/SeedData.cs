@@ -1,4 +1,5 @@
 ﻿using BeanSceneProject.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,14 +11,21 @@ namespace BeanSceneProject.Models
 {
     public class SeedData
     {
-        public static void Initialize(IServiceProvider serviceProvider)
+        private IServiceProvider _serviceProvider;
+        public SeedData(IServiceProvider serviceProvider)
         {
-            ReservationOriginInit(serviceProvider);
-            SittingTypeInit(serviceProvider);
-            RestaurantInit(serviceProvider);
+            _serviceProvider = serviceProvider;
+        }
+        public void Initialize()
+        {
+            ReservationOriginInit(_serviceProvider);
+            SittingTypeInit(_serviceProvider);
+            RestaurantInit(_serviceProvider);
+            CreateRoles(_serviceProvider);
+            SeedAdmin(_serviceProvider);
         }
 
-        public static void ReservationOriginInit(IServiceProvider serviceProvider)
+        private void ReservationOriginInit(IServiceProvider serviceProvider)
         {
             using (var context = new ApplicationDbContext(
             serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
@@ -48,7 +56,7 @@ namespace BeanSceneProject.Models
             }
         }
 
-        public static void SittingTypeInit(IServiceProvider serviceProvider)
+        private void SittingTypeInit(IServiceProvider serviceProvider)
         {
             using (var context = new ApplicationDbContext(
             serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
@@ -87,7 +95,7 @@ namespace BeanSceneProject.Models
             }
         }
 
-        public static void RestaurantInit(IServiceProvider serviceProvider)
+        private void RestaurantInit(IServiceProvider serviceProvider)
         {
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
@@ -131,7 +139,7 @@ namespace BeanSceneProject.Models
             }
         }
 
-        public static List<Table> GetTables(char areaCode, int tableNum)
+        private List<Table> GetTables(char areaCode, int tableNum)
         {
             var tables = new List<Table>();
             for(int i = 1; i <= tableNum; i++)
@@ -142,6 +150,55 @@ namespace BeanSceneProject.Models
                 });
             }
             return tables;
+        }
+
+        private void CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            string[] roleNames = { "Admin", "Member", "Staff" };
+            foreach (var roleName in roleNames)
+            {
+                Task<bool> roleExists = roleManager.RoleExistsAsync(roleName);
+                roleExists.Wait();
+                if (!roleExists.Result)
+                {
+                    Task<IdentityResult> result = roleManager.CreateAsync(new IdentityRole(roleName));
+                    result.Wait();
+                }
+            }
+        }
+
+        private void SeedAdmin(IServiceProvider serviceProvider)
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            List<IdentityUser> baseAdmins = new List<IdentityUser>();
+            baseAdmins.Add(new IdentityUser
+            {
+                UserName = "Admin1",
+                Email = "SuperCombatWombat@protonmail.com",
+                EmailConfirmed = true
+            });
+            baseAdmins.Add(new IdentityUser
+            {
+                UserName = "Admin2",
+                Email = "vincentrosslee@gmail.com",
+                EmailConfirmed = true
+            });
+            foreach (var baseAdmin in baseAdmins)
+            {
+                Task<IdentityUser> userExists = userManager.FindByEmailAsync(baseAdmin.Email);
+                userExists.Wait();
+                if (userExists.Result == null)
+                {
+                    Task<IdentityResult> result = userManager.CreateAsync(baseAdmin, "Admin*123");
+                    result.Wait();
+                    if (result.Result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(baseAdmin, "Admin").Wait();
+                    }
+                }
+            }
+
         }
     }
 }
