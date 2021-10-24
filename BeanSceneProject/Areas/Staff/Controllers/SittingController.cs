@@ -108,7 +108,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             }
             var m = new Models.Sitting.Update
             {
-                Id = sitting.Id,
+                Sitting = sitting,
                 Open = sitting.Open,
                 Close = sitting.Close,
                 Capacity = sitting.Capacity,
@@ -131,23 +131,20 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Models.Sitting.Update m)
         {
-            if (id != m.Id)
+            if (id != m.Sitting.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var s = new Sitting
-                {
-                    Id = m.Id,
-                    Open = m.Open,
-                    Close = m.Close,
-                    Capacity = m.Capacity,
-                    SittingTypeId = m.SittingTypeId,
-                    RestaurantId = m.RestuarantId,
-                    IsClosed = m.IsClosed
-                };
+                var s = m.Sitting;
+                s.Open = m.Open;
+                s.Close = m.Close;
+                s.Capacity = m.Capacity;
+                s.RestaurantId = m.RestuarantId;
+                s.SittingTypeId = m.SittingTypeId;
+                s.IsClosed = m.IsClosed;
                 try
                 {
                     _context.Update(s);
