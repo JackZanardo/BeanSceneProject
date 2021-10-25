@@ -20,6 +20,8 @@ namespace BeanSceneProject.Data
         public DbSet<Table> Tables { get; set; }
         public DbSet<Sitting> Sittings { get; set; }
         public DbSet<SittingType> SittingTypes { get; set; }
+        public DbSet<StaffMember> Staff { get; set; }
+        public DbSet<StaffType> StaffTypes { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Person> People { get; set; }
 
