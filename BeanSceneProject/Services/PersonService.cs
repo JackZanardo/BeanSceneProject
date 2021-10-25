@@ -33,7 +33,7 @@ namespace BeanSceneProject.Services
                 };
                 _context.People.Add(person);
             }
-            if (person != null && update)
+            else if (person != null && update)
             {
                 person.Email = data.Email;
                 person.FirstName = data.FirstName;
@@ -61,7 +61,7 @@ namespace BeanSceneProject.Services
                 };
                 _context.People.Add(person);
             }
-            if (person != null && update)
+            else if (person != null && update)
             {
                 person.Email = data.Email;
                 person.FirstName = data.FirstName;
@@ -71,6 +71,16 @@ namespace BeanSceneProject.Services
                 _context.People.Update(person);
             }
             await _context.SaveChangesAsync();
+            return person;
+        }
+
+        public async Task<Person> GetPersonAsync(string userId)
+        {
+            var person = await _context.People.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (person == null)
+            {
+                throw new Exception("No person with user Id found");
+            }
             return person;
         }
     }
