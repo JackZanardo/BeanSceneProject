@@ -75,6 +75,7 @@ namespace BeanSceneProjectTests
         [TestMethod]
         public void EditSittingTestDatabase()
         {
+
             var sitting = _context.Sittings.First();
 
             var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Update
