@@ -65,7 +65,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 StartDate = DateTime.Today,
                 Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
-                SittingTypes = JsonSerializer.Serialize(_context.SittingTypes.ToArray())
+                SittingTypeSelect = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name)),
+                SittingTypes = _context.SittingTypes.ToArray()
             };
             return View(m);
         }

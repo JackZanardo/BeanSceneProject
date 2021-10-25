@@ -48,6 +48,11 @@ namespace BeanSceneProject
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlite(
+            //        Configuration.GetConnectionString("SqliteConnection")));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             //For Production set SignIn.RequireConfirmedAccount = true

@@ -1,29 +1,20 @@
 ﻿
 $(document).ready(function () {
-    var sittingTypes = JSON.parse($("#SittingTypes").val());
 
     $("#StartDate").attr("min", getDateString(new Date()));
     $("#CloseTime").attr("min", $("#OpenTime").val());
 
-    console.log()
-
-    $(function () {
-        $.each(sittingTypes, function (i, sittingType) {
-            var o = new Option(sittingType.Name, sittingType.Id);
-            $(o).html(sittingType.Name);
-            $("#SittingTypeSelect").append(o);
-        });
-    });
 
     $(function () {
         $("#SittingTypeSelect").change(function () {   
             let selectVal = $("#SittingTypeSelect").val();
             if (!isNaN(selectVal)) {
                 removeTimeWarings();
-                let sittingType = sittingTypes.find(s => s.Id === parseInt(selectVal));
-                $("#OpenTime").val(sittingType.DefaultOpenTime);
-                $("#CloseTime").val(sittingType.DefaultCloseTime);
-                $("#CloseTime").attr("min", sittingType.DefaultOpenTime);
+                let defaultOpenTime = $(".DefaultTimes input[data-id=" + selectVal + "]").attr("data-open");
+                let defaultCloseTime = $(".DefaultTimes input[data-id=" + selectVal + "]").attr("data-close");
+                $("#OpenTime").val(defaultOpenTime);
+                $("#CloseTime").val(defaultCloseTime);
+                $("#CloseTime").attr("min", defaultOpenTime);
             }
             validateSittingTypeSelect();
         });
