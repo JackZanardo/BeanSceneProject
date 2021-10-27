@@ -1,5 +1,6 @@
 ﻿using BeanSceneProject.Data;
 using BeanSceneProject.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace BeanSceneProject.Areas.Staff.Controllers
 {
+    [Area("Staff"), Authorize(Roles = "Admin, Staff")]
     public class StaffReservationController : StaffAreaBaseController
     {
         private readonly SittingService _sittingService;
@@ -17,14 +19,26 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             _sittingService = sittingService;
         }
-        public async Task<IActionResult> Index(int? sittingId)
+
+        public async Task<IActionResult> SittingIndex()
         {
-            if(sittingId == null)
+            var sittings = _context.Sittings
+                .Where(s => !s.IsClosed && s.Close >= DateTime.Now)
+                .Include(s => s.SittingType)
+                .Include(s => s.Restaurant)
+                .Include(s => s.Reservations)
+                .ThenInclude(r => r.ReservationOrigin);
+            return View(await sittings.ToListAsync());
+        }
+
+        public async Task<IActionResult> Index(int? id)
+        {
+            if(id == null)
             {
                 return NotFound();
             }
             var reservations = _context.Reservations
-                .Where(r => r.SittingId == sittingId)
+                .Where(r => r.SittingId == id)
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
                 .Include(r => r.Sitting)
@@ -33,13 +47,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .ThenInclude(a => a.Tables);
             var m = new Models.StaffReservation.Index
             {
-                SittingId = sittingId,
+                SittingId = id,
                 Reservations = await reservations.ToListAsync()
             };
-            if (reservations == null)
-            {
-                return NotFound();
-            }
             return View(m);
         }
 
@@ -64,14 +74,14 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(reservation);
         }
 
-        public IActionResult Create(int? sittingId)
+        public IActionResult Create(int? id)
         {
             var m = new Models.StaffReservation.Create
             {
-                SittingId = sittingId,
-                Start = _sittingService.GetSittingAsync((int)sittingId).Result.Open,
+                SittingId = id,
+                Status = 1,
                 ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name)),
-                Areas = new SelectList(_context.Areas.ToArray(), nameof(Area.Id), nameof(Area.Name)),
+                Areas = _context.Areas.ToList(),
                 Tables = new MultiSelectList(_context.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name))
             };
             return View(m);
@@ -83,15 +93,16 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             if (ModelState.IsValid)
             {
+                var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == (int)m.SittingId);
                 var r = new Reservation
                 {
-                    Start = m.Start,
+                    Start = sitting.Open.Add(m.Start.TimeOfDay),
                     SittingId = (int)m.SittingId,
                     CustomerNum = m.CustomerNum,
                     Duration = m.Duration,
                     ReservationOriginId = m.ReservationOriginId,
                     Notes = m.Notes,
-                    ReservationStatus = ReservationStatus.Pending,
+                    ReservationStatus = (ReservationStatus)m.Status,
 
                 };
                 _context.Add(r);
@@ -180,6 +191,12 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             }
 
             return View(m);
+        }
+
+        public async Task<IActionResult> AddTables(int? AreaId)
+        {
+            var tables = _context.Tables.Where(t => t.AreaId == AreaId);
+            return PartialView(await tables.ToListAsync());
         }
 
         private bool ReservationExists(int id)
