@@ -75,9 +75,9 @@
                             @Html.DisplayFor(modelItem => item.Restaurant.Name)
                         </td>
                         <td>
-                            <button asp-area="Staff" asp-controller="Reservation" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary">
+                            <a asp-area="Staff" asp-controller="StaffReservation" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary">
                                 Manage Reservations
-                            </button>
+                            </a>
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
