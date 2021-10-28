@@ -13,5 +13,6 @@ namespace BeanSceneProject.Models.Reservation
         public DateTime SittingClose { get; set; }
         public DateTime Start { get; set; }
         public int Duration { get; set; }
+        public int Available { get; set; }
     }
 }
