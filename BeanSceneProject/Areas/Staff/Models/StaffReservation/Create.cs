@@ -19,7 +19,7 @@ namespace BeanSceneProject.Areas.Staff.Models.StaffReservation
         public int ReservationOriginId { get; set; }
         public SelectList ReservationOrigins { get; set; }
         public List<Area> Areas { get; set; }
-        public int TableId { get; set; }
+        public List<int> TableIds { get; set; }
         public MultiSelectList Tables { get; set; }
         public int PersonId { get; set; }
         public SelectList Person { get; set; }

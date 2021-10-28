@@ -34,24 +34,24 @@
                 <input asp-for="CustomerNum" class="form-control" type="number" />
                 <span asp-validation-for="CustomerNum" class="text-danger"></span>
             </div>
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input asp-for="Status" type="radio" class="btn-check btn-warning" name="btnradio" id="btnradio1" autocomplete="off" checked="" value="1">
-                <label class="btn btn-outline-primary" for="btnradio1">Pending</label>
+            <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button first group">
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked="" value="1">
+                <label class="btn btn-outline-warning" for="btnradio1">Pending</label>
                 <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked="" value="2">
                 <label class="btn btn-outline-primary" for="btnradio2">Confirmed</label>
                 <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" checked="" value="3">
-                <label class="btn btn-outline-primary" for="btnradio3">Seated</label>
-                <input asp-for="Status" type="radio" class="btn-check btn-success" name="btnradio" id="btnradio4" autocomplete="off" checked="" value="4">
-                <label class="btn btn-outline-primary" for="btnradio4">Complete</label>
-                <input asp-for="Status" type="radio" class="btn-check btn-danger" name="btnradio" id="btnradio5" autocomplete="off" checked="" value="5">
-                <label class="btn btn-outline-primary" for="btnradio5">Cancelled</label>
+                <label class="btn btn-outline-info" for="btnradio3">Seated</label>
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" checked="" value="4">
+                <label class="btn btn-outline-success" for="btnradio4">Complete</label>
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off" checked="" value="5">
+                <label class="btn btn-outline-danger" for="btnradio5">Cancelled</label>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button second group">
                 @foreach (var a in Model.Areas)
                 {
-                    <input type="radio" class="btn-check btn-warning" name="AreaRadio" id="btnradio + @a.Id" autocomplete="off" checked="" value="@a.Id">
-                    <label class="btn btn-outline-primary" for="btnradio + @a.Id">@a.Name</label>
+                    <input type="radio" class="btn-check btn-warning" name="AreaRadio" id="@("btnradioArea" + a.Id)" autocomplete="off" checked="" value="@a.Id">
+                    <label class="btn btn-outline-primary" for="@("btnradioArea" + a.Id)">@a.Name</label>
                 }
 
             </div>
