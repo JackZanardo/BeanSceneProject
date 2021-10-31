@@ -12,7 +12,7 @@ namespace BeanSceneProject.Data
         public DateTime Close { get; set; }
         public bool IsClosed { get; set; }
         public int Capacity { get; set; }
-        public int Heads { get => Reservations.Sum(r=>r.CustomerNum); }
+        public int Heads { get => Reservations.Sum(r => r.CustomerNum); }
         public int Available { get => Capacity - Heads; }
 
         //Relationships

@@ -14,32 +14,45 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Start" class="control-label"></label>
-                <input asp-for="Start" class="form-control" type="datetime-local" />
+                <input asp-for="Start" class="form-control" type="time" id="Start"/>
                 <span asp-validation-for="Start" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" type="datetime-local" />
+                <input asp-for="Duration" class="form-control" type="number" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ReservationOriginId" class="control-label"></label>
                 <select asp-for="ReservationOriginId" asp-items="Model.ReservationOrigins" class="form-select">
-                    <option value="">--Select Sitting Type--</option>
+                    <option value="">--Select Reservation Origin--</option>
                 </select>
-                <span asp-validation-for="ReservationOriginId" class="text-danger">--Select Reservation Origin--</span>
+                <span asp-validation-for="ReservationOriginId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CustomerNum" class="control-label"></label>
-                <input asp-for="CustomerNum" class="form-control" type="datetime-local" />
+                <input asp-for="CustomerNum" class="form-control" type="number" />
                 <span asp-validation-for="CustomerNum" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TableId" class="control-label"></label>
-                <select asp-for="TableId" asp-items="Model.Tables" class="form-select">
-                    <option value="">--Select Sitting Type--</option>
-                </select>
-                <span asp-validation-for="TableId" class="text-danger">--Select Reservation Origin--</span>
+            <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button first group">
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked="" value="1">
+                <label class="btn btn-outline-warning" for="btnradio1">Pending</label>
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked="" value="2">
+                <label class="btn btn-outline-primary" for="btnradio2">Confirmed</label>
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" checked="" value="3">
+                <label class="btn btn-outline-info" for="btnradio3">Seated</label>
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" checked="" value="4">
+                <label class="btn btn-outline-success" for="btnradio4">Complete</label>
+                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off" checked="" value="5">
+                <label class="btn btn-outline-danger" for="btnradio5">Cancelled</label>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button second group">
+                @foreach (var a in Model.Areas)
+                {
+                    <input type="radio" class="btn-check btn-warning" name="AreaRadio" id="@("btnradioArea" + a.Id)" autocomplete="off" checked="" value="@a.Id">
+                    <label class="btn btn-outline-primary" for="@("btnradioArea" + a.Id)">@a.Name</label>
+                }
             </div>
             <div class="form-group justify-content-center p-1">
                 <input type="submit" value="Create" class="btn btn-success btn-lg" />
@@ -49,9 +62,10 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-id="@Model.SittingId">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/reservationCreate.js"></script>
 }
