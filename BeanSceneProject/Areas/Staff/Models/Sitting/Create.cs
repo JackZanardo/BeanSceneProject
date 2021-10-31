@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using BeanSceneProject.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,7 +28,9 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
         [Display(Name = "Sitting Type")]
         [Required(ErrorMessage = "Sitting type required")]
         public int SittingTypeId { get; set; }
-        public string SittingTypes { get; set; }
+        public SittingType[] SittingTypes { get; set; }
+
+        public SelectList SittingTypeSelect { get; set; }
 
         [Display(Name = "Restuarant")]
         [Required(ErrorMessage = "Restuarant Required")]

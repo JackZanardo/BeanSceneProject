@@ -30,6 +30,7 @@ namespace BeanSceneProject.Models
             using (var context = new ApplicationDbContext(
             serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
+                var cs = context.Database.GetConnectionString();
                 if (context.ReservationOrigins.Any())
                 {
                     return;

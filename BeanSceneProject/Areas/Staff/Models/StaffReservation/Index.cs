@@ -10,6 +10,6 @@ namespace BeanSceneProject.Areas.Staff.Models.StaffReservation
     public class Index
     {
         public int? SittingId { get; set; }
-        public IEnumerable<BeanSceneProject.Data.Reservation> Reservations { get; set; }
+        public IEnumerable<Reservation> Reservations { get; set; }
     }
 }

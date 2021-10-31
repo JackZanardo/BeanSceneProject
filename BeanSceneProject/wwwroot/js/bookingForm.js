@@ -15,6 +15,8 @@ $(document).ready(function () {
             $("#StartTime").prop('disabled', true);
             $("#Duration").find('option:not(:first)').remove();
             $("#Duration").prop('disabled', true);
+            $("#CustomerNumHelp").text("");
+            $("#CustomerNum").removeClass("is-invalid");
             sessions = "";
             if ($("#StartDate").val()) {
                 $.ajax({
@@ -70,18 +72,40 @@ $(document).ready(function () {
             $("#StartTime").prop('disabled', true);
             $("#Duration").find('option:not(:first)').remove();
             $("#Duration").prop('disabled', true);
+            $("#CustomerNumHelp").text("");
+            $("#CustomerNum").removeClass("is-invalid");
             if (!isNaN($("#SittingSelect").val())) {
                 let sittingId = $("#SittingSelect").val();
                 let session = sessions.find(s => s.Id === parseInt(sittingId));
                 let interval = new Date(session.SittingOpen);
                 while (interval < Date.parse(session.SittingClose)) {
-                    var o = new Option(formatAMPM(interval), interval);
+                    var o = new Option(formatAMPM(interval), interval.toISOString());
                     $(o).html(formatAMPM(interval));
                     $("#StartTime").append(o);
                     interval = addMinutes(interval, 15);
                 }
                 $("#StartTime").prop('disabled', false);
+                if (!validateCustomerNum(session.Available)) {
+                    $("#CustomerNumHelp").text("Not enough free seats");
+                    $("#CustomerNum").addClass("is-invalid");
+                }
             }
+        });
+    });
+
+    $(function () {
+        $("#CustomerNum").change(function () {
+            $("#CustomerNumHelp").text("");
+            $("#CustomerNum").removeClass("is-invalid");
+            if (!isNaN($("#SittingSelect").val())) {
+                let sittingId = $("#SittingSelect").val();
+                let session = sessions.find(s => s.Id === parseInt(sittingId));
+                if (!validateCustomerNum(session.Available)) {
+                    $("#CustomerNumHelp").text("Not enough free seats");
+                    $("#CustomerNum").addClass("is-invalid");
+                }
+            }
+
         });
     });
 
@@ -130,5 +154,12 @@ $(document).ready(function () {
 
     function addMinutes(date, minutes) {
         return new Date(date.getTime() + minutes * 60000);
+    }
+
+    function validateCustomerNum(available) {
+        if ($("#CustomerNum").val() <= available) {
+            return true;
+        }
+        return false;
     }
 });
