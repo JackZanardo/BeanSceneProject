@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using BeanSceneProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +19,7 @@ namespace BeanSceneProjectTests
         public SittingControllerTests()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlServer("Server = localhost; Database = BeanSceneDatabase; Trusted_Connection = True; MultipleActiveResultSets = true")
+                .UseSqlServer(@"Server = localhost\sqlexpress; Database = BeanSceneDatabase; Trusted_Connection = True; MultipleActiveResultSets = true")
                 .Options;
             _context = new ApplicationDbContext(options);
 
@@ -36,24 +35,10 @@ namespace BeanSceneProjectTests
         }
 
         [TestMethod]
-        public void CreateSittingTestNotNull()
-        {
-            var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Create
-            {
-                OpenTime = DateTime.Today.AddHours(8),
-                CloseTime = DateTime.Today.AddHours(11),
-                RestuarantId = _context.Restaurants.First().Id,
-                SittingTypeId = _context.SittingTypes.FirstOrDefault(st => st.Name == "Lunch").Id,
-                Capacity = 40
-            };
-            var result = _controller.Create(model);
-
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
         public void CreateSittingTestDatabase()
         {
+            var cs = _context.Database.GetConnectionString();
+            var r = _context.Restaurants.FirstOrDefault();
             var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Create
             {
                 OpenTime = DateTime.Today.AddHours(8),
@@ -70,6 +55,22 @@ namespace BeanSceneProjectTests
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(sitting);
+        }
+
+        [TestMethod]
+        public void CreateSittingTestNotNull()
+        {
+            var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Create
+            {
+                OpenTime = DateTime.Today.AddHours(8),
+                CloseTime = DateTime.Today.AddHours(11),
+                RestuarantId = _context.Restaurants.First().Id,
+                SittingTypeId = _context.SittingTypes.FirstOrDefault(st => st.Name == "Lunch").Id,
+                Capacity = 40
+            };
+            var result = _controller.Create(model);
+
+            Assert.IsNotNull(result);
         }
 
         [TestMethod]
@@ -100,6 +101,25 @@ namespace BeanSceneProjectTests
             Assert.AreEqual(42, sittingResullt.Result.Capacity);
             Assert.IsTrue(sittingResullt.Result.IsClosed);
 
+        }
+
+        [TestMethod]
+        public void DeleteSittingTestDatabase()
+        {
+            var sitting = _context.Sittings.FirstOrDefault();
+            var originalcount = _context.Sittings.Count();
+            var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Delete
+            {
+                Sitting = sitting,
+                Id = sitting.Id,
+                Open = sitting.Open,
+                Close = sitting.Close,
+                Capacity = 42,
+                IsClosed = true
+            };
+            var viewResult = _controller.Delete(model.Sitting.Id, model);
+            viewResult.Wait();
+            Assert.IsTrue(_context.Sittings.Count() == originalcount - 1);
         }
     }
 }

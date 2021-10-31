@@ -8,6 +8,7 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
 {
     public class Delete
     {
+        public BeanSceneProject.Data.Sitting Sitting { get; set; }
         public int Id { get; set; }
         [Display(Name = "Open Time")]
         public DateTime Open { get; set; }
