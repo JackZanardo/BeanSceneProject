@@ -82,6 +82,36 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
+                {
+                    ModelState.AddModelError("", "Sitting ends before current time");
+                    return View(m);
+                }
+                if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
+                {
+                    ModelState.AddModelError("", "Sitting begins before current time");
+                    return View(m);
+                }
+                if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks >= m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks)
+                {
+                    ModelState.AddModelError("", "Sitting begins before close time");
+                    return View(m);
+                }
+                if (m.Capacity < 0)
+                {
+                    ModelState.AddModelError("", "Can not enter a negative capacity");
+                    return View(m);
+                }
+                if (!SittingTypeExists(m.SittingTypeId))
+                {
+                    ModelState.AddModelError("", "Invalid or no sitting type selected");
+                    return View(m);
+                }
+                if (!RestaurantExists(m.RestuarantId))
+                {
+                    ModelState.AddModelError("", "Invalid or no restuarant selected");
+                    return View(m);
+                }
                 var s = new Sitting
                 {
                     Open = m.StartDate.Add(m.OpenTime.TimeOfDay),
@@ -242,6 +272,16 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         private bool SittingExists(int id)
         {
             return _context.Sittings.Any(e => e.Id == id);
+        }
+
+        private bool SittingTypeExists(int id)
+        {
+            return _context.SittingTypes.Any(st => st.Id == id);
+        }
+
+        private bool RestaurantExists(int id)
+        {
+            return _context.Restaurants.Any(r => r.Id == id);
         }
 
     }
