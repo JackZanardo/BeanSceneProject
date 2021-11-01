@@ -30,6 +30,11 @@ namespace BeanSceneProject.Data
             builder.Entity<Restaurant>()
                 .OwnsOne(r => r.Address);
 
+            builder.Entity<Reservation>()
+                .HasOne(r => r.Sitting)
+                .WithMany(s => s.Reservations)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<Person>()
                 .Property("UserId")
                 .HasMaxLength(450);
