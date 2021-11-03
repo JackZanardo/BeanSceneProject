@@ -58,9 +58,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(model);
         }
         
-        //Allow anonymous added for testing
-        //Remove when finished
-        [AllowAnonymous]
+
         public IActionResult Create()
         {
             var m = new Models.Sitting.Create
@@ -73,11 +71,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(m);
         }
 
-        //Allow anonymous added for testing
-        //Remove when finished
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous]
         public async Task<IActionResult> Create(Models.Sitting.Create m)
         {
             if (ModelState.IsValid)

@@ -9,6 +9,6 @@ namespace BeanSceneProject.Areas.Member.Models
     public class History
     {
         public Person Person { get; set; }
-        public List<Reservation> Reservations { get; set; }
+        public IEnumerable<Reservation> Reservations { get; set; }
     }
 }

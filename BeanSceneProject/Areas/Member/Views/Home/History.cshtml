@@ -1,5 +1,9 @@
 ﻿@model BeanSceneProject.Areas.Member.Models.History
 
+@{
+    ViewData["Title"] = "History";
+}
+
 <div class="row justify-content-center">
     <div class="col-12 bg-white">
         <h2 class="px-2">Previous Reservations</h2>
@@ -25,17 +29,21 @@
                     <th>
                         Notes
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach(var item in Model.Reservations)
+                @foreach (var item in Model.Reservations)
                 {
                     <tr>
                         <td>
                             @Html.DisplayFor(i => item.Start.Date)
                         </td>
                         <td>
-                            @Html.DisplayFor(i => item.Start.ToShortTimeString())
+                            @{ 
+                                string time = item.Start.ToShortTimeString();
+                            }
+                            @Html.DisplayFor(i => time)
                         </td>
                         <td>
                             @Html.DisplayFor(i => item.Sitting.Restaurant.Name)
@@ -45,6 +53,12 @@
                         </td>
                         <td>
                             @Html.DisplayFor(i => item.Notes)
+                        </td>
+                        <td>
+                            @{ 
+                                string status = item.ReservationStatus.ToString();
+                            }
+                            @Html.DisplayFor(i => status)
                         </td>
                     </tr>
                 }
