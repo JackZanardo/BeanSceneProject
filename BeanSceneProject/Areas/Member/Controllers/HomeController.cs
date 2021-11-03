@@ -45,7 +45,7 @@ namespace BeanSceneProject.Areas.Member.Controllers
                     .ThenInclude(s => s.Restaurant)
                     .Include(r => r.Sitting)
                     .ThenInclude(s => s.SittingType)
-                    .Where(r => r.PersonId == p.Id && r.ReservationStatus == ReservationStatus.Complete)
+                    .Where(r => r.PersonId == p.Id)
                     .ToList()
             };
 
