@@ -1,5 +1,33 @@
-﻿@model IEnumerable<BeanSceneProject.Data.Table>
-
-<div>
-
+﻿@model BeanSceneProject.Areas.Staff.Models.StaffReservation.AddTables
+@{ 
+    ViewData["Title"] = "Add Tables";
+}
+<div class="row  justify-content-center">
+    <div class="col-md-4">
+        <p>Sititng: @Model.SittingInfo</p>
+        <p>Reservation: @Model.ReservationInfo</p>
+        <p>Number of people: @Model.Heads</p>
+        <p>Already selected tables: @Model.ChosenTables</p>
+    </div>
+</div>
+<div class="row  justify-content-center">
+    <div class="col-md-4">
+        <form asp-action="AddTables">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @foreach (var area in Model.Areas)
+            {
+                <div>@area.Name</div>
+                <div class="form-group">
+                    @foreach (var table in Model.Tables.Where(t => t.AreaId == area.Id))
+                    {
+                        <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off" />
+                        <label class="btn btn-primary" for="@table.Name">@table.Name</label>
+                    }
+                </div>
+            }
+            <div class="form-group justify-content-center p-1">
+                <input type="submit" value="Done" class="btn btn-success btn-lg" />
+            </div>
+        </form>
+    </div>
 </div>

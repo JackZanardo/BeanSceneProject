@@ -265,6 +265,15 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(m);
         }
 
+        public async Task<bool> UpdateIsClosed(string value, string id)
+        {
+            var sitting = _context.Sittings.FirstOrDefaultAsync(s => s.Id == int.Parse(id));
+            sitting.Result.IsClosed = bool.Parse(value);
+            _context.Update(sitting.Result);
+            await _context.SaveChangesAsync();
+            return bool.Parse(value);
+        }
+
         private bool SittingExists(int id)
         {
             return _context.Sittings.Any(e => e.Id == id);

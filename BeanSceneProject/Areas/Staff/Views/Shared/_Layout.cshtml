@@ -9,17 +9,20 @@
 </head>
 <body class="bg-light">
     <header class="bg-white">
-        @if (User.IsInRole("Admin"))
-        {
-            <h1 class="p-1 bg-white">Bean Scene Manager</h1>
-        }
-        @if (User.IsInRole("Staff"))
-        {
-            <h1 class="p-1 bg-white">Bean Scene Staff</h1>
-        }
-        else
-        {
-            <h1 class="p-1 bg-white">Bean Scene</h1>
+
+        @{
+            if (User.IsInRole("Admin"))
+            {
+                <h1 class="p-1 bg-white">Bean Scene Manager</h1>
+            }
+            else if (User.IsInRole("Staff"))
+            {
+                <h1 class="p-1 bg-white">Bean Scene Staff</h1>
+            }
+            else
+            {
+                <h1 class="p-1 bg-white">Bean Scene</h1>
+            }
         }
         <nav class="navbar navbar-expand-md navbar-dark bg-primary">
             <div class="container-fluid">
