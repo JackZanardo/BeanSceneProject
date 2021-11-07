@@ -107,7 +107,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 };
                 _context.Add(r);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
             }
             return View(m);
         }
@@ -160,45 +160,47 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
             if (ModelState.IsValid)
             {
-                var r = new Reservation
+                var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+                if(reservation == null)
                 {
-                    Id = m.Id,
-                    Start = m.Start,
-                    SittingId = m.SittingId,
-                    CustomerNum = m.CustomerNum,
-                    Duration = m.Duration,
-                    ReservationOriginId = m.ReservationOriginId,
-                    Notes = m.Notes,
-                    ReservationStatus = (ReservationStatus)m.Status,
-                };
+                    return NotFound();
+                }
+                reservation.SittingId = m.SittingId;
+                reservation.Start = m.Start;
+                reservation.Duration = m.Duration;
+                reservation.CustomerNum = m.CustomerNum;
+                reservation.Notes = m.Notes;
+                reservation.ReservationOriginId = m.ReservationOriginId;
+                reservation.ReservationStatus = (ReservationStatus)m.Status;
+                reservation.PersonId = m.PersonId;
                 try
                 {
-                    _context.Update(r);
+                    _context.Update(reservation);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReservationExists(r.Id))
+                    if (!ReservationExists(reservation.Id))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw;
+                        throw new Exception("Reservation update failed");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), m.SittingId);
             }
 
             return View(m);
         }
 
-        public IActionResult AddTables(int sittingId, int reservationId)
+        public async Task<IActionResult> AddTables(int rId, int sId)
         {
             var tables = _context.Tables.Include(t => t.Area).ToArray();
-            var reservations = _context.Reservations
+            var reservations = await _context.Reservations
                 .Include(r => r.Tables)
-                .Where(r => r.SittingId == sittingId).ToArray();
+                .Where(r => r.SittingId == sId).ToArrayAsync();
             List<Table> freeTables = new List<Table>();
             foreach(var r in reservations)
             {
@@ -210,18 +212,16 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     }
                 }
             }
-            var reservation = _context.Reservations.FirstOrDefaultAsync(r => r.Id == reservationId);
-            var sitting = _context.Sittings.Include(s => s.SittingType).FirstOrDefaultAsync(s => s.Id == sittingId);
-            var sResult = sitting.Result;
-            var rResult = reservation.Result;
+            var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == rId);
+            var sitting = await _context.Sittings.Include(s => s.SittingType).FirstOrDefaultAsync(s => s.Id == sId);
             var m = new Models.StaffReservation.AddTables
             {
-                ChosenTables = String.Join(", ", rResult.Tables.Select(t => t.Name)),
-                Heads = reservation.Result.CustomerNum,
-                SittingInfo = $"{sResult.Open.ToShortDateString()} {sResult.Open.ToShortTimeString()} - {sResult.Close.ToShortTimeString()} {sResult.SittingType.Name}",
-                ReservationInfo = $"{rResult.Start.ToShortTimeString()} - {rResult.End.ToShortTimeString()} Status: {rResult.ReservationStatus}",
-                SittingId = sittingId,
-                ReservationId = reservationId,
+                ChosenTables = String.Join(", ", reservation.Tables.Select(t => t.Name)),
+                Heads = reservation.CustomerNum,
+                SittingInfo = $"{sitting.Open.ToShortDateString()} {sitting.Open.ToShortTimeString()} - {sitting.Close.ToShortTimeString()} {sitting.SittingType.Name}",
+                ReservationInfo = $"{reservation.Start.ToShortTimeString()} - {reservation.End.ToShortTimeString()} Status: {reservation.ReservationStatus}",
+                SittingId = sId,
+                ReservationId = rId,
                 Tables = freeTables,
                 Areas = _context.Areas.ToList()
             };
@@ -240,6 +240,10 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 if(reservation == null)
                 {
                     return NotFound();
+                }
+                if(m.SelectedTables.Count() == 0)
+                {
+                    return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
                 }
                 foreach(int tableId in m.SelectedTables)
                 {
@@ -261,7 +265,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                         throw;
                     }
                 }
-                RedirectToAction(nameof(SittingIndex), m.SittingId);
+                return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId});
             }
             return View(m);
         }

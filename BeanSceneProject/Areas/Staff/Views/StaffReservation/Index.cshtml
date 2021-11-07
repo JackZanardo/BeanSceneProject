@@ -120,7 +120,9 @@
                     @Html.DisplayFor(modelItem => name)
                 </td>
                 <td>
-                    <button>Assign Table</button>
+                    <a asp-area="Staff" asp-controller="StaffReservation" asp-action="AddTables" asp-route-rId="@item.Id" asp-route-sId="@Model.SittingId" class="btn btn-primary">
+                        Assign Tables
+                    </a>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

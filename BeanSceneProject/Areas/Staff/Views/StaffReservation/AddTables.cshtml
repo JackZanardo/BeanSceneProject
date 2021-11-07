@@ -21,10 +21,14 @@
                     @foreach (var table in Model.Tables.Where(t => t.AreaId == area.Id))
                     {
                         <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off" />
-                        <label class="btn btn-primary" for="@table.Name">@table.Name</label>
+                        <label class="btn btn-outline-primary" for="@table.Name">@table.Name</label>
                     }
                 </div>
             }
+            <div hidden>
+                <input asp-for="SittingId" hidden />
+                <input asp-for="ReservationId" hidden/>
+            </div>
             <div class="form-group justify-content-center p-1">
                 <input type="submit" value="Done" class="btn btn-success btn-lg" />
             </div>
