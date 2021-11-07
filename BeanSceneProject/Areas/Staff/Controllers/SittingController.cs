@@ -140,7 +140,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             }
             var m = new Models.Sitting.Update
             {
-                Sitting = sitting,
+                Id = sitting.Id,
                 Open = sitting.Open,
                 Close = sitting.Close,
                 Capacity = sitting.Capacity,
@@ -163,14 +163,18 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Models.Sitting.Update m)
         {
-            if (id != m.Sitting.Id)
+            if (id != m.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var s = m.Sitting;
+                var s = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == id);
+                if(s == null)
+                {
+                    return NotFound();
+                }
                 s.Open = m.Open;
                 s.Close = m.Close;
                 s.Capacity = m.Capacity;
@@ -263,6 +267,15 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             }
 
             return View(m);
+        }
+
+        public async Task<bool> UpdateIsClosed(string value, string id)
+        {
+            var sitting = _context.Sittings.FirstOrDefaultAsync(s => s.Id == int.Parse(id));
+            sitting.Result.IsClosed = bool.Parse(value);
+            _context.Update(sitting.Result);
+            await _context.SaveChangesAsync();
+            return bool.Parse(value);
         }
 
         private bool SittingExists(int id)

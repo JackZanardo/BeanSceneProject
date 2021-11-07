@@ -107,7 +107,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 };
                 _context.Add(r);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
             }
             return View(m);
         }
@@ -160,25 +160,103 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
             if (ModelState.IsValid)
             {
-                var r = new Reservation
+                var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == id);
+                if(reservation == null)
                 {
-                    Id = m.Id,
-                    Start = m.Start,
-                    SittingId = m.SittingId,
-                    CustomerNum = m.CustomerNum,
-                    Duration = m.Duration,
-                    ReservationOriginId = m.ReservationOriginId,
-                    Notes = m.Notes,
-                    ReservationStatus = (ReservationStatus)m.Status,
-                };
+                    return NotFound();
+                }
+                reservation.SittingId = m.SittingId;
+                reservation.Start = m.Start;
+                reservation.Duration = m.Duration;
+                reservation.CustomerNum = m.CustomerNum;
+                reservation.Notes = m.Notes;
+                reservation.ReservationOriginId = m.ReservationOriginId;
+                reservation.ReservationStatus = (ReservationStatus)m.Status;
+                reservation.PersonId = m.PersonId;
                 try
                 {
-                    _context.Update(r);
+                    _context.Update(reservation);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReservationExists(r.Id))
+                    if (!ReservationExists(reservation.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw new Exception("Reservation update failed");
+                    }
+                }
+                return RedirectToAction(nameof(Index), m.SittingId);
+            }
+
+            return View(m);
+        }
+
+        public async Task<IActionResult> AddTables(int rId, int sId)
+        {
+            var tables = _context.Tables.Include(t => t.Area).ToArray();
+            var reservations = await _context.Reservations
+                .Include(r => r.Tables)
+                .Where(r => r.SittingId == sId).ToArrayAsync();
+            List<Table> freeTables = new List<Table>();
+            foreach(var r in reservations)
+            {
+                foreach(var t in tables)
+                {
+                    if (!r.Tables.Contains(t))
+                    {
+                        freeTables.Add(t);
+                    }
+                }
+            }
+            var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == rId);
+            var sitting = await _context.Sittings.Include(s => s.SittingType).FirstOrDefaultAsync(s => s.Id == sId);
+            var m = new Models.StaffReservation.AddTables
+            {
+                ChosenTables = String.Join(", ", reservation.Tables.Select(t => t.Name)),
+                Heads = reservation.CustomerNum,
+                SittingInfo = $"{sitting.Open.ToShortDateString()} {sitting.Open.ToShortTimeString()} - {sitting.Close.ToShortTimeString()} {sitting.SittingType.Name}",
+                ReservationInfo = $"{reservation.Start.ToShortTimeString()} - {reservation.End.ToShortTimeString()} Status: {reservation.ReservationStatus}",
+                SittingId = sId,
+                ReservationId = rId,
+                Tables = freeTables,
+                Areas = _context.Areas.ToList()
+            };
+
+            return View(m);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTables(Models.StaffReservation.AddTables m)
+        {
+            if (ModelState.IsValid)
+            {
+                var tables = _context.Tables.ToArray();
+                var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == m.ReservationId);
+                if(reservation == null)
+                {
+                    return NotFound();
+                }
+                if(m.SelectedTables.Count() == 0)
+                {
+                    return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
+                }
+                foreach(int tableId in m.SelectedTables)
+                {
+                    reservation.Tables.Add(tables.FirstOrDefault(t => t.Id == tableId));
+                }
+                try
+                {
+                    _context.Update(reservation);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ReservationExists(reservation.Id))
                     {
                         return NotFound();
                     }
@@ -187,16 +265,25 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId});
             }
-
             return View(m);
         }
 
-        public async Task<IActionResult> AddTables(int? AreaId)
+        public async Task<int> UpdateStatus(string value, string id)
         {
-            var tables = _context.Tables.Where(t => t.AreaId == AreaId);
-            return PartialView(await tables.ToListAsync());
+            var reservation = _context.Reservations.FirstOrDefaultAsync(s => s.Id == int.Parse(id));
+            reservation.Result.ReservationStatus = (ReservationStatus)int.Parse(value);
+            try
+            {
+                _context.Update(reservation.Result);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new Exception("Attempted to update invalid status");
+            }
+            return int.Parse(value);
         }
 
         private bool ReservationExists(int id)
