@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -61,13 +62,21 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         public IActionResult Create()
         {
+            Debug.WriteLine("Debugging in SittingController Create GET");
             var m = new Models.Sitting.Create
             {
                 StartDate = DateTime.Today,
-                Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
+                Restuarants = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
                 SittingTypeSelect = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name)),
                 SittingTypes = _context.SittingTypes.ToArray()
             };
+            Debug.WriteLine("Checking View model not null");
+            Debug.Assert(m is { }, "View model is null");
+            Debug.WriteLineIf(m is { }, "View model is not null");
+            Debug.WriteLine("Checking View model data");
+            Debug.WriteLineIf(m.StartDate != DateTime.Today, "Start date not established");
+            Debug.Assert(m.Restuarants is { }, "Restaurant select list is null");
+            Debug.Assert(m.SittingTypeSelect is { }, "Sitting type select is null");
             return View(m);
         }
 
@@ -76,35 +85,42 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Models.Sitting.Create m)
         {
+            Debug.WriteLine("Debugging in SittingController Create POST");
             if (ModelState.IsValid)
             {
                 if (m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
                 {
+                    Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting ends before current time");
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
                 {
+                    Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting begins before current time");
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks >= m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks)
                 {
+                    Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting begins before close time");
                     return View(m);
                 }
                 if (m.Capacity < 0)
                 {
+                    Debug.WriteLine("Model Capacity invalid");
                     ModelState.AddModelError("", "Can not enter a negative capacity");
                     return View(m);
                 }
                 if (!SittingTypeExists(m.SittingTypeId))
                 {
+                    Debug.WriteLine("Model sitting type invalid");
                     ModelState.AddModelError("", "Invalid or no sitting type selected");
                     return View(m);
                 }
                 if (!RestaurantExists(m.RestuarantId))
                 {
+                    Debug.WriteLine("Model Restaurant invalid");
                     ModelState.AddModelError("", "Invalid or no restuarant selected");
                     return View(m);
                 }
@@ -117,11 +133,20 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     RestaurantId = m.RestuarantId,
                     IsClosed = false
                 };
-                _context.Add(s);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Debug.Assert(s is { }, "Failed to create instance of Sitting");
+                try
+                {
+                    _context.Add(s);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    Debug.WriteLine("DbUpdateException occurred. Failed to add new Sitting.");
+                    throw new Exception("Failed to add Sitting to database");
+                }
             }
-
+            Debug.WriteLine("Model State is invalid");
             return View(m);
 
         }
@@ -161,9 +186,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Models.Sitting.Update m)
+        public async Task<IActionResult> Edit(int? id, Models.Sitting.Update m)
         {
-            if (id != m.Id)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -194,7 +219,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     }
                     else
                     {
-                        throw;
+                        throw new Exception("Sitting update failed");
                     }
                 }
                 return RedirectToAction(nameof(Index));
@@ -273,9 +298,16 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         {
             var sitting = _context.Sittings.FirstOrDefaultAsync(s => s.Id == int.Parse(id));
             sitting.Result.IsClosed = bool.Parse(value);
-            _context.Update(sitting.Result);
-            await _context.SaveChangesAsync();
-            return bool.Parse(value);
+            try
+            {
+                _context.Update(sitting.Result);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+            return true;
         }
 
         private bool SittingExists(int id)

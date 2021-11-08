@@ -151,9 +151,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Models.StaffReservation.Update m)
+        public async Task<IActionResult> Edit(int? id, Models.StaffReservation.Update m)
         {
-            if (id != m.Id)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -270,7 +270,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(m);
         }
 
-        public async Task<int> UpdateStatus(string value, string id)
+        public async Task<bool> UpdateStatus(string value, string id)
         {
             var reservation = _context.Reservations.FirstOrDefaultAsync(s => s.Id == int.Parse(id));
             reservation.Result.ReservationStatus = (ReservationStatus)int.Parse(value);
@@ -281,9 +281,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new Exception("Attempted to update invalid status");
+                return false;
             }
-            return int.Parse(value);
+            return true;
         }
 
         private bool ReservationExists(int id)

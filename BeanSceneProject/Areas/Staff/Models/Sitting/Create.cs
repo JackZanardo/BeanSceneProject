@@ -35,7 +35,7 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
         [Display(Name = "Restuarant")]
         [Required(ErrorMessage = "Restuarant Required")]
         public int RestuarantId { get; set; }
-        public SelectList Restraunts { get; set; }
+        public SelectList Restuarants { get; set; }
 
         public bool BulkCreate { get; set; }
 
