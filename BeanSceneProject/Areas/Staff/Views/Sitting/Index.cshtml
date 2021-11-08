@@ -63,7 +63,7 @@
                                        checked="@(!item.IsClosed)" 
                                        value="false" 
                                        data-id="@item.Id" 
-                                       onchange="UpdateIsClosed(this.value ,this.getAttribute('data-id'))">
+                                       onchange="UpdateIsClosed(this.value, this.getAttribute('data-id'))">
                                 <label class="btn btn-outline-success" for=@("sitting" + item.Id + "radioOpen")>Open</label>
                                 <input 
                                        type="radio" 
@@ -74,8 +74,9 @@
                                        checked="@item.IsClosed" 
                                        value="true" 
                                        data-id="@item.Id" 
-                                       onchange="UpdateIsClosed(this.value ,this.getAttribute('data-id'))">
+                                       onchange="UpdateIsClosed(this.value, this.getAttribute('data-id'))">
                                 <label class="btn btn-outline-danger" for=@("sitting" + item.Id + "radioClose")>Close</label>
+                                <span id="@("sittingRadio" + item.Id)" class="text-danger"></span>
                             </div>
                         </td>
                         <td>

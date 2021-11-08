@@ -151,9 +151,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Models.StaffReservation.Update m)
+        public async Task<IActionResult> Edit(int? id, Models.StaffReservation.Update m)
         {
-            if (id != m.Id)
+            if (id == null)
             {
                 return NotFound();
             }
