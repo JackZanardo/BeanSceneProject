@@ -82,6 +82,8 @@ namespace BeanSceneProject
 
             app.UseRouting();
 
+            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
+
             app.UseAuthentication();
             app.UseAuthorization();
             
