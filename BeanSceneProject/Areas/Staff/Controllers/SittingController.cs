@@ -62,6 +62,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         public IActionResult Create()
         {
+            Trace.Listeners.Add(new TextWriterTraceListener("SittingCreateGetOutput.log"));
             Debug.WriteLine("Debugging in SittingController Create GET");
             var m = new Models.Sitting.Create
             {
@@ -77,6 +78,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             Debug.WriteLineIf(m.StartDate != DateTime.Today, "Start date not established");
             Debug.Assert(m.Restuarants is { }, "Restaurant select list is null");
             Debug.Assert(m.SittingTypeSelect is { }, "Sitting type select is null");
+            Trace.Close();
             return View(m);
         }
 
@@ -85,6 +87,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Models.Sitting.Create m)
         {
+            Trace.Listeners.Add(new TextWriterTraceListener("SittingCreatePostOutput.log"));
             Debug.WriteLine("Debugging in SittingController Create POST");
             if (ModelState.IsValid)
             {
@@ -92,36 +95,42 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 {
                     Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting ends before current time");
+                    Trace.Close();
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
                 {
                     Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting begins before current time");
+                    Trace.Close();
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks >= m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks)
                 {
                     Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting begins before close time");
+                    Trace.Close();
                     return View(m);
                 }
                 if (m.Capacity < 0)
                 {
                     Debug.WriteLine("Model Capacity invalid");
                     ModelState.AddModelError("", "Can not enter a negative capacity");
+                    Trace.Close();
                     return View(m);
                 }
                 if (!SittingTypeExists(m.SittingTypeId))
                 {
                     Debug.WriteLine("Model sitting type invalid");
                     ModelState.AddModelError("", "Invalid or no sitting type selected");
+                    Trace.Close();
                     return View(m);
                 }
                 if (!RestaurantExists(m.RestuarantId))
                 {
                     Debug.WriteLine("Model Restaurant invalid");
                     ModelState.AddModelError("", "Invalid or no restuarant selected");
+                    Trace.Close();
                     return View(m);
                 }
                 var s = new Sitting
@@ -138,6 +147,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 {
                     _context.Add(s);
                     await _context.SaveChangesAsync();
+                    Debug.WriteLine("Sitting successfully persisted");
+                    Trace.Close();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException)
@@ -147,6 +158,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 }
             }
             Debug.WriteLine("Model State is invalid");
+            Trace.Close();
             return View(m);
 
         }
