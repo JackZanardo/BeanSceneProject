@@ -87,9 +87,15 @@ namespace BeanSceneProject
             app.UseAuthentication();
             app.UseAuthorization();
             
+            
 
             app.UseEndpoints(endpoints =>
             {
+
+                endpoints.MapControllerRoute(
+                    name: "ActionApi",
+                    pattern: "api/{controller=MobileSitting}/{action}/{id?}");
+
                 //Added Controller routing for areas
                 endpoints.MapControllerRoute(
                     name: "areas",

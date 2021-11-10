@@ -175,7 +175,7 @@ namespace BeanSceneProject.Controllers
         public JsonResult GetSittings(string jsonDate)
         {
             var date = DateTime.Parse(jsonDate).Date;
-            var sittings = _sittingService.GetSittingsAsync(date, false);
+            var sittings = _sittingService.GetSittingsListAsync(date, false);
             var sittingsResult = sittings.Result;
             var sessions = new List<Session>();
             foreach(var s in sittingsResult)

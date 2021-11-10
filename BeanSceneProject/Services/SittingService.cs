@@ -22,10 +22,22 @@ namespace BeanSceneProject.Services
             return sitting;
         }
 
-        public async Task<ICollection<Sitting>> GetSittingsAsync(DateTime openDate, bool isClosed)
+        public async Task<ICollection<Sitting>> GetSittingsListAsync(DateTime openDate, bool isClosed)
         {
             var sittings = _context.Sittings.Include(s => s.SittingType).Include(s => s.Reservations).Where(s => s.Open.Date == openDate && s.IsClosed == isClosed);
             return await sittings.ToListAsync();
+        }
+
+        public IQueryable<Sitting> GetSittings()
+        {
+            var sittings =  _context.Sittings.Include(s => s.SittingType).Include(s => s.Restaurant);
+            return sittings;
+        }
+
+        public IQueryable<Sitting> GetSittings(DateTime openDate)
+        {
+            var sittings = _context.Sittings.Include(s => s.SittingType).Include(s => s.Restaurant).Where(s => s.Open.Date == openDate);
+            return sittings;
         }
     }
 }
