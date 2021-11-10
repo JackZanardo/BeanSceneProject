@@ -17,12 +17,10 @@ namespace BeanSceneProject.Controllers
     [ApiController]
     public class ApiSittingController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly SittingService _sittingService;
 
-        public ApiSittingController(ApplicationDbContext context, SittingService sittingService)
+        public ApiSittingController(SittingService sittingService)
         {
-            _context = context;
             _sittingService = sittingService;
         }
 

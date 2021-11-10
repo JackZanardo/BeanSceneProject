@@ -45,6 +45,7 @@ namespace BeanSceneProject
             //    });
             services.AddScoped<PersonService>();
             services.AddScoped<SittingService>();
+            services.AddScoped<ReservationService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -94,7 +95,7 @@ namespace BeanSceneProject
 
                 endpoints.MapControllerRoute(
                     name: "ActionApi",
-                    pattern: "api/{controller=MobileSitting}/{action}/{id?}");
+                    pattern: "api/{controller}/{action}/{id?}");
 
                 //Added Controller routing for areas
                 endpoints.MapControllerRoute(
