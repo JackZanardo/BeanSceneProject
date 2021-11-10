@@ -45,6 +45,7 @@ namespace BeanSceneProject
             //    });
             services.AddScoped<PersonService>();
             services.AddScoped<SittingService>();
+            services.AddScoped<ReservationService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -82,12 +83,20 @@ namespace BeanSceneProject
 
             app.UseRouting();
 
+            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
+
             app.UseAuthentication();
             app.UseAuthorization();
+            
             
 
             app.UseEndpoints(endpoints =>
             {
+
+                endpoints.MapControllerRoute(
+                    name: "ActionApi",
+                    pattern: "api/{controller}/{action}/{id?}");
+
                 //Added Controller routing for areas
                 endpoints.MapControllerRoute(
                     name: "areas",

@@ -78,6 +78,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             Debug.WriteLineIf(m.StartDate != DateTime.Today, "Start date not established");
             Debug.Assert(m.Restuarants is { }, "Restaurant select list is null");
             Debug.Assert(m.SittingTypeSelect is { }, "Sitting type select is null");
+            Debug.WriteLine("View model data is correct");
             Trace.Close();
             return View(m);
         }
@@ -143,10 +144,13 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     IsClosed = false
                 };
                 Debug.Assert(s is { }, "Failed to create instance of Sitting");
+                Debug.WriteLineIf(s is { }, "Instance of sitting created");
                 try
                 {
                     _context.Add(s);
-                    await _context.SaveChangesAsync();
+                    var result = await _context.SaveChangesAsync();
+                    Debug.Assert(result == 1, "Failed to persist sitting");
+                    Debug.WriteLineIf(result == 1, "1 row entered into Sittings table");
                     Debug.WriteLine("Sitting successfully persisted");
                     Trace.Close();
                     return RedirectToAction(nameof(Index));
