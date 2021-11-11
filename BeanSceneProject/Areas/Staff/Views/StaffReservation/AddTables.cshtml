@@ -20,8 +20,17 @@
                 <div class="form-group">
                     @foreach (var table in Model.Tables.Where(t => t.AreaId == area.Id))
                     {
-                        <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off" />
-                        <label class="btn btn-outline-primary" for="@table.Name">@table.Name</label>
+                        if (Model.ChosenTablesId.Any(ct => ct == table.Id))
+                        {
+                            <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off" checked />
+                            <label class="btn btn-outline-primary m-1" for="@table.Name">@table.Name</label>
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off"/>
+                            <label class="btn btn-outline-primary m-1" for="@table.Name">@table.Name</label>
+                        }
+
                     }
                 </div>
             }

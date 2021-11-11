@@ -1,4 +1,5 @@
-﻿using BeanSceneProject.Data;
+﻿using BeanSceneProject.Areas.Staff.Models.StaffReservation;
+using BeanSceneProject.Data;
 using BeanSceneProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,9 +17,11 @@ namespace BeanSceneProject.Areas.Staff.Controllers
     public class StaffReservationController : StaffAreaBaseController
     {
         private readonly SittingService _sittingService;
-        public StaffReservationController(ApplicationDbContext context, SittingService sittingService) : base(context) 
+        private readonly PersonService _personService;
+        public StaffReservationController(ApplicationDbContext context, SittingService sittingService, PersonService personService) : base(context) 
         {
             _sittingService = sittingService;
+            _personService = personService;
         }
 
         public async Task<IActionResult> SittingIndex()
@@ -27,7 +31,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .Include(s => s.SittingType)
                 .Include(s => s.Restaurant)
                 .Include(s => s.Reservations)
-                .ThenInclude(r => r.ReservationOrigin);
+                .ThenInclude(r => r.ReservationOrigin)
+                .OrderByDescending(s => s.Open).Reverse();
             return View(await sittings.ToListAsync());
         }
 
@@ -44,7 +49,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .Include(r => r.Sitting)
                 .ThenInclude(s => s.Restaurant)
                 .ThenInclude(r => r.Areas)
-                .ThenInclude(a => a.Tables);
+                .ThenInclude(a => a.Tables)
+                .OrderByDescending(r => r.Start).Reverse();
             var m = new Models.StaffReservation.Index
             {
                 SittingId = id,
@@ -74,41 +80,81 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(reservation);
         }
 
-        public IActionResult Create(int? id)
+        public async Task<IActionResult> Create(int? id)
         {
-            var m = new Models.StaffReservation.Create
+            if(id == null) { return NotFound(); }
+            var sitting = await _context.Sittings
+                .Include(s => s.SittingType)
+                .Include(s => s.Reservations)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            var resOrigins = _context.ReservationOrigins.Where(ro => ro.Name != "InPerson" && ro.Name != "Website").ToArray();
+            var m = new Create
             {
                 SittingId = id,
-                Status = 1,
-                ReservationOrigins = new SelectList(_context.ReservationOrigins.ToArray(), nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name)),
-                Areas = _context.Areas.ToList(),
-                Tables = new MultiSelectList(_context.Tables.ToArray(), nameof(Table.Id), nameof(Table.Name))
+                ReservationOrigins = new SelectList(resOrigins, nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name)),
+                Available = sitting.Available,
+                SittingClose = sitting.Close,
+                SittingOpen = sitting.Open,
+                SittingInfo = $"{sitting.Open.ToShortDateString()} {sitting.Open.ToShortTimeString()} - {sitting.Close.ToShortTimeString()} {sitting.SittingType.Name}"
             };
             return View(m);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Models.StaffReservation.Create m)
+        public async Task<IActionResult> Create(Create m)
         {
             if (ModelState.IsValid)
             {
                 var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == (int)m.SittingId);
+                var person = new Person
+                {
+                    Email = m.Email,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    MobileNumber = m.MobileNumber
+                };
+                person = await _personService.UpsertPersonAsync(person, true);
+                if (person == null)
+                {
+                    ModelState.AddModelError("", "Please provide vaild details");
+                    return View(m);
+                }
                 var r = new Reservation
                 {
-                    Start = sitting.Open.Add(m.Start.TimeOfDay),
+                    Start = DateTime.Parse(m.Start),
                     SittingId = (int)m.SittingId,
                     CustomerNum = m.CustomerNum,
                     Duration = m.Duration,
                     ReservationOriginId = m.ReservationOriginId,
                     Notes = m.Notes,
-                    ReservationStatus = (ReservationStatus)m.Status,
+                    ReservationStatus = ReservationStatus.Pending,
+                    PersonId = person.Id
 
                 };
                 _context.Add(r);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
             }
+            return View(m);
+        }
+
+        public async Task<IActionResult> CreateWalkIn(int? id)
+        {
+            var sitting = await _context.Sittings
+                .Include(s => s.SittingType)
+                .Include(s => s.Reservations)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            var resOrigins = _context.ReservationOrigins.Where(ro => ro.Name != "InPerson" && ro.Name != "Website").ToArray();
+            var m = new Create
+            {
+                SittingId = id,
+                ReservationOrigins = new SelectList(resOrigins, nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name)),
+                Available = sitting.Available,
+                SittingClose = sitting.Close,
+                SittingOpen = sitting.Open,
+                SittingInfo = $"{sitting.Open.ToShortDateString()} {sitting.Open.ToShortTimeString()} - {sitting.Close.ToShortTimeString()} {sitting.SittingType.Name}"
+            };
             return View(m);
         }
 
@@ -217,6 +263,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             var m = new Models.StaffReservation.AddTables
             {
                 ChosenTables = String.Join(", ", reservation.Tables.Select(t => t.Name)),
+                ChosenTablesId = reservation.Tables.Select(t => t.Id).ToArray(),
                 Heads = reservation.CustomerNum,
                 SittingInfo = $"{sitting.Open.ToShortDateString()} {sitting.Open.ToShortTimeString()} - {sitting.Close.ToShortTimeString()} {sitting.SittingType.Name}",
                 ReservationInfo = $"{reservation.Start.ToShortTimeString()} - {reservation.End.ToShortTimeString()} Status: {reservation.ReservationStatus}",
@@ -241,11 +288,12 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 {
                     return NotFound();
                 }
-                if(m.SelectedTables.Count() == 0)
+                if(m.SelectedTables.Count == 0)
                 {
                     return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
                 }
-                foreach(int tableId in m.SelectedTables)
+                reservation.Tables.Clear();
+                foreach (int tableId in m.SelectedTables)
                 {
                     reservation.Tables.Add(tables.FirstOrDefault(t => t.Id == tableId));
                 }

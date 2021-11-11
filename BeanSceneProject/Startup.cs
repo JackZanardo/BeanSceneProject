@@ -61,7 +61,8 @@ namespace BeanSceneProject
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,7 +84,7 @@ namespace BeanSceneProject
 
             app.UseRouting();
 
-            app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
+            //app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
