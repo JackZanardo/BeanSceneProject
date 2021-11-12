@@ -8,62 +8,78 @@
 
 <h4>Reservation</h4>
 <hr />
-<div class="row  justify-content-center">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<div>
+    <p>Sitting: @Model.SittingInfo</p>
+    <p>Seats available: @Model.Available</p>
+</div>
+<div class="row justify-content-center">
+    <div class="col-12">
+        <form asp-action="Create" id="ReservationCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Start" class="control-label"></label>
-                <input asp-for="Start" class="form-control" type="time" id="Start"/>
-                <span asp-validation-for="Start" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" type="number" />
-                <span asp-validation-for="Duration" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReservationOriginId" class="control-label"></label>
-                <select asp-for="ReservationOriginId" asp-items="Model.ReservationOrigins" class="form-select">
-                    <option value="">--Select Reservation Origin--</option>
-                </select>
-                <span asp-validation-for="ReservationOriginId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerNum" class="control-label"></label>
-                <input asp-for="CustomerNum" class="form-control" type="number" />
-                <span asp-validation-for="CustomerNum" class="text-danger"></span>
-            </div>
-            <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button first group">
-                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked="" value="1">
-                <label class="btn btn-outline-warning" for="btnradio1">Pending</label>
-                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked="" value="2">
-                <label class="btn btn-outline-primary" for="btnradio2">Confirmed</label>
-                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" checked="" value="3">
-                <label class="btn btn-outline-info" for="btnradio3">Seated</label>
-                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" checked="" value="4">
-                <label class="btn btn-outline-success" for="btnradio4">Complete</label>
-                <input asp-for="Status" type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off" checked="" value="5">
-                <label class="btn btn-outline-danger" for="btnradio5">Cancelled</label>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button second group">
-                @foreach (var a in Model.Areas)
-                {
-                    <input type="radio" class="btn-check btn-warning" name="AreaRadio" id="@("btnradioArea" + a.Id)" autocomplete="off" checked="" value="@a.Id">
-                    <label class="btn btn-outline-primary" for="@("btnradioArea" + a.Id)">@a.Name</label>
-                }
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MobileNumber" class="control-label"></label>
+                        <input asp-for="MobileNumber" class="form-control" />
+                        <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Start" class="control-label"></label>
+                        <select asp-for="Start" class="form-select" id="StartTime">
+                            <option value="">--Select a reservation time--</option>
+                        </select>
+                        <span asp-validation-for="Start" class="text-danger" id="StartTimeHelp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Duration" class="control-label"></label>
+                        <select asp-for="Duration" class="form-select" id="Duration" disabled>
+                            <option value="">--Select a duration--</option>
+                        </select>
+                        <span asp-validation-for="Duration" class="text-danger" id="DurationHelp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ReservationOriginId" class="control-label"></label>
+                        <select asp-for="ReservationOriginId" asp-items="Model.ReservationOrigins" class="form-select">
+                            <option value="">--Select Reservation Origin--</option>
+                        </select>
+                        <span asp-validation-for="ReservationOriginId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CustomerNum" class="control-label"></label>
+                        <input asp-for="CustomerNum" class="form-control" type="number" min="1" value="2" max="@(Model.Available)" />
+                        <span asp-validation-for="CustomerNum" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group justify-content-center p-1">
-                <input type="submit" value="Create" class="btn btn-success btn-lg" />
+                <input type="submit" value="Assign Tables" class="btn btn-success btn-lg" />
+                <a class="btn btn-warning btn-lg" asp-action="Index" asp-route-id="@Model.SittingId">Back to List</a>
             </div>
+            <input asp-for="SittingId" hidden />
+            <input asp-for="Available" id="Available" hidden />
+            <input asp-for="SittingOpen" id="SittingOpen" hidden />
+            <input asp-for="SittingClose" id="SittingClose" hidden />
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" asp-route-id="@Model.SittingId">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

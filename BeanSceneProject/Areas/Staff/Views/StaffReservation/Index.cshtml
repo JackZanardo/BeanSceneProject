@@ -4,131 +4,162 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Reservations</h1>
-
-<p>
-    <a asp-action="Create" asp-route-id="@Model.SittingId">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Reservation Time
-            </th>
-            <th>
-                Finish time
-            </th>
-            <th>
-                Status
-            </th>
-            <th>
-                Heads
-            </th>
-            <th>
-                Tables
-            </th>
-            <th>
-                Booked by
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Reservations)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Start)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.End)
-                </td>
-                <td>
-                    @{
-                        bool pending = false, confirmed = false, seated = false, complete = false, cancelled = false;
-                        if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Pending) { pending = true; }
-                        if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Confirmed) { confirmed = true; }
-                        if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Seated) { seated = true; }
-                        if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Complete) { complete = true; }
-                        if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Cancelled) { cancelled = true; }
-                    }
-                    <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button group">
-                        <input type="radio"
-                               class="btn-check"
-                               name=@("reservation" + item.Id + "Radio")
-                               id=@("reservation" + item.Id + "Pending")
-                               autocomplete="off"
-                               checked="@(pending)"
-                               value="1"
-                               data-id="@item.Id"
-                               onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
-                        <label class="btn btn-outline-warning" for=@("reservation" + item.Id + "Pending")>Pending</label>
-                        <input type="radio"
-                               class="btn-check"
-                               name=@("reservation" + item.Id + "Radio")
-                               id=@("reservation" + item.Id + "Confirmed")
-                               autocomplete="off"
-                               checked="@(confirmed)"
-                               value="2"
-                               data-id="@item.Id"
-                               onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
-                        <label class="btn btn-outline-primary" for=@("reservation" + item.Id + "Confirmed")>Confirmed</label>
-                        <input type="radio"
-                               class="btn-check"
-                               name=@("reservation" + item.Id + "Radio")
-                               id=@("reservation" + item.Id + "Seated")
-                               autocomplete="off"
-                               checked="@(seated)"
-                               value="3"
-                               data-id="@item.Id"
-                               onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
-                        <label class="btn btn-outline-info" for=@("reservation" + item.Id + "Seated")>Seated</label>
-                        <input type="radio"
-                               class="btn-check"
-                               name=@("reservation" + item.Id + "Radio")
-                               id=@("reservation" + item.Id + "Complete")
-                               autocomplete="off"
-                               checked="@(complete)"
-                               value="4"
-                               data-id="@item.Id"
-                               onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
-                        <label class="btn btn-outline-success" for=@("reservation" + item.Id + "Complete")>Complete</label>
-                        <input type="radio"
-                               class="btn-check"
-                               name=@("reservation" + item.Id + "Radio")
-                               id=@("reservation" + item.Id + "Cancelled")
-                               autocomplete="off"
-                               checked="@(cancelled)"
-                               value="5"
-                               data-id="@item.Id"
-                               onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
-                        <label class="btn btn-outline-danger" for=@("reservation" + item.Id + "Cancelled")>Cancelled</label>
-                    </div>
-                    <span id="@("warning" + item.Id)" class="text-danger"></span>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CustomerNum)
-                </td>
-                <td>
-                    @{ 
-                        string name = (item.Person.FirstName + " " + item.Person.LastName);
-                    }
-                    @Html.DisplayFor(modelItem => name)
-                </td>
-                <td>
-                    <a asp-area="Staff" asp-controller="StaffReservation" asp-action="AddTables" asp-route-rId="@item.Id" asp-route-sId="@Model.SittingId" class="btn btn-primary">
-                        Assign Tables
-                    </a>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+<h2>Reservations</h2>
+<div class="row">
+    <h3>
+        Sitting: @Model.SittingInfo
+    </h3>
+</div>
+<div class="row">
+    <p>
+        <a class="btn btn-primary btn-lg m-1" asp-action="Create" asp-route-id="@Model.SittingId">Create New</a>
+        @{
+            if (Model.OpenWalkIn)
+            {
+                <a class="btn btn-warning btn-lg m-1" asp-action="CreateWalkIn" asp-route-id="@Model.SittingId">Walk In</a>
+            }
+            else
+            {
+                <a class="btn btn-warning btn-lg m-1 disabled" asp-action="CreateWalkIn" asp-route-id="@Model.SittingId">Walk In</a>
+            }
         }
-    </tbody>
-</table>
+
+    </p>
+</div>
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Reservation Time
+                </th>
+                <th>
+                    Finish time
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Heads
+                </th>
+                <th>
+                    Booked By
+                </th>
+                <th>Tables</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Reservations)
+            {
+                <tr>
+                    <td>
+                        @{
+                            string start = item.Start.ToShortTimeString();
+                        }
+                        @Html.DisplayFor(modelItem => start)
+                    </td>
+                    <td>
+                        @{
+                            string end = item.End.ToShortTimeString();
+                        }
+                        @Html.DisplayFor(modelItem => end)
+                    </td>
+                    <td>
+                        @{
+                            bool pending = false, confirmed = false, seated = false, complete = false, cancelled = false;
+                            if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Pending) { pending = true; }
+                            if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Confirmed) { confirmed = true; }
+                            if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Seated) { seated = true; }
+                            if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Complete) { complete = true; }
+                            if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Cancelled) { cancelled = true; }
+                        }
+                        <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio"
+                                   class="btn-check"
+                                   name=@("reservation" + item.Id + "Radio")
+                                   id=@("reservation" + item.Id + "Pending")
+                                   autocomplete="off"
+                                   checked="@(pending)"
+                                   value="1"
+                                   data-id="@item.Id"
+                                   onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
+                            <label class="btn btn-outline-warning" for=@("reservation" + item.Id + "Pending")>Pending</label>
+                            <input type="radio"
+                                   class="btn-check"
+                                   name=@("reservation" + item.Id + "Radio")
+                                   id=@("reservation" + item.Id + "Confirmed")
+                                   autocomplete="off"
+                                   checked="@(confirmed)"
+                                   value="2"
+                                   data-id="@item.Id"
+                                   onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
+                            <label class="btn btn-outline-primary" for=@("reservation" + item.Id + "Confirmed")>Confirmed</label>
+                            <input type="radio"
+                                   class="btn-check"
+                                   name=@("reservation" + item.Id + "Radio")
+                                   id=@("reservation" + item.Id + "Seated")
+                                   autocomplete="off"
+                                   checked="@(seated)"
+                                   value="3"
+                                   data-id="@item.Id"
+                                   onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
+                            <label class="btn btn-outline-info" for=@("reservation" + item.Id + "Seated")>Seated</label>
+                            <input type="radio"
+                                   class="btn-check"
+                                   name=@("reservation" + item.Id + "Radio")
+                                   id=@("reservation" + item.Id + "Complete")
+                                   autocomplete="off"
+                                   checked="@(complete)"
+                                   value="4"
+                                   data-id="@item.Id"
+                                   onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
+                            <label class="btn btn-outline-success" for=@("reservation" + item.Id + "Complete")>Complete</label>
+                            <input type="radio"
+                                   class="btn-check"
+                                   name=@("reservation" + item.Id + "Radio")
+                                   id=@("reservation" + item.Id + "Cancelled")
+                                   autocomplete="off"
+                                   checked="@(cancelled)"
+                                   value="5"
+                                   data-id="@item.Id"
+                                   onchange="UpdateStatus(this.value, this.getAttribute('data-id'))">
+                            <label class="btn btn-outline-danger" for=@("reservation" + item.Id + "Cancelled")>Cancelled</label>
+                        </div>
+                        <span id="@("warning" + item.Id)" class="text-danger"></span>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerNum)
+                    </td>
+                    <td>
+                        @{
+                            string name = (item.Person.FirstName + " " + item.Person.LastName);
+                        }
+                        @Html.DisplayFor(modelItem => name)
+                    </td>
+                    <td>
+                        @{
+                            string tables = String.Join(", ", item.Tables.Select(t => t.Name));
+                        }
+                        @Html.DisplayFor(modelItem => tables)
+                    </td>
+                    <td>
+                        <a asp-area="Staff" asp-controller="StaffReservation" asp-action="AddTables" asp-route-rId="@item.Id" asp-route-sId="@Model.SittingId" class="btn btn-primary">
+                            Assign Tables
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 @section Scripts {
     <script src="~/js/reservationIndex.js"></script>

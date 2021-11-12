@@ -2,16 +2,17 @@
 @{ 
     ViewData["Title"] = "Add Tables";
 }
-<div class="row  justify-content-center">
-    <div class="col-md-4">
+<div class="row justify-content-center">
+    <div class="col-12">
+        <h2>Assign Tables</h2>
         <p>Sititng: @Model.SittingInfo</p>
         <p>Reservation: @Model.ReservationInfo</p>
         <p>Number of people: @Model.Heads</p>
         <p>Already selected tables: @Model.ChosenTables</p>
     </div>
 </div>
-<div class="row  justify-content-center">
-    <div class="col-md-4">
+<div class="row justify-content-center">
+    <div class="col-12">
         <form asp-action="AddTables">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @foreach (var area in Model.Areas)
@@ -20,8 +21,16 @@
                 <div class="form-group">
                     @foreach (var table in Model.Tables.Where(t => t.AreaId == area.Id))
                     {
-                        <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off" />
-                        <label class="btn btn-outline-primary" for="@table.Name">@table.Name</label>
+                        if (Model.ChosenTablesId.Contains(table.Id))
+                        {
+                            <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off" checked="checked" />
+                            <label class="btn btn-outline-primary btn-lg m-1 p-1" for="@table.Name" style="width:150px">@table.Name</label>
+                        }
+                        else if(Model.FreeTableIds.Contains(table.Id))
+                        {
+                            <input type="checkbox" class="btn-check" id="@table.Name" name="SelectedTables" value="@table.Id" autocomplete="off" />
+                            <label class="btn btn-outline-primary btn-lg m-1 p-1" for="@table.Name" style="width:150px">@table.Name</label>
+                        }
                     }
                 </div>
             }
