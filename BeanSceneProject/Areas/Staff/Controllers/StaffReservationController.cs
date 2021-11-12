@@ -42,7 +42,10 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            var reservations = _context.Reservations
+            var sitting = await _context.Sittings
+                .Include(s => s.SittingType)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            var reservations = await _context.Reservations
                 .Where(r => r.SittingId == id)
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
@@ -50,11 +53,14 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .ThenInclude(s => s.Restaurant)
                 .ThenInclude(r => r.Areas)
                 .ThenInclude(a => a.Tables)
-                .OrderByDescending(r => r.Start).Reverse();
+                .OrderByDescending(r => r.Start).Reverse().ToListAsync();
+            bool walkInOpen = (sitting.Close >= DateTime.Now && sitting.Open <= DateTime.Now);
             var m = new Models.StaffReservation.Index
             {
+                OpenWalkIn = walkInOpen,
                 SittingId = id,
-                Reservations = await reservations.ToListAsync()
+                Reservations = reservations,
+                SittingInfo = $"{sitting.Open.ToShortDateString()} {sitting.Open.ToShortTimeString()} - {sitting.Close.ToShortTimeString()} {sitting.SittingType.Name}"
             };
             return View(m);
         }
@@ -132,9 +138,10 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     PersonId = person.Id
 
                 };
-                _context.Add(r);
+                _context.Reservations.Add(r);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
+                int rId = r.Id;
+                return RedirectToAction(nameof(AddTables), "StaffReservation", new { rId = rId, sId = m.SittingId });
             }
             return View(m);
         }
@@ -145,16 +152,57 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .Include(s => s.SittingType)
                 .Include(s => s.Reservations)
                 .FirstOrDefaultAsync(s => s.Id == id);
-            var resOrigins = _context.ReservationOrigins.Where(ro => ro.Name != "InPerson" && ro.Name != "Website").ToArray();
-            var m = new Create
+            if(sitting.Close <= DateTime.Now || sitting.Open >= DateTime.Now)
+            {
+                return RedirectToAction(nameof(Index), "StaffReservation", new { id = id });
+            }
+            var m = new WalkIn
             {
                 SittingId = id,
-                ReservationOrigins = new SelectList(resOrigins, nameof(ReservationOrigin.Id), nameof(ReservationOrigin.Name)),
                 Available = sitting.Available,
                 SittingClose = sitting.Close,
                 SittingOpen = sitting.Open,
                 SittingInfo = $"{sitting.Open.ToShortDateString()} {sitting.Open.ToShortTimeString()} - {sitting.Close.ToShortTimeString()} {sitting.SittingType.Name}"
             };
+            return View(m);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateWalkIn(WalkIn m)
+        {
+            if (ModelState.IsValid)
+            {
+                var sitting = await _context.Sittings.FirstOrDefaultAsync(s => s.Id == (int)m.SittingId);
+                var resOrigin = await _context.ReservationOrigins.FirstOrDefaultAsync(ro => ro.Name == "InPerson");
+                if (sitting == null) { return NotFound(); }
+                if (sitting.Close <= DateTime.Now || sitting.Open >= DateTime.Now)
+                {
+                    return NotFound();
+                }
+                var person = new Person
+                {
+                    Email = "WalkIn@Beanscene.com",
+                    FirstName = "Walk",
+                    LastName = "In",
+                    MobileNumber = "0000000000"
+                };
+                person = await _personService.UpsertPersonAsync(person, true);
+                var r = new Reservation
+                {
+                    SittingId = (int)m.SittingId,
+                    Start = DateTime.Now,
+                    Duration = m.Duration,
+                    ReservationStatus = ReservationStatus.Confirmed,
+                    ReservationOriginId = resOrigin.Id,
+                    CustomerNum = m.CustomerNum,
+                    PersonId = person.Id
+                };
+                _context.Reservations.Add(r);
+                var result = await _context.SaveChangesAsync();
+                int rId = r.Id;
+                return RedirectToAction(nameof(AddTables), "StaffReservation", new { rId = rId, sId = m.SittingId });
+            }
             return View(m);
         }
 
@@ -247,14 +295,14 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             var reservations = await _context.Reservations
                 .Include(r => r.Tables)
                 .Where(r => r.SittingId == sId).ToArrayAsync();
-            List<Table> freeTables = new List<Table>();
+            List<int> freeTables = new List<int>();
             foreach(var r in reservations)
             {
                 foreach(var t in tables)
                 {
                     if (!r.Tables.Contains(t))
                     {
-                        freeTables.Add(t);
+                        freeTables.Add(t.Id);
                     }
                 }
             }
@@ -269,10 +317,10 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 ReservationInfo = $"{reservation.Start.ToShortTimeString()} - {reservation.End.ToShortTimeString()} Status: {reservation.ReservationStatus}",
                 SittingId = sId,
                 ReservationId = rId,
-                Tables = freeTables,
-                Areas = _context.Areas.ToList()
+                Tables = await _context.Tables.ToListAsync(),
+                Areas = await _context.Areas.ToListAsync(),
+                FreeTableIds = freeTables.ToArray()
             };
-
             return View(m);
         }
 
@@ -287,10 +335,6 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 if(reservation == null)
                 {
                     return NotFound();
-                }
-                if(m.SelectedTables.Count == 0)
-                {
-                    return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
                 }
                 reservation.Tables.Clear();
                 foreach (int tableId in m.SelectedTables)

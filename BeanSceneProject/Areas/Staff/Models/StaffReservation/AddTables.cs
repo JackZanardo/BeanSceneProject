@@ -17,6 +17,7 @@ namespace BeanSceneProject.Areas.Staff.Models.StaffReservation
         public string PersonInfo { get; set; }
         public string ChosenTables { get; set; }
         public int[] ChosenTablesId { get; set; }
+        public int[] FreeTableIds { get; set; }
         public int Heads { get; set; }
         public IList<Table> Tables { get; set; }
 
