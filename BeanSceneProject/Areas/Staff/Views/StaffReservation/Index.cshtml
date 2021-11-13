@@ -4,13 +4,14 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Reservations</h2>
-<div class="row">
+
+<div class="row bg-white">
+    <h2>Reservations</h2>
     <h3>
         Sitting: @Model.SittingInfo
     </h3>
 </div>
-<div class="row">
+<div class="row bg-white">
     <p>
         <a class="btn btn-primary btn-lg m-1" asp-action="Create" asp-route-id="@Model.SittingId">Create New</a>
         @{
@@ -26,7 +27,7 @@
 
     </p>
 </div>
-<div class="row">
+<div class="row bg-white">
     <table class="table">
         <thead>
             <tr>
@@ -145,14 +146,13 @@
                         @Html.DisplayFor(modelItem => tables)
                     </td>
                     <td>
-                        <a asp-area="Staff" asp-controller="StaffReservation" asp-action="AddTables" asp-route-rId="@item.Id" asp-route-sId="@Model.SittingId" class="btn btn-primary">
+                        <a asp-area="Staff" asp-controller="StaffReservation" asp-action="AddTables" asp-route-rId="@item.Id" asp-route-sId="@Model.SittingId" class="btn btn-primary m-1">
                             Assign Tables
                         </a>
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary m-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger m-1">Delete</a>
                     </td>
                 </tr>
             }

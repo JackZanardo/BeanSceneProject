@@ -27,6 +27,8 @@ namespace BeanSceneProject.Models.Reservation
 
         [Required(ErrorMessage = "Please select a duration")]
         public int Duration { get; set; }
+
+        [Display(Name = "Special Requests")]
         public string Notes { get; set; }
 
         [Display(Name = "First Name")]

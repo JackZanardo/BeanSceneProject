@@ -35,6 +35,7 @@ namespace BeanSceneProject.Data
                 .WithMany(s => s.Reservations)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             builder.Entity<Person>()
                 .Property("UserId")
                 .HasMaxLength(450);

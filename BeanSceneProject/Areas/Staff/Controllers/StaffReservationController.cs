@@ -49,10 +49,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .Where(r => r.SittingId == id)
                 .Include(r => r.Person)
                 .Include(r => r.ReservationOrigin)
-                .Include(r => r.Sitting)
-                .ThenInclude(s => s.Restaurant)
-                .ThenInclude(r => r.Areas)
-                .ThenInclude(a => a.Tables)
+                .Include(r => r.Tables)
                 .OrderByDescending(r => r.Start).Reverse().ToListAsync();
             bool walkInOpen = (sitting.Close >= DateTime.Now && sitting.Open <= DateTime.Now);
             var m = new Models.StaffReservation.Index
@@ -331,7 +328,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             if (ModelState.IsValid)
             {
                 var tables = _context.Tables.ToArray();
-                var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == m.ReservationId);
+                var reservation = await _context.Reservations.Include(r => r.Tables).FirstOrDefaultAsync(r => r.Id == m.ReservationId);
                 if(reservation == null)
                 {
                     return NotFound();
@@ -354,7 +351,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     }
                     else
                     {
-                        throw;
+                        throw new Exception("Update failed");
                     }
                 }
                 return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId});

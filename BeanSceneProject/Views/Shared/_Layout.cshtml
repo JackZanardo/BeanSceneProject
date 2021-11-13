@@ -12,7 +12,7 @@
     <link href="~/lib/jqueryui/jquery-ui.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body class="bg">
+<body>
     <header>
         <h1 class="p-1 bg-white">Bean Scene</h1>
         <nav class="navbar navbar-expand-md navbar-dark bg-primary">
@@ -26,9 +26,6 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         @if (User.IsInRole("Member"))
                         {
                             <li class="nav-item">
@@ -36,6 +33,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="Member" asp-controller="Home" asp-action="History">Booking History</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Member" asp-controller="Home" asp-action="UpComing">Up Coming Bookings</a>
                             </li>
                         }
                         else
@@ -59,7 +59,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
                                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
@@ -81,15 +81,17 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div id="page-content" class="bg">
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
-    <footer class="border-top blockquote-footer text-muted bg-white">
-        <div class="container">
-            &copy; 2021 - BeanSceneProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="flex-shrink-0 py-4 bg-dark text-white-50">
+        <div class="container text-center">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">&copy; 2021 - Bean Scene</a>
         </div>
     </footer>
     <script src="~/lib/jquery/jquery.min.js"></script>

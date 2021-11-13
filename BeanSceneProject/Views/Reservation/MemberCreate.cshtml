@@ -2,10 +2,12 @@
 @Html.HiddenFor(d => d.StartDates)
 
 
-<h4>Make a booking</h4>
-<div class="row">
-    <div class="col-md-4">
-        <div>
+<div class="row bg-white">
+    <h4>Make a booking</h4>
+</div>
+<div class="row bg-white">
+    <div class="col-md-10">
+        <div class="row">
             <div>
                 <p>Email: @Html.DisplayFor(model => model.Email)</p>
             </div>
@@ -16,54 +18,60 @@
                 <p>Phone number: @Html.DisplayFor(model => model.MobileNumber)</p>
             </div>
         </div>
-        <form asp-action="MemberCreate">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" type="text" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerNum" class="control-label"></label>
-                <input asp-for="CustomerNum" class="form-control" type="number" min="1" value="2" max="15" />
-                <span asp-validation-for="CustomerNum" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="StartDates" class="control-label"></label>
-                <input class="form-control" type="text" id="StartDate" autocomplete="off" />
-                <span asp-validation-for="StartDates" class="text-danger" id="StartDateHelp"></span>
-            </div>
-            <div>
-                <label asp-for="SittingId" class="control-label"></label>
-                <select asp-for="SittingId" class="form-select" id="SittingSelect" disabled>
-                    <option>--Select a session--</option>
-                </select>
-                <span asp-validation-for="SittingId" class="text-danger" id="SittingSelectHelp"></span>
-            </div>
-            <div>
-                <label asp-for="StartTime" class="control-label"></label>
-                <select asp-for="StartTime" class="form-select" id="StartTime" disabled>
-                    <option value="">--Select a reservation time--</option>
-                </select>
-                <span asp-validation-for="StartTime" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="Duration" class="control-label"></label>
-                <select asp-for="Duration" class="form-select" id="Duration" disabled>
-                    <option value="">--Select a duration--</option>
-                </select>
-                <span asp-validation-for="Duration" class="text-danger"></span>
-            </div>
-            <div class="form-group justify-content-center p-1">
-                <input type="submit" value="Book" class="btn btn-success btn-lg" id="Submit" disabled />
-            </div>
-            <div hidden>
-                <input asp-for="Email" hidden />
-                <input asp-for="FirstName" hidden />
-                <input asp-for="LastName" hidden />
-                <input asp-for="MobileNumber" hidden />
-            </div>
-        </form>
+        <div class="row">
+            <form asp-action="MemberCreate">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="CustomerNum" class="control-label"></label>
+                        <input asp-for="CustomerNum" class="form-control" type="number" min="1" value="2" max="15" />
+                        <span asp-validation-for="CustomerNum" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="StartDates" class="control-label"></label>
+                        <input class="form-control" type="text" id="StartDate" autocomplete="off" />
+                        <span asp-validation-for="StartDates" class="text-danger" id="StartDateHelp"></span>
+                    </div>
+                    <div>
+                        <label asp-for="SittingId" class="control-label"></label>
+                        <select asp-for="SittingId" class="form-select" id="SittingSelect" disabled>
+                            <option>--Select a session--</option>
+                        </select>
+                        <span asp-validation-for="SittingId" class="text-danger" id="SittingSelectHelp"></span>
+                    </div>
+                    <div>
+                        <label asp-for="StartTime" class="control-label"></label>
+                        <select asp-for="StartTime" class="form-select" id="StartTime" disabled>
+                            <option value="">--Select a reservation time--</option>
+                        </select>
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Duration" class="control-label"></label>
+                        <select asp-for="Duration" class="form-select" id="Duration" disabled>
+                            <option value="">--Select a duration--</option>
+                        </select>
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Notes" class="control-label"></label>
+                    <textarea asp-for="Notes" class="form-control" type="text" rows="4"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+                <div class="form-group justify-content-center p-1">
+                    <div class="d-grid gap-2">
+                        <input type="submit" value="Book" class="btn btn-success btn-lg" id="Submit" disabled />
+                    </div>
+                </div>
+                <div hidden>
+                    <input asp-for="Email" hidden />
+                    <input asp-for="FirstName" hidden />
+                    <input asp-for="LastName" hidden />
+                    <input asp-for="MobileNumber" hidden />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -29,13 +29,12 @@
                     <th>
                         Notes
                     </th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Reservations)
                 {
-                    <tr>
+                    <tr class="table-active">
                         <td>
                             @Html.DisplayFor(i => item.Start.Date)
                         </td>
@@ -53,12 +52,6 @@
                         </td>
                         <td>
                             @Html.DisplayFor(i => item.Notes)
-                        </td>
-                        <td>
-                            @{ 
-                                string status = item.ReservationStatus.ToString();
-                            }
-                            @Html.DisplayFor(i => status)
                         </td>
                     </tr>
                 }
