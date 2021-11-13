@@ -49,7 +49,7 @@ namespace BeanSceneProject
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("AzureConnection")));
 
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlite(
