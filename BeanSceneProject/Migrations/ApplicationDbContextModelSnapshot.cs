@@ -16,7 +16,7 @@ namespace BeanSceneProject.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BeanSceneProject.Data.Area", b =>
@@ -214,14 +214,9 @@ namespace BeanSceneProject.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReservationId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AreaId");
-
-                    b.HasIndex("ReservationId");
 
                     b.ToTable("Tables");
                 });
@@ -426,6 +421,21 @@ namespace BeanSceneProject.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("ReservationTable", b =>
+                {
+                    b.Property<int>("ReservationsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TablesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReservationsId", "TablesId");
+
+                    b.HasIndex("TablesId");
+
+                    b.ToTable("ReservationTable");
+                });
+
             modelBuilder.Entity("BeanSceneProject.Data.Area", b =>
                 {
                     b.HasOne("BeanSceneProject.Data.Restaurant", "Restaurant")
@@ -459,7 +469,7 @@ namespace BeanSceneProject.Migrations
                     b.HasOne("BeanSceneProject.Data.Sitting", "Sitting")
                         .WithMany("Reservations")
                         .HasForeignKey("SittingId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Person");
@@ -531,10 +541,6 @@ namespace BeanSceneProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BeanSceneProject.Data.Reservation", null)
-                        .WithMany("Tables")
-                        .HasForeignKey("ReservationId");
-
                     b.Navigation("Area");
                 });
 
@@ -589,12 +595,22 @@ namespace BeanSceneProject.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BeanSceneProject.Data.Area", b =>
+            modelBuilder.Entity("ReservationTable", b =>
                 {
-                    b.Navigation("Tables");
+                    b.HasOne("BeanSceneProject.Data.Reservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeanSceneProject.Data.Table", null)
+                        .WithMany()
+                        .HasForeignKey("TablesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("BeanSceneProject.Data.Reservation", b =>
+            modelBuilder.Entity("BeanSceneProject.Data.Area", b =>
                 {
                     b.Navigation("Tables");
                 });

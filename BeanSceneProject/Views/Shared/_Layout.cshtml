@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en-au">
 <head>
     <meta charset="utf-8" />
@@ -10,59 +14,84 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Bean Scene</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+        <h1 class="p-1 bg-white">Bean Scene</h1>
+        <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavLeft,#navbarNavRight" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarNavLeft">
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         @if (User.IsInRole("Member"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="MemberCreate">Book Now</a>
+                                <a class="nav-link" asp-area="" asp-controller="Reservation" asp-action="MemberCreate">Book Now</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Member" asp-controller="Home" asp-action="History">Booking History</a>
+                                <a class="nav-link" asp-area="Member" asp-controller="Home" asp-action="History">Booking History</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Member" asp-controller="Home" asp-action="UpComing">Up Coming Bookings</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Create">Book Now</a>
+                                <a class="nav-link" asp-area="" asp-controller="Reservation" asp-action="Create">Book Now</a>
                             </li>
                         }
 
                         @if (User.IsInRole("Staff") || User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Staff" asp-controller="Home" asp-action="Index">Staff Area</a>
+                                <a class="nav-link" asp-area="Staff" asp-controller="Home" asp-action="Index">Staff Area</a>
                             </li>
                         }
 
                     </ul>
-                    <partial name="_LoginPartial" />
+                </div>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNavRight">
+                    <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                    <button type="submit" class="nav-link btn btn-link">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div id="page-content" class="bg">
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - BeanSceneProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="flex-shrink-0 py-4 bg-dark text-white-50">
+        <div class="container text-center">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">&copy; 2021 - Bean Scene</a>
         </div>
     </footer>
     <script src="~/lib/jquery/jquery.min.js"></script>

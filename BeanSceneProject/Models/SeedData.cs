@@ -23,6 +23,7 @@ namespace BeanSceneProject.Models
             RestaurantInit(_serviceProvider);
             CreateRoles(_serviceProvider);
             SeedAdmin(_serviceProvider);
+            SeedStaff(_serviceProvider);
         }
 
         private void ReservationOriginInit(IServiceProvider serviceProvider)
@@ -200,6 +201,32 @@ namespace BeanSceneProject.Models
                 }
             }
 
+        }
+
+        private void SeedStaff(IServiceProvider serviceProvider)
+        {
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            List<IdentityUser> baseStaff = new List<IdentityUser>();
+            baseStaff.Add(new IdentityUser
+            {
+                UserName = "Staff1",
+                Email = "Staff1@Beanscene.com",
+                EmailConfirmed = true
+            });
+            foreach (var bs in baseStaff)
+            {
+                Task<IdentityUser> userExists = userManager.FindByEmailAsync(bs.Email);
+                userExists.Wait();
+                if (userExists.Result == null)
+                {
+                    Task<IdentityResult> result = userManager.CreateAsync(bs, "Staff*123");
+                    result.Wait();
+                    if (result.Result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(bs, "Staff").Wait();
+                    }
+                }
+            }
         }
     }
 }

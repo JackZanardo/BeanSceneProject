@@ -2,7 +2,7 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<div class="justify-content-end align-items-end">
+<div class="collapse justify-content-end align-items-end" id="navbarNavRight">
     <ul class="navbar-nav">
         @if (SignInManager.IsSignedIn(User))
         {

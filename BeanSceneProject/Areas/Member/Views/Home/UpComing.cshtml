@@ -1,0 +1,101 @@
+﻿@model BeanSceneProject.Areas.Member.Models.History
+
+@{
+    ViewData["Title"] = "Up Coming";
+}
+
+<div class="row justify-content-center">
+    <div class="col-10 bg-white">
+        <h2 class="px-2">Up Coming Reservations</h2>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-10 bg-white">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Time
+                    </th>
+                    <th>
+                        Restaurant
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Notes
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Reservations)
+                {
+                    if (item.ReservationStatus == BeanSceneProject.Data.ReservationStatus.Pending)
+                    {
+                        <tr class="table-warning">
+                            <td>
+                                @Html.DisplayFor(i => item.Start.Date)
+                            </td>
+                            <td>
+                                @{
+                                    string time = item.Start.ToShortTimeString();
+                                }
+                                @Html.DisplayFor(i => time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.Sitting.Restaurant.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.Sitting.SittingType.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.Notes)
+                            </td>
+                            <td>
+                                @{
+                                    string status = item.ReservationStatus.ToString();
+                                }
+                                @Html.DisplayFor(i => status)
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="table-success">
+                            <td>
+                                @Html.DisplayFor(i => item.Start.Date)
+                            </td>
+                            <td>
+                                @{
+                                    string time = item.Start.ToShortTimeString();
+                                }
+                                @Html.DisplayFor(i => time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.Sitting.Restaurant.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.Sitting.SittingType.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.Notes)
+                            </td>
+                            <td>
+                                @{
+                                    string status = item.ReservationStatus.ToString();
+                                }
+                                @Html.DisplayFor(i => status)
+                            </td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

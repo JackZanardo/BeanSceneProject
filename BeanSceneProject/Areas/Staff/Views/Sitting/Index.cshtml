@@ -6,17 +6,20 @@
 
 <div class="row justify-content-center">
     <div class="col-12 bg-white">
-        <h2 class="px-2">Sittings List</h2>
+        <h2 class="px-2">Manager Sittings List</h2>
     </div>
 </div>
 <div class="row justify-content-center">
     <div class="col-12 bg-white">
         <p>
-            <a asp-action="Create">Create New</a>
+            <a asp-action="Create" class="btn btn-primary btn-lg">Create New</a>
         </p>
         <table class="table">
             <thead>
                 <tr>
+                    <th>
+                        Date
+                    </th>
                     <th>
                         Open Time
                     </th>
@@ -47,10 +50,22 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Open)
+                            @{
+                                string date = item.Open.ToShortDateString();
+                            }
+                            @Html.DisplayFor(modelItem => date)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Close)
+                            @{ 
+                                string open = item.Open.ToShortTimeString();
+                            }
+                            @Html.DisplayFor(modelItem => open)
+                        </td>
+                        <td>
+                            @{ 
+                                string close = item.Close.ToShortTimeString();
+                            }
+                            @Html.DisplayFor(modelItem => close)
                         </td>
                         <td>
                             <div class="btn-group p-1" role="group" aria-label="Basic radio toggle button group">

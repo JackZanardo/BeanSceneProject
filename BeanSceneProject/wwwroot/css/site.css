@@ -1,11 +1,20 @@
 ﻿
 .bg {
     /* The image used */
-    background-image: url("../images/tables.jfif");
+    background-image: url("../images/Background2.png");
     /* Full height */
     height: 100%;
     /* Center and scale the image nicely */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+#page-content {
+    flex: 1 0 auto;
 }
