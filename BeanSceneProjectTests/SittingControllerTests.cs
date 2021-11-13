@@ -156,7 +156,6 @@ namespace BeanSceneProjectTests
                 .First();
             var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Details
             {
-                Sitting = sitting,
                 Id = sitting.Id,
                 Open = sitting.Open,
                 Close = sitting.Close,
@@ -167,11 +166,11 @@ namespace BeanSceneProjectTests
                 Reservations = sitting.Reservations.Count(),
                 BookedTables = String.Join(", ", sitting.Reservations.Select(r => r.Tables.Select(t => t.Name)))
             };
-            var viewResult = _controller.Details(model.Sitting.Id);
+            var viewResult = _controller.Details(model.Id);
             viewResult.Wait();
             var result = viewResult.Result;
 
-            var sittingResullt = _context.Sittings.FirstOrDefaultAsync(s => s.Id == model.Sitting.Id);
+            var sittingResullt = _context.Sittings.FirstOrDefaultAsync(s => s.Id == model.Id);
             sittingResullt.Wait();
 
             Assert.IsNotNull(result);
@@ -202,7 +201,6 @@ namespace BeanSceneProjectTests
 
             var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Update
             {
-                Sitting = sitting,
                 Open = sitting.Open,
                 Close = sitting.Close,
                 RestuarantId = sitting.RestaurantId,
@@ -211,10 +209,10 @@ namespace BeanSceneProjectTests
                 IsClosed = true
             };
 
-            var viewResult = _controller.Edit(model.Sitting.Id, model);
+            var viewResult = _controller.Edit(model.Id, model);
             viewResult.Wait();
             
-            var sittingResullt = _context.Sittings.FirstOrDefaultAsync(s => s.Id == model.Sitting.Id);
+            var sittingResullt = _context.Sittings.FirstOrDefaultAsync(s => s.Id == model.Id);
             sittingResullt.Wait();
 
             Assert.IsNotNull(viewResult);

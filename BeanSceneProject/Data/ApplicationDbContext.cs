@@ -23,6 +23,7 @@ namespace BeanSceneProject.Data
         public DbSet<Area> Areas { get; set; }
         public DbSet<Person> People { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -17,51 +17,51 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         public StaffController(ApplicationDbContext context) : base(context) { }
 
         //GET: Sittings with sitting type and reservations
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Staff
-                .Include(s => s.StaffType)
-                .Include(s => s.Restaurant);
-            return View(await applicationDbContext.ToListAsync());
-        }
+        //public async Task<IActionResult> Index()
+        //{
+        //    var applicationDbContext = _context.Staff
+        //        .Include(s => s.StaffType)
+        //        .Include(s => s.Restaurant);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
 
-        //GET: Sittings/Details
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        ////GET: Sittings/Details
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var staff = await _context.Staff
-                .Include(s => s.StaffType)
-                .FirstOrDefaultAsync(s => s.Id == id);
-            if (staff == null)
-            {
-                return NotFound();
-            }
-            var model = new Models.Staff.Details
-            {
-                Id = staff.Id,
-                FirstName = staff.FirstName,
-                LastName = staff.LastName,
-                Email = staff.Email,
-                Restuarant = staff.Restaurant.Name,
-                StaffType = staff.StaffType.Name,
-            };
-            return View(model);
-        }
+        //    var staff = await _context.Staff
+        //        .Include(s => s.StaffType)
+        //        .FirstOrDefaultAsync(s => s.Id == id);
+        //    if (staff == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var model = new Models.Staff.Details
+        //    {
+        //        Id = staff.Id,
+        //        FirstName = staff.FirstName,
+        //        LastName = staff.LastName,
+        //        Email = staff.Email,
+        //        Restuarant = staff.Restaurant.Name,
+        //        StaffType = staff.StaffType.Name,
+        //    };
+        //    return View(model);
+        //}
 
-        //GET: Sittings/Create
-        public IActionResult Create()
-        {
-            var m = new Models.Staff.Create
-            {
-                Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
-                StaffTypes = JsonSerializer.Serialize(_context.StaffTypes.ToArray())
-            };
-            return View(m);
-        }
+        ////GET: Sittings/Create
+        //public IActionResult Create()
+        //{
+        //    var m = new Models.Staff.Create
+        //    {
+        //        Restraunts = new SelectList(_context.Restaurants.ToArray(), nameof(Restaurant.Id), nameof(Restaurant.Name)),
+        //        StaffTypes = JsonSerializer.Serialize(_context.StaffTypes.ToArray())
+        //    };
+        //    return View(m);
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
