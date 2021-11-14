@@ -4,26 +4,27 @@
     ViewData["Title"] = "Walk In";
 }
 
-<h2>Create New Walk In</h2>
 
-<h4>Reservation</h4>
-<hr />
-<div>
-    <p>Sitting: @Model.SittingInfo</p>
-    <p>Seats available: @Model.Available</p>
-</div>
 <div class="row justify-content-center">
-    <div class="col-12">
+    <div class="col-6 bg-white">
+        <h2>Create New Walk In</h2>
+
+        <h4>Reservation</h4>
+        <hr />
+        <div>
+            <p>Sitting: @Model.SittingInfo</p>
+            <p>Seats available: @Model.Available</p>
+        </div>
         <form asp-action="CreateWalkIn" id="ReservationCreate">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row justify-content-center">
                 <div class="col-md-6">
-                    <div class="form-group">
+                    <div class="form-group m-1">
                         <label asp-for="CustomerNum" class="control-label"></label>
                         <input asp-for="CustomerNum" class="form-control p-2" type="number" min="1" value="2" max="@(Model.Available)" />
                         <span asp-validation-for="CustomerNum" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group m-1">
                         <span>Duration:</span>
                         <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                             <input type="radio" class="btn-check" name="Duration" id="duration1" autocomplete="off" checked="" value="30" />
@@ -35,12 +36,11 @@
                         </div>
                         <span asp-validation-for="Duration" class="text-danger"></span>
                     </div>
-                    
+                    <div class="form-group justify-content-center p-1">
+                        <input type="submit" value="Assign Tables" class="btn btn-success btn-lg" />
+                        <a class="btn btn-warning btn-lg" asp-action="Index" asp-route-id="@Model.SittingId">Back to List</a>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group justify-content-center p-1">
-                <input type="submit" value="Assign Tables" class="btn btn-success btn-lg" />
-                <a class="btn btn-warning btn-lg" asp-action="Index" asp-route-id="@Model.SittingId">Back to List</a>
             </div>
             <input asp-for="SittingId" hidden />
             <input asp-for="Available" id="Available" hidden />
