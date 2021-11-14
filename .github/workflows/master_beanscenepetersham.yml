@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'BeanScenePetersham'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1A054C688E584BBFA466377AE0D77AD8 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B093153DB67F42CF8164A54E72A4273D }}
           package: .
