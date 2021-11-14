@@ -62,8 +62,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         public IActionResult Create()
         {
-            Trace.Listeners.Add(new TextWriterTraceListener("SittingCreateGetOutput.log"));
-            Debug.WriteLine("Debugging in SittingController Create GET");
+            //Trace.Listeners.Add(new TextWriterTraceListener("SittingCreateGetOutput.log"));
+            //Debug.WriteLine("Debugging in SittingController Create GET");
             var m = new Models.Sitting.Create
             {
                 StartDate = DateTime.Today,
@@ -71,15 +71,15 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 SittingTypeSelect = new SelectList(_context.SittingTypes.ToArray(), nameof(SittingType.Id), nameof(SittingType.Name)),
                 SittingTypes = _context.SittingTypes.ToArray()
             };
-            Debug.WriteLine("Checking View model not null");
-            Debug.Assert(m is { }, "View model is null");
-            Debug.WriteLineIf(m is { }, "View model is not null");
-            Debug.WriteLine("Checking View model data");
-            Debug.WriteLineIf(m.StartDate != DateTime.Today, "Start date not established");
-            Debug.Assert(m.Restuarants is { }, "Restaurant select list is null");
-            Debug.Assert(m.SittingTypeSelect is { }, "Sitting type select is null");
-            Debug.WriteLine("View model data is correct");
-            Trace.Close();
+            //Debug.WriteLine("Checking View model not null");
+            //Debug.Assert(m is { }, "View model is null");
+            //Debug.WriteLineIf(m is { }, "View model is not null");
+            //Debug.WriteLine("Checking View model data");
+            //Debug.WriteLineIf(m.StartDate != DateTime.Today, "Start date not established");
+            //Debug.Assert(m.Restuarants is { }, "Restaurant select list is null");
+            //Debug.Assert(m.SittingTypeSelect is { }, "Sitting type select is null");
+            //Debug.WriteLine("View model data is correct");
+            //Trace.Close();
             return View(m);
         }
 
@@ -88,50 +88,50 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Models.Sitting.Create m)
         {
-            Trace.Listeners.Add(new TextWriterTraceListener("SittingCreatePostOutput.log"));
-            Debug.WriteLine("Debugging in SittingController Create POST");
+            //Trace.Listeners.Add(new TextWriterTraceListener("SittingCreatePostOutput.log"));
+            //Debug.WriteLine("Debugging in SittingController Create POST");
             if (ModelState.IsValid)
             {
                 if (m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
                 {
-                    Debug.WriteLine("Model time data invalid");
+                    //Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting ends before current time");
-                    Trace.Close();
+                    //Trace.Close();
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
                 {
-                    Debug.WriteLine("Model time data invalid");
+                    //Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting begins before current time");
-                    Trace.Close();
+                    //Trace.Close();
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks >= m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks)
                 {
-                    Debug.WriteLine("Model time data invalid");
+                    //Debug.WriteLine("Model time data invalid");
                     ModelState.AddModelError("", "Sitting begins before close time");
-                    Trace.Close();
+                    //Trace.Close();
                     return View(m);
                 }
                 if (m.Capacity < 0)
                 {
-                    Debug.WriteLine("Model Capacity invalid");
+                    //Debug.WriteLine("Model Capacity invalid");
                     ModelState.AddModelError("", "Can not enter a negative capacity");
-                    Trace.Close();
+                    //Trace.Close();
                     return View(m);
                 }
                 if (!SittingTypeExists(m.SittingTypeId))
                 {
-                    Debug.WriteLine("Model sitting type invalid");
+                    //Debug.WriteLine("Model sitting type invalid");
                     ModelState.AddModelError("", "Invalid or no sitting type selected");
-                    Trace.Close();
+                    //Trace.Close();
                     return View(m);
                 }
                 if (!RestaurantExists(m.RestuarantId))
                 {
-                    Debug.WriteLine("Model Restaurant invalid");
+                    //Debug.WriteLine("Model Restaurant invalid");
                     ModelState.AddModelError("", "Invalid or no restuarant selected");
-                    Trace.Close();
+                    //Trace.Close();
                     return View(m);
                 }
                 var s = new Sitting
@@ -143,26 +143,26 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                     RestaurantId = m.RestuarantId,
                     IsClosed = false
                 };
-                Debug.Assert(s is { }, "Failed to create instance of Sitting");
-                Debug.WriteLineIf(s is { }, "Instance of sitting created");
+                //Debug.Assert(s is { }, "Failed to create instance of Sitting");
+                //Debug.WriteLineIf(s is { }, "Instance of sitting created");
                 try
                 {
                     _context.Add(s);
                     var result = await _context.SaveChangesAsync();
-                    Debug.Assert(result == 1, "Failed to persist sitting");
-                    Debug.WriteLineIf(result == 1, "1 row entered into Sittings table");
-                    Debug.WriteLine("Sitting successfully persisted");
-                    Trace.Close();
+                    //Debug.Assert(result == 1, "Failed to persist sitting");
+                    //Debug.WriteLineIf(result == 1, "1 row entered into Sittings table");
+                    //Debug.WriteLine("Sitting successfully persisted");
+                    //Trace.Close();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException)
                 {
-                    Debug.WriteLine("DbUpdateException occurred. Failed to add new Sitting.");
+                    //Debug.WriteLine("DbUpdateException occurred. Failed to add new Sitting.");
                     throw new Exception("Failed to add Sitting to database");
                 }
             }
-            Debug.WriteLine("Model State is invalid");
-            Trace.Close();
+            //Debug.WriteLine("Model State is invalid");
+            //Trace.Close();
             return View(m);
 
         }

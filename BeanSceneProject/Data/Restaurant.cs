@@ -12,6 +12,5 @@ namespace BeanSceneProject.Data
         public Address Address { get; set; }
         public List<Area> Areas { get; set; } = new List<Area>();
         public List<Sitting> Sittings { get; set; } = new List<Sitting>();
-        public List<StaffMember> Staff { get; set; } = new List<StaffMember>();
     }
 }
