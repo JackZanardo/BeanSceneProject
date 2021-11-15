@@ -23,7 +23,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             var applicationDbContext = _context.Sittings
                 .Include(s => s.SittingType)
                 .Include(s => s.Reservations)
-                .Include(s => s.Restaurant);
+                .Include(s => s.Restaurant)
+                .OrderByDescending(s => s.Open)
+                .Reverse();
             return View(await applicationDbContext.ToListAsync());
         }
 
