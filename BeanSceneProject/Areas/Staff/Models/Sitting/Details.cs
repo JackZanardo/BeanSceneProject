@@ -8,6 +8,7 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
 {
     public class Details
     {
+        public BeanSceneProject.Data.Sitting Sitting { get; set; }
         public int Id { get; set; }
 
         [Display(Name ="Open Time")]
@@ -16,7 +17,7 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
         [Display(Name ="Close Time")]
         public DateTime Close { get; set; }
 
-        [Display(Name ="Staus")]
+        [Display(Name ="Status")]
         public bool IsClosed { get; set; }
 
         [Display(Name ="Capacity")]

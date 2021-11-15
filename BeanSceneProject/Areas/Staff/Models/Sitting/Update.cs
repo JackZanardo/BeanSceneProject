@@ -11,6 +11,7 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
     public class Update
     {
         public BeanSceneProject.Data.Sitting Sitting { get; set; }
+        public int Id { get; set; }
         [Required]
         public DateTime Open { get; set; }
         [Required]

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,10 @@ namespace BeanSceneProject
 {
     public class Program
     {
+        private static Logger logger = LogManager.GetLogger("LoggerRules");
         public static void Main(string[] args)
         {
+            logger.Debug("init main");
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
     [Area("Staff"), Authorize(Roles = "Admin")]
     public class SittingController : StaffAreaBaseController
     {
+        private static Logger logger = LogManager.GetLogger("LoggerRules");
         public SittingController(ApplicationDbContext context) : base(context) { }
 
         //GET: Sittings with sitting type and reservations
@@ -80,36 +82,43 @@ namespace BeanSceneProject.Areas.Staff.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Create(Models.Sitting.Create m)
         {
+            logger.Info("Entering Create Method In Sitting Controller");
             if (ModelState.IsValid)
             {
                 if (m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
                 {
                     ModelState.AddModelError("", "Sitting ends before current time");
+                    logger.Error("Exiting Create Method In Sitting Controller. Sitting Creation Failed Due To Incorrect Data");
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks <= DateTime.Now.Ticks)
                 {
                     ModelState.AddModelError("", "Sitting begins before current time");
+                    logger.Error("Exiting Create Method In Sitting Controller. Sitting Creation Failed Due To Incorrect Data");
                     return View(m);
                 }
                 if (m.StartDate.Add(m.OpenTime.TimeOfDay).Ticks >= m.StartDate.Add(m.CloseTime.TimeOfDay).Ticks)
                 {
                     ModelState.AddModelError("", "Sitting begins before close time");
+                    logger.Error("Exiting Create Method In Sitting Controller. Sitting Creation Failed Due To Incorrect Data");
                     return View(m);
                 }
-                if (m.Capacity < 0)
+                if (m.Capacity <= 0)
                 {
-                    ModelState.AddModelError("", "Can not enter a negative capacity");
+                    ModelState.AddModelError("", "Please enter a positive whole number for capacity");
+                    logger.Error("Exiting Create Method In Sitting Controller. Sitting Creation Failed Due To Incorrect Data");
                     return View(m);
                 }
                 if (!SittingTypeExists(m.SittingTypeId))
                 {
                     ModelState.AddModelError("", "Invalid or no sitting type selected");
+                    logger.Error("Exiting Create Method In Sitting Controller. Sitting Creation Failed Due To Incorrect Data");
                     return View(m);
                 }
                 if (!RestaurantExists(m.RestuarantId))
                 {
                     ModelState.AddModelError("", "Invalid or no restuarant selected");
+                    logger.Error("Exiting Create Method In Sitting Controller. Sitting Creation Failed Due To Incorrect Data");
                     return View(m);
                 }
                 var s = new Sitting
@@ -123,9 +132,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 };
                 _context.Add(s);
                 await _context.SaveChangesAsync();
+                logger.Info("Exiting Create Method In Sitting Controller. Sitting Creation Successful. Sitting Successfully Stored in Database");
                 return RedirectToAction(nameof(Index));
             }
-
             return View(m);
 
         }
@@ -267,6 +276,35 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             }
 
             return View(m);
+        }
+
+        public async Task<IActionResult> Report(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var sitting = await _context.Sittings
+                .Include(s => s.Reservations)
+                .ThenInclude(r => r.Tables)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            if (sitting == null)
+            {
+                return NotFound();
+            }
+            var model = new Models.Sitting.Report
+            {
+                Id = sitting.Id,
+                Heads = sitting.Heads,
+                BookedTables = String.Join(", ", sitting.Reservations.Select(r => r.Tables.Select(t => t.Name))),
+                TotalReservations = sitting.Reservations.Count(),
+                PendingReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Pending),
+                ConfirmedReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Confirmed),
+                CompletedReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Complete),
+                CancelledReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Cancelled),
+            };
+            return View(model);
         }
 
         private bool SittingExists(int id)

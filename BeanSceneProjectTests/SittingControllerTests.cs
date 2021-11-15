@@ -66,7 +66,6 @@ namespace BeanSceneProjectTests
             var originalcount = _context.Sittings.Count();
             var model = new BeanSceneProject.Areas.Staff.Models.Sitting.Create
             {
-                StartDate = DateTime.Today.AddHours(24),
                 OpenTime = new DateTime(2015, 12, 31),
                 CloseTime = DateTime.Today.AddHours(35),
                 RestuarantId = _context.Restaurants.First().Id,
