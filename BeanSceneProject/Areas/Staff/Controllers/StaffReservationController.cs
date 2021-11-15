@@ -288,24 +288,19 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         public async Task<IActionResult> AddTables(int rId, int sId)
         {
-            var tables = _context.Tables.Include(t => t.Area).ToArray();
+            var tables = await _context.Tables.Include(t => t.Area).ToListAsync();
             var reservations = await _context.Reservations
                 .Include(r => r.Tables)
                 .Where(r => r.SittingId == sId).ToArrayAsync();
-            List<int> freeTables = new List<int>();
-            foreach(var r in reservations)
-            {
-                foreach(var t in tables)
-                {
-                    if (!r.Tables.Contains(t))
-                    {
-                        freeTables.Add(t.Id);
-                    }
-                }
-            }
+            var freeTables = await _context.Tables
+                .Include(r => r.Reservations.Where(r => r.SittingId == sId))
+                .Where(t => t.Reservations.Count == 0)
+                .Select(t => t.Id)
+                .ToListAsync();
+            ///List<int> freeTables = new List<int>();
             var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == rId);
             var sitting = await _context.Sittings.Include(s => s.SittingType).FirstOrDefaultAsync(s => s.Id == sId);
-            var m = new Models.StaffReservation.AddTables
+            var m = new AddTables
             {
                 ChosenTables = String.Join(", ", reservation.Tables.Select(t => t.Name)),
                 ChosenTablesId = reservation.Tables.Select(t => t.Id).ToArray(),
@@ -323,11 +318,11 @@ namespace BeanSceneProject.Areas.Staff.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTables(Models.StaffReservation.AddTables m)
+        public async Task<IActionResult> AddTables(AddTables m)
         {
             if (ModelState.IsValid)
             {
-                var tables = _context.Tables.ToArray();
+                var tables = _context.Tables.Include(t => t.Reservations);
                 var reservation = await _context.Reservations.Include(r => r.Tables).FirstOrDefaultAsync(r => r.Id == m.ReservationId);
                 if(reservation == null)
                 {
@@ -340,6 +335,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 }
                 try
                 {
+                    _context.Tables.UpdateRange(tables);
                     _context.Update(reservation);
                     await _context.SaveChangesAsync();
                 }
@@ -354,7 +350,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                         throw new Exception("Update failed");
                     }
                 }
-                return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId});
+                return RedirectToAction(nameof(Index), "StaffReservation", new { id = m.SittingId });
             }
             return View(m);
         }
