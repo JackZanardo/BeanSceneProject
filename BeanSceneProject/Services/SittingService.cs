@@ -30,13 +30,13 @@ namespace BeanSceneProject.Services
 
         public IQueryable<Sitting> GetSittings()
         {
-            var sittings =  _context.Sittings.Include(s => s.SittingType).Include(s => s.Restaurant);
+            var sittings =  _context.Sittings.Include(s => s.SittingType).Include(s => s.Restaurant).Include(s => s.Reservations);
             return sittings;
         }
 
         public IQueryable<Sitting> GetSittings(DateTime openDate)
         {
-            var sittings = _context.Sittings.Include(s => s.SittingType).Include(s => s.Restaurant).Where(s => s.Open.Date == openDate);
+            var sittings = _context.Sittings.Include(s => s.SittingType).Include(s => s.Restaurant).Include(s => s.Reservations).Where(s => s.Open.Date == openDate);
             return sittings;
         }
     }

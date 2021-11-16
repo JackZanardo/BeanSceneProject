@@ -328,6 +328,35 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return true;
         }
 
+        public async Task<IActionResult> Report(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var sitting = await _context.Sittings
+                .Include(s => s.Reservations)
+                .ThenInclude(r => r.Tables)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            if (sitting == null)
+            {
+                return NotFound();
+            }
+            var model = new Models.Sitting.Report
+            {
+                Id = sitting.Id,
+                Heads = sitting.Heads,
+                BookedTables = String.Join(", ", sitting.Reservations.Select(r => r.Tables.Select(t => t.Name))),
+                TotalReservations = sitting.Reservations.Count(),
+                PendingReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Pending),
+                ConfirmedReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Confirmed),
+                CompletedReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Complete),
+                CancelledReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Cancelled),
+            };
+            return View(model);
+        }
+
         private bool SittingExists(int id)
         {
             return _context.Sittings.Any(e => e.Id == id);
