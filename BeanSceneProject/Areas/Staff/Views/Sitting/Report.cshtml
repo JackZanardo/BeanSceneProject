@@ -1,0 +1,60 @@
+﻿@model BeanSceneProject.Areas.Staff.Models.Sitting.Report
+
+@{
+    ViewData["Title"] = "Report";
+}
+
+
+<div>
+    <div class="row bg-white">
+        <h2>Report of reservations:</h2>
+        <hr />
+    </div>
+    <dl class="row bg-white">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Heads)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Heads)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BookedTables)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BookedTables)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalReservations)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalReservations)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PendingReservations)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PendingReservations)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ConfirmedReservations)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ConfirmedReservations)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CompletedReservations)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CompletedReservations)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CancelledReservations)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CancelledReservations)
+        </dd>
+    </dl>
+</div>
+<div class="row bg-white">
+    <a asp-action="Index" class="btn btn-warning">Back to List</a>
+</div>
