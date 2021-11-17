@@ -13,6 +13,7 @@ namespace BeanSceneProject.Areas.Staff.Models.StaffReservation
         public string SittingInfo { get; set; }
         public int ReservationId { get; set; }
         public string ReservationInfo { get; set; }
+        public string ReservationNotes { get; set; }
 
         public string PersonInfo { get; set; }
         public string ChosenTables { get; set; }

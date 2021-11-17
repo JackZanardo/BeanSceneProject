@@ -36,7 +36,10 @@
                 {
                     <tr class="table-active">
                         <td>
-                            @Html.DisplayFor(i => item.Start.Date)
+                            @{
+                                string date = item.Start.ToShortDateString();
+                            }
+                            @Html.DisplayFor(i => date)
                         </td>
                         <td>
                             @{ 

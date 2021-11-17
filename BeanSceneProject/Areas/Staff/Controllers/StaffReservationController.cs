@@ -309,7 +309,8 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 ReservationId = rId,
                 Tables = await _context.Tables.ToListAsync(),
                 Areas = await _context.Areas.ToListAsync(),
-                FreeTableIds = freeTables.Select(t => t.Id).ToArray()
+                FreeTableIds = freeTables.Select(t => t.Id).ToArray(),
+                ReservationNotes = reservation.Notes
             };
             return View(m);
         }
