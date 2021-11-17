@@ -292,11 +292,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             var reservations = await _context.Reservations
                 .Include(r => r.Tables)
                 .Where(r => r.SittingId == sId).ToArrayAsync();
-            var freeTables = await _context.Tables
-                .Include(r => r.Reservations.Where(r => r.SittingId == sId))
-                .Where(t => t.Reservations.Count == 0)
-                .Select(t => t.Id)
-                .ToListAsync();
+            var sittingTables = await _context.Tables
+                .Include(r => r.Reservations.Where(r => r.SittingId == sId)).ToListAsync();
+            var freeTables = sittingTables.Where(t => t.Reservations.Count == 0);
             ///List<int> freeTables = new List<int>();
             var reservation = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == rId);
             var sitting = await _context.Sittings.Include(s => s.SittingType).FirstOrDefaultAsync(s => s.Id == sId);
@@ -311,7 +309,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 ReservationId = rId,
                 Tables = await _context.Tables.ToListAsync(),
                 Areas = await _context.Areas.ToListAsync(),
-                FreeTableIds = freeTables.ToArray(),
+                FreeTableIds = freeTables.Select(t => t.Id).ToArray(),
                 ReservationNotes = reservation.Notes
             };
             return View(m);
