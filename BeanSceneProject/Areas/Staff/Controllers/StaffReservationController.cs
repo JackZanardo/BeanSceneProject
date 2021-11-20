@@ -24,16 +24,32 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             _personService = personService;
         }
 
-        public async Task<IActionResult> SittingIndex()
+        public async Task<IActionResult> SittingIndex(DateTime? date)
         {
-            var sittings = _context.Sittings
-                .Where(s => !s.IsClosed && s.Close >= DateTime.Now)
-                .Include(s => s.SittingType)
-                .Include(s => s.Restaurant)
-                .Include(s => s.Reservations)
-                .ThenInclude(r => r.ReservationOrigin)
-                .OrderByDescending(s => s.Open).Reverse();
-            return View(await sittings.ToListAsync());
+
+            if (date is not null)
+            {
+                var sittings = _context.Sittings
+                    .Where(s => !s.IsClosed && s.Open.Date == ((DateTime)date).Date)
+                    .Include(s => s.SittingType)
+                    .Include(s => s.Restaurant)
+                    .Include(s => s.Reservations)
+                    .ThenInclude(r => r.ReservationOrigin)
+                    .OrderByDescending(s => s.Open)
+                    .Reverse();
+                return View(await sittings.ToListAsync());
+            }
+            else
+            {
+                var sittings = _context.Sittings
+                    .Where(s => !s.IsClosed && s.Close >= DateTime.Now)
+                    .Include(s => s.SittingType)
+                    .Include(s => s.Restaurant)
+                    .Include(s => s.Reservations)
+                    .ThenInclude(r => r.ReservationOrigin)
+                    .OrderByDescending(s => s.Open).Reverse();
+                return View(await sittings.ToListAsync());
+            }
         }
 
         public async Task<IActionResult> Index(int? id)

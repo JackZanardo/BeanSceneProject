@@ -17,16 +17,55 @@ namespace BeanSceneProject.Areas.Staff.Controllers
     {
         public SittingController(ApplicationDbContext context) : base(context) { }
 
-        //GET: Sittings with sitting type and reservations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? date, bool? isClosed)
         {
-            var applicationDbContext = _context.Sittings
-                .Include(s => s.SittingType)
-                .Include(s => s.Reservations)
-                .Include(s => s.Restaurant)
-                .OrderByDescending(s => s.Open)
-                .Reverse();
-            return View(await applicationDbContext.ToListAsync());
+            if(isClosed is not null)
+            {
+                if(date is not null)
+                {
+                    var applicationDbContext = _context.Sittings
+                        .Include(s => s.SittingType)
+                        .Include(s => s.Reservations)
+                        .Include(s => s.Restaurant)
+                        .Where(s => s.Open.Date == ((DateTime)date).Date && s.IsClosed == isClosed)
+                        .OrderByDescending(s => s.Open)
+                        .Reverse();
+                    return View(await applicationDbContext.ToListAsync());
+                }
+                else
+                {
+                    var applicationDbContext = _context.Sittings
+                        .Include(s => s.SittingType)
+                        .Include(s => s.Reservations)
+                        .Include(s => s.Restaurant)
+                        .Where(s => s.IsClosed == isClosed)
+                        .OrderByDescending(s => s.Open)
+                        .Reverse();
+                    return View(await applicationDbContext.ToListAsync());
+                }
+
+            }
+            else if (date is not null)
+            {
+                var applicationDbContext = _context.Sittings
+                    .Include(s => s.SittingType)
+                    .Include(s => s.Reservations)
+                    .Include(s => s.Restaurant)
+                    .Where(s => s.Open.Date == ((DateTime)date).Date)
+                    .OrderByDescending(s => s.Open)
+                    .Reverse();
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var applicationDbContext = _context.Sittings
+                    .Include(s => s.SittingType)
+                    .Include(s => s.Reservations)
+                    .Include(s => s.Restaurant)
+                    .OrderByDescending(s => s.Open)
+                    .Reverse();
+                return View(await applicationDbContext.ToListAsync());
+            }
         }
 
         //GET: Sittings/Details
