@@ -83,6 +83,61 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             return View(reservation);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var reservation = await _context.Reservations
+                .Include(r => r.Person)
+                .Include(r => r.Tables)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.Restaurant)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.SittingType)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            return View(reservation);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var reservation = await _context.Reservations
+                .Include(r => r.Person)
+                .Include(r => r.Tables)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.Restaurant)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            int sId = reservation.SittingId;
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                _context.Reservations.Remove(reservation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index), sId);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReservationExists(reservation.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw new Exception("Reservation update failed");
+                }
+            }
+        }
+
         public async Task<IActionResult> Create(int? id)
         {
             if(id == null) { return NotFound(); }
