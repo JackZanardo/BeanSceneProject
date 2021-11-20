@@ -457,7 +457,7 @@ namespace BeanSceneProject.Migrations
                     b.HasOne("BeanSceneProject.Data.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BeanSceneProject.Data.ReservationOrigin", "ReservationOrigin")
@@ -469,7 +469,7 @@ namespace BeanSceneProject.Migrations
                     b.HasOne("BeanSceneProject.Data.Sitting", "Sitting")
                         .WithMany("Reservations")
                         .HasForeignKey("SittingId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Person");
@@ -519,13 +519,13 @@ namespace BeanSceneProject.Migrations
                     b.HasOne("BeanSceneProject.Data.Restaurant", "Restaurant")
                         .WithMany("Sittings")
                         .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BeanSceneProject.Data.SittingType", "SittingType")
                         .WithMany()
                         .HasForeignKey("SittingTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Restaurant");

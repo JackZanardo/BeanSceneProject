@@ -261,55 +261,32 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 return NotFound();
             }
-            var m = new Models.Sitting.Delete
-            {
-                Id = sitting.Id,
-                Open = sitting.Open,
-                Close = sitting.Close,
-                IsClosed = sitting.IsClosed,
-                Capacity = sitting.Capacity,
-                Heads = sitting.Heads,
-                SittingType = sitting.SittingType.Name,
-                Reservations = sitting.Reservations.Count()
-            };
-            foreach (var r in sitting.Reservations)
-            {
-                foreach (var t in r.Tables)
-                {
-                    m.BookedTables.Add(t.Name);
-                }
-            }
-            return View(m);
+            return View(sitting);
         }
 
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, Models.Sitting.Delete m)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (ModelState.IsValid)
+            Sitting s = _context.Sittings.Find(id);
+            try
             {
-                Sitting s = _context.Sittings.Find(id);
-                try
-                {
-                    _context.Sittings.Remove(s);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SittingExists(s.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Sittings.Remove(s);
+                await _context.SaveChangesAsync();
             }
-
-            return View(m);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SittingExists(s.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw new Exception("Failed to delete sitting");
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<bool> UpdateIsClosed(string value, string id)
@@ -339,6 +316,9 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 .Include(s => s.Reservations)
                 .ThenInclude(r => r.Tables)
                 .FirstOrDefaultAsync(s => s.Id == id);
+            var sittingTables = await _context.Tables
+                .Include(r => r.Reservations.Where(r => r.SittingId == id)).ToListAsync();
+            var bookedTables = sittingTables.Where(t => t.Reservations.Count > 0);
             if (sitting == null)
             {
                 return NotFound();
@@ -347,7 +327,7 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             {
                 Id = sitting.Id,
                 Heads = sitting.Heads,
-                BookedTables = String.Join(", ", sitting.Reservations.Select(r => r.Tables.Select(t => t.Name))),
+                BookedTables = String.Join(", ", bookedTables.Select(t => t.Name)),
                 TotalReservations = sitting.Reservations.Count(),
                 PendingReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Pending),
                 ConfirmedReservations = sitting.Reservations.Count(s => s.ReservationStatus == ReservationStatus.Confirmed),

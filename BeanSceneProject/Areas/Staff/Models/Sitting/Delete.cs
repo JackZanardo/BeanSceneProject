@@ -8,13 +8,12 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
 {
     public class Delete
     {
-        public BeanSceneProject.Data.Sitting Sitting { get; set; }
         public int Id { get; set; }
         [Display(Name = "Open Time")]
         public DateTime Open { get; set; }
         [Display(Name = "Close Time")]
         public DateTime Close { get; set; }
-        [Display(Name = "Staus")]
+        [Display(Name = "Status")]
         public bool IsClosed { get; set; }
         [Display(Name = "Capacity")]
         public int Capacity { get; set; }
@@ -23,7 +22,7 @@ namespace BeanSceneProject.Areas.Staff.Models.Sitting
         [Display(Name = "Number of Reservations")]
         public int Reservations { get; set; }
         [Display(Name = "Booked Tables")]
-        public List<string> BookedTables { get; set; }
+        public List<string> BookedTables { get; set; } = new List<string>();
         [Display(Name = "Restuarant")]
         public string Restuarant { get; set; }
         [Display(Name = "Sitting Type")]
