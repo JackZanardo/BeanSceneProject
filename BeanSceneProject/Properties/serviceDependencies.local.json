@@ -2,16 +2,7 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql.local",
-      "connectionId": "ConnectionStrings:AzureConnection"
-    },
-    "secrets1": {
-      "type": "secrets.user"
-    },
-    "mssql2": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/bean-scene-server/databases/BeanSceneDatabase",
-      "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:DefaultConnection",
-      "secretStore": "LocalSecretsFile"
+      "connectionId": "ConnectionStrings:DefaultConnection"
     }
   }
 }
