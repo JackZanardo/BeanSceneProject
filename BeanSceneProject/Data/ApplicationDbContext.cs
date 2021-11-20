@@ -36,6 +36,25 @@ namespace BeanSceneProject.Data
                 .WithMany(s => s.Reservations)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Reservation>()
+                .HasOne(r => r.Person)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Sitting>()
+                .HasMany(s => s.Reservations)
+                .WithOne(r => r.Sitting)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Sitting>()
+                .HasOne(s => s.SittingType)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Sitting>()
+                .HasOne(s => s.Restaurant)
+                .WithMany(r => r.Sittings)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Person>()
                 .Property("UserId")
