@@ -95,9 +95,10 @@ namespace BeanSceneProject.Controllers
                     ReservationStatus = ReservationStatus.Pending,
                     PersonId = person.Id
                 };
-                _context.Add(r);
+                _context.Reservations.Add(r);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), "Home");
+                int id = r.Id;
+                return RedirectToAction(nameof(ThankYou), "Reservation", new { id });
             }
             return View(m);
         }
@@ -165,11 +166,33 @@ namespace BeanSceneProject.Controllers
                     ReservationStatus = ReservationStatus.Pending,
                     PersonId = p.Id
                 };
-                _context.Add(r);
+                _context.Reservations.Add(r);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), "Home");
+                int id = r.Id;
+                return RedirectToAction(nameof(ThankYou), "Reservation", new { id });
             }
             return View(m);
+        }
+
+        public async Task<IActionResult> ThankYou(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var reservation = await _context.Reservations
+                .Include(r => r.Person)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.SittingType)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.Restaurant)
+                .ThenInclude(r => r.Address)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            if(reservation == null)
+            {
+                return NotFound();
+            }
+            return View(reservation);
         }
 
         public JsonResult GetSittings(string jsonDate)
