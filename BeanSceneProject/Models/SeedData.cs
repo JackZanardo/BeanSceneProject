@@ -186,6 +186,12 @@ namespace BeanSceneProject.Models
                 Email = "vincentrosslee@gmail.com",
                 EmailConfirmed = true
             });
+            baseAdmins.Add(new IdentityUser
+            {
+                UserName = "Admin3",
+                Email = "Manager@Beanscene.com",
+                EmailConfirmed = true
+            });
             foreach (var baseAdmin in baseAdmins)
             {
                 Task<IdentityUser> userExists = userManager.FindByEmailAsync(baseAdmin.Email);
