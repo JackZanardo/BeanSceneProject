@@ -4,8 +4,17 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-12 bg-white">
+    <div class="col-12">
         <h2 class="px-2">Sittings List</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 bg-white">
+        <form asp-controller="StaffReservation" asp-action="SittingIndex" method="get">
+            <label class="control-label" for="date">Date:</label>
+            <input class="form-control" type="date" name="date" id="date" />
+            <input type="submit" value="Filter" class="btn btn-primary btn-lg m-0" />
+        </form>
     </div>
 </div>
 <div class="row justify-content-center">
@@ -40,45 +49,49 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td>
-                        @{
-                            string date = item.Open.ToShortDateString();
-                        }
-                        @Html.DisplayFor(modelItem => date)
-                    </td>
-                    <td>
-                        @{
-                            string open = item.Open.ToShortTimeString();
-                        }
-                        @Html.DisplayFor(modelItem => open)
-                    </td>
-                    <td>
-                        @{
-                            string close = item.Close.ToShortTimeString();
-                        }
-                        @Html.DisplayFor(modelItem => close)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Capacity)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Heads)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SittingType.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Restaurant.Name)
-                    </td>
-                    <td>
-                        <a asp-area="Staff" asp-controller="StaffReservation" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary">
-                            Manage Reservations
-                        </a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            @{
+                                string date = item.Open.ToShortDateString();
+                            }
+                            @Html.DisplayFor(modelItem => date)
+                        </td>
+                        <td>
+                            @{
+                                string open = item.Open.ToShortTimeString();
+                            }
+                            @Html.DisplayFor(modelItem => open)
+                        </td>
+                        <td>
+                            @{
+                                string close = item.Close.ToShortTimeString();
+                            }
+                            @Html.DisplayFor(modelItem => close)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Capacity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Heads)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SittingType.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Restaurant.Name)
+                        </td>
+                        <td>
+                            <a asp-area="Staff" asp-controller="StaffReservation" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary">
+                                Manage Reservations
+                            </a>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/staffSittingIndex.js"></script>
+}

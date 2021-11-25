@@ -1,0 +1,76 @@
+﻿@model BeanSceneProject.Data.Reservation
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="row">
+    <h2>Confirm Delete Reservation?</h2>
+</div>
+<div class="row">
+    <div class="col-md-6 bg-white">
+        <dl class="row">
+            <dt class="col-sm-2">
+                Sitting:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string sittingInfo = $"{Model.Sitting.Open.ToShortDateString()} {Model.Sitting.Open.ToShortTimeString()} - {Model.Sitting.Close.ToShortTimeString()} {Model.Sitting.SittingType.Name}";
+                }
+                @sittingInfo
+            </dd>
+            <dt class="col-sm-2">
+                Booked by:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string personName = $"{Model.Person.FirstName} {Model.Person.LastName}";
+                }
+                @personName
+            </dd>
+            <dt class="col-sm-2">
+                Email:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string email = $"{Model.Person.FirstName} {Model.Person.LastName}";
+                }
+                @email
+            </dd>
+            <dt class="col-sm-2">
+                Status:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string status = Model.ReservationStatus.ToString();
+                }
+                @status
+            </dd>
+            <dt class="col-sm-2">
+                Customer Number:
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomerNum)
+            </dd>
+            <dt class="col-sm-2">
+                Tables:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string tables = String.Join(", ", Model.Tables.Select(t => t.Name));
+                }
+                @tables
+            </dd>
+        </dl>
+        <div class="col-md-4">
+            <form asp-action="Delete">
+                <div class="form-group justify-content-center p-1">
+                    <div class="d-grid gap-2">
+                        <input type="submit" value="Delete" class="btn btn-danger btn-lg m-0" />
+                        <a asp-action="Index" asp-route-id="@Model.SittingId" class="btn btn-warning btn-lg m-0">Back to List</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

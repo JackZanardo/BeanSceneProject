@@ -1,0 +1,68 @@
+﻿@model BeanSceneProject.Data.Reservation
+
+@{
+    ViewData["Title"] = "Thank you";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 bg-white">
+        <h2>
+            Thank You
+        </h2>
+        <h3>You will recieve a confirmation shortly.</h3>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-6 bg-white">
+        <dl class="row">
+            <dt class="col-sm-2">
+                Restaurant:
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Sitting.Restaurant.Name
+            </dd>
+            <dt class="col-sm-2">
+                Address:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string address = $"{Model.Sitting.Restaurant.Address.StreetNumber} {Model.Sitting.Restaurant.Address.StreetName} {Model.Sitting.Restaurant.Address.Suburb} {Model.Sitting.Restaurant.Address.State} {Model.Sitting.Restaurant.Address.PostCode}";
+                }
+                @address
+            </dd>
+            <dt class="col-sm-2">
+                Session:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string sitting = $"{Model.Sitting.Open.ToShortDateString()} {Model.Sitting.Open.ToShortTimeString()} - {Model.Sitting.Close.ToShortTimeString()} {Model.Sitting.SittingType.Name}";
+                }
+                @sitting
+            </dd>
+            <dt class="col-sm-2">
+                Reservation:
+            </dt>
+            <dd class="col-sm-10">
+                @{
+                    string reservation = $"{Model.Start.ToShortTimeString()} - {Model.End.ToShortTimeString()} {Model.CustomerNum} Seats";
+                }
+                @reservation
+            </dd>
+            <dt class="col-sm-2">
+                Email:
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Person.Email
+            </dd>
+            <dt class="col-sm-2">
+                Phone:
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Person.MobileNumber
+            </dd>
+        </dl>
+        <div class="row justify-content-center">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">Return Home</a>
+        </div>
+    </div>
+</div>

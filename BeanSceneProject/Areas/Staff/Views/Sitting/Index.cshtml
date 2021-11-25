@@ -5,15 +5,32 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-12 bg-white">
+    <div class="col-12">
         <h2 class="px-2">Manager Sittings List</h2>
     </div>
 </div>
 <div class="row justify-content-center">
+    <div class="col-md-6 bg-white">
+        <a asp-action="Create" class="btn btn-primary btn-lg">Create New</a>
+        <form asp-controller="Sitting" asp-action="Index" method="get">
+            <div class="form-group m-1">
+                <label class="control-label" for="date">Date:</label>
+                <input class="form-control" type="date" name="date" id="date" />
+            </div>
+            <div class="btn-group m-1" role="group">
+                <input type="radio" class="btn-check" name="isClosed" value="" autocomplete="off" id="All" checked />
+                <label class="btn btn-outline-warning btn-lg" for="All" style="width:150px">All</label>
+                <input type="radio" class="btn-check" name="isClosed" value="false" autocomplete="off" id="Open" />
+                <label class="btn btn-outline-success btn-lg" for="Open" style="width:150px">Open</label>
+                <input type="radio" class="btn-check" name="isClosed" value="true" autocomplete="off" id="Closed" />
+                <label class="btn btn-outline-danger btn-lg" for="Closed" style="width:150px">Closed</label>
+            </div>
+            <input type="submit" value="Filter" class="btn btn-primary btn-lg mx-2" />
+        </form>
+    </div>
+</div>
+<div class="row justify-content-center">
     <div class="col-12 bg-white">
-        <p>
-            <a asp-action="Create" class="btn btn-primary btn-lg">Create New</a>
-        </p>
         <table class="table">
             <thead>
                 <tr>
@@ -107,18 +124,18 @@
                         @Html.DisplayFor(modelItem => item.Restaurant.Name)
                     </td>
                     <td>
-                        <a asp-area="Staff" asp-controller="StaffReservation" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary">
+                        <a asp-area="Staff" asp-controller="StaffReservation" asp-action="Index" asp-route-id="@item.Id" class="btn btn-primary py-1">
                             Manage Reservations
                         </a>
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>    
+                        <a asp-action="Report" asp-route-id="@item.Id" class="btn btn-primary py-1">Sitting Report</a>
                     </td>
                     <td>
-                        <a asp-action="Report" asp-route-id="@item.Id" class="btn btn-primary">Sitting Report</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary py-1">Edit</a>
                     </td>
                     <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger py-1">Delete</a>
                     </td>
                 </tr>
                 }

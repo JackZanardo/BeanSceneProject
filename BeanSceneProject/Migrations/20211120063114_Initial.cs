@@ -263,13 +263,12 @@ namespace BeanSceneProject.Migrations
                         column: x => x.RestaurantId,
                         principalTable: "Restaurants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Sittings_SittingTypes_SittingTypeId",
                         column: x => x.SittingTypeId,
                         principalTable: "SittingTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -315,7 +314,7 @@ namespace BeanSceneProject.Migrations
                         column: x => x.PersonId,
                         principalTable: "People",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reservations_ReservationOrigins_ReservationOriginId",
                         column: x => x.ReservationOriginId,
@@ -326,7 +325,8 @@ namespace BeanSceneProject.Migrations
                         name: "FK_Reservations_Sittings_SittingId",
                         column: x => x.SittingId,
                         principalTable: "Sittings",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

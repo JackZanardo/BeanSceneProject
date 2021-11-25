@@ -24,16 +24,32 @@ namespace BeanSceneProject.Areas.Staff.Controllers
             _personService = personService;
         }
 
-        public async Task<IActionResult> SittingIndex()
+        public async Task<IActionResult> SittingIndex(DateTime? date)
         {
-            var sittings = _context.Sittings
-                .Where(s => !s.IsClosed && s.Close >= DateTime.Now)
-                .Include(s => s.SittingType)
-                .Include(s => s.Restaurant)
-                .Include(s => s.Reservations)
-                .ThenInclude(r => r.ReservationOrigin)
-                .OrderByDescending(s => s.Open).Reverse();
-            return View(await sittings.ToListAsync());
+
+            if (date is not null)
+            {
+                var sittings = _context.Sittings
+                    .Where(s => !s.IsClosed && s.Open.Date == ((DateTime)date).Date)
+                    .Include(s => s.SittingType)
+                    .Include(s => s.Restaurant)
+                    .Include(s => s.Reservations)
+                    .ThenInclude(r => r.ReservationOrigin)
+                    .OrderByDescending(s => s.Open)
+                    .Reverse();
+                return View(await sittings.ToListAsync());
+            }
+            else
+            {
+                var sittings = _context.Sittings
+                    .Where(s => !s.IsClosed && s.Close >= DateTime.Now)
+                    .Include(s => s.SittingType)
+                    .Include(s => s.Restaurant)
+                    .Include(s => s.Reservations)
+                    .ThenInclude(r => r.ReservationOrigin)
+                    .OrderByDescending(s => s.Open).Reverse();
+                return View(await sittings.ToListAsync());
+            }
         }
 
         public async Task<IActionResult> Index(int? id)
@@ -81,6 +97,61 @@ namespace BeanSceneProject.Areas.Staff.Controllers
                 return NotFound();
             }
             return View(reservation);
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var reservation = await _context.Reservations
+                .Include(r => r.Person)
+                .Include(r => r.Tables)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.Restaurant)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.SittingType)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            return View(reservation);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var reservation = await _context.Reservations
+                .Include(r => r.Person)
+                .Include(r => r.Tables)
+                .Include(r => r.Sitting)
+                .ThenInclude(s => s.Restaurant)
+                .FirstOrDefaultAsync(r => r.Id == id);
+            int sId = reservation.SittingId;
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                _context.Reservations.Remove(reservation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index), sId);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReservationExists(reservation.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw new Exception("Reservation update failed");
+                }
+            }
         }
 
         public async Task<IActionResult> Create(int? id)

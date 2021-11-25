@@ -11,6 +11,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\serviceDependencies.json" />
+    <_WebToolingArtifacts Remove="Properties\serviceDependencies.local.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Properties\serviceDependencies.json" />
+    <Content Include="Properties\serviceDependencies.local.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11" />
