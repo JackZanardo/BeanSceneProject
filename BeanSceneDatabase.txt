@@ -1,0 +1,919 @@
+USE [master]
+GO
+/****** Object:  Database [BeanSceneDatabase]    Script Date: 25/11/2021 5:29:10 PM ******/
+CREATE DATABASE [BeanSceneDatabase]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'BeanSceneDatabase', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\BeanSceneDatabase.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'BeanSceneDatabase_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\BeanSceneDatabase_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+ALTER DATABASE [BeanSceneDatabase] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [BeanSceneDatabase].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [BeanSceneDatabase] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET READ_COMMITTED_SNAPSHOT ON 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET RECOVERY FULL 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET  MULTI_USER 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [BeanSceneDatabase] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [BeanSceneDatabase] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'BeanSceneDatabase', N'ON'
+GO
+ALTER DATABASE [BeanSceneDatabase] SET QUERY_STORE = OFF
+GO
+USE [BeanSceneDatabase]
+GO
+/****** Object:  Table [dbo].[Reservations]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Reservations](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Start] [datetime2](7) NOT NULL,
+	[CustomerNum] [int] NOT NULL,
+	[Duration] [int] NOT NULL,
+	[Notes] [nvarchar](max) NULL,
+	[ReservationStatus] [int] NOT NULL,
+	[ReservationOriginId] [int] NOT NULL,
+	[SittingId] [int] NOT NULL,
+	[PersonId] [int] NOT NULL,
+ CONSTRAINT [PK_Reservations] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[ReservationStatus]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[ReservationStatus] AS
+SELECT Id, CustomerNum
+FROM [Reservations]
+WHERE ReservationStatus = 1 AND CustomerNum > 0
+WITH CHECK OPTION;
+GO
+/****** Object:  Table [dbo].[__EFMigrationsHistory]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[__EFMigrationsHistory](
+	[MigrationId] [nvarchar](150) NOT NULL,
+	[ProductVersion] [nvarchar](32) NOT NULL,
+ CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY CLUSTERED 
+(
+	[MigrationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Areas]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Areas](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+	[RestuarantId] [int] NOT NULL,
+	[RestaurantId] [int] NULL,
+ CONSTRAINT [PK_Areas] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetRoleClaims]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetRoleClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [nvarchar](450) NOT NULL,
+	[ClaimType] [nvarchar](max) NULL,
+	[ClaimValue] [nvarchar](max) NULL,
+ CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetRoles]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetRoles](
+	[Id] [nvarchar](450) NOT NULL,
+	[Name] [nvarchar](256) NULL,
+	[NormalizedName] [nvarchar](256) NULL,
+	[ConcurrencyStamp] [nvarchar](max) NULL,
+ CONSTRAINT [PK_AspNetRoles] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserClaims]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [nvarchar](450) NOT NULL,
+	[ClaimType] [nvarchar](max) NULL,
+	[ClaimValue] [nvarchar](max) NULL,
+ CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserLogins]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserLogins](
+	[LoginProvider] [nvarchar](128) NOT NULL,
+	[ProviderKey] [nvarchar](128) NOT NULL,
+	[ProviderDisplayName] [nvarchar](max) NULL,
+	[UserId] [nvarchar](450) NOT NULL,
+ CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY CLUSTERED 
+(
+	[LoginProvider] ASC,
+	[ProviderKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserRoles]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserRoles](
+	[UserId] [nvarchar](450) NOT NULL,
+	[RoleId] [nvarchar](450) NOT NULL,
+ CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUsers]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUsers](
+	[Id] [nvarchar](450) NOT NULL,
+	[UserName] [nvarchar](256) NULL,
+	[NormalizedUserName] [nvarchar](256) NULL,
+	[Email] [nvarchar](256) NULL,
+	[NormalizedEmail] [nvarchar](256) NULL,
+	[EmailConfirmed] [bit] NOT NULL,
+	[PasswordHash] [nvarchar](max) NULL,
+	[SecurityStamp] [nvarchar](max) NULL,
+	[ConcurrencyStamp] [nvarchar](max) NULL,
+	[PhoneNumber] [nvarchar](max) NULL,
+	[PhoneNumberConfirmed] [bit] NOT NULL,
+	[TwoFactorEnabled] [bit] NOT NULL,
+	[LockoutEnd] [datetimeoffset](7) NULL,
+	[LockoutEnabled] [bit] NOT NULL,
+	[AccessFailedCount] [int] NOT NULL,
+ CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserTokens]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserTokens](
+	[UserId] [nvarchar](450) NOT NULL,
+	[LoginProvider] [nvarchar](128) NOT NULL,
+	[Name] [nvarchar](128) NOT NULL,
+	[Value] [nvarchar](max) NULL,
+ CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[LoginProvider] ASC,
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[People]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[People](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [nvarchar](max) NULL,
+	[LastName] [nvarchar](max) NULL,
+	[Email] [nvarchar](max) NULL,
+	[MobileNumber] [nvarchar](max) NULL,
+	[UserId] [nvarchar](450) NULL,
+ CONSTRAINT [PK_People] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ReservationOrigins]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ReservationOrigins](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+ CONSTRAINT [PK_ReservationOrigins] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ReservationTable]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ReservationTable](
+	[ReservationsId] [int] NOT NULL,
+	[TablesId] [int] NOT NULL,
+ CONSTRAINT [PK_ReservationTable] PRIMARY KEY CLUSTERED 
+(
+	[ReservationsId] ASC,
+	[TablesId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Restaurants]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Restaurants](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+	[Address_StreetNumber] [nvarchar](max) NULL,
+	[Address_StreetName] [nvarchar](max) NULL,
+	[Address_Suburb] [nvarchar](max) NULL,
+	[Address_State] [nvarchar](max) NULL,
+	[Address_PostCode] [int] NULL,
+ CONSTRAINT [PK_Restaurants] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Sittings]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Sittings](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Open] [datetime2](7) NOT NULL,
+	[Close] [datetime2](7) NOT NULL,
+	[IsClosed] [bit] NOT NULL,
+	[Capacity] [int] NOT NULL,
+	[RestaurantId] [int] NOT NULL,
+	[SittingTypeId] [int] NOT NULL,
+ CONSTRAINT [PK_Sittings] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[SittingTypes]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SittingTypes](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+	[DefaultOpenTime] [nvarchar](max) NULL,
+	[DefaultCloseTime] [nvarchar](max) NULL,
+ CONSTRAINT [PK_SittingTypes] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tables]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tables](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+	[AreaId] [int] NOT NULL,
+ CONSTRAINT [PK_Tables] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+INSERT [dbo].[__EFMigrationsHistory] ([MigrationId], [ProductVersion]) VALUES (N'20211120063114_Initial', N'5.0.11')
+GO
+SET IDENTITY_INSERT [dbo].[Areas] ON 
+GO
+INSERT [dbo].[Areas] ([Id], [Name], [RestuarantId], [RestaurantId]) VALUES (1, N'Main', 0, 1)
+GO
+INSERT [dbo].[Areas] ([Id], [Name], [RestuarantId], [RestaurantId]) VALUES (2, N'Outside', 0, 1)
+GO
+INSERT [dbo].[Areas] ([Id], [Name], [RestuarantId], [RestaurantId]) VALUES (3, N'Balcony', 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Areas] OFF
+GO
+INSERT [dbo].[AspNetRoles] ([Id], [Name], [NormalizedName], [ConcurrencyStamp]) VALUES (N'2daa1efa-cdcf-4e88-87d5-c86899ec49cd', N'Admin', N'ADMIN', N'a9557502-8ffe-444d-b80a-8a555cb20771')
+GO
+INSERT [dbo].[AspNetRoles] ([Id], [Name], [NormalizedName], [ConcurrencyStamp]) VALUES (N'9a28a190-0bff-475e-bc08-a88a8edebea7', N'Staff', N'STAFF', N'87648e01-073c-4ba1-9d02-04799b34b3fe')
+GO
+INSERT [dbo].[AspNetRoles] ([Id], [Name], [NormalizedName], [ConcurrencyStamp]) VALUES (N'cb9f7d62-6a3f-4e12-b2c7-39658a0c27b8', N'Member', N'MEMBER', N'09ba44f0-e490-482a-9e32-8aa341289430')
+GO
+INSERT [dbo].[AspNetUserRoles] ([UserId], [RoleId]) VALUES (N'532db1f7-005b-4a20-813e-84af264bf8dc', N'2daa1efa-cdcf-4e88-87d5-c86899ec49cd')
+GO
+INSERT [dbo].[AspNetUserRoles] ([UserId], [RoleId]) VALUES (N'9f4bca38-777e-4667-9cfb-7ee59e6dceb4', N'2daa1efa-cdcf-4e88-87d5-c86899ec49cd')
+GO
+INSERT [dbo].[AspNetUserRoles] ([UserId], [RoleId]) VALUES (N'404dacf2-2668-4a12-9536-5912ef216414', N'9a28a190-0bff-475e-bc08-a88a8edebea7')
+GO
+INSERT [dbo].[AspNetUserRoles] ([UserId], [RoleId]) VALUES (N'58c9f0b6-2a32-484d-949c-0478191859a6', N'cb9f7d62-6a3f-4e12-b2c7-39658a0c27b8')
+GO
+INSERT [dbo].[AspNetUsers] ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount]) VALUES (N'404dacf2-2668-4a12-9536-5912ef216414', N'Staff1', N'STAFF1', N'Staff1@Beanscene.com', N'STAFF1@BEANSCENE.COM', 1, N'AQAAAAEAACcQAAAAEFb8YGe6hMdWI/REx8APKpeSeTrDl28qYbW52DSqmHUhbpDfxJ3S4MO8YqioBEO49g==', N'2QZ5TRP2CEJA6XJIIECHDIXYVCO5CGLK', N'4c4a3d2b-2ccf-478e-bcf4-0196e0b179e3', NULL, 0, 0, NULL, 1, 0)
+GO
+INSERT [dbo].[AspNetUsers] ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount]) VALUES (N'532db1f7-005b-4a20-813e-84af264bf8dc', N'Admin1', N'ADMIN1', N'SuperCombatWombat@protonmail.com', N'SUPERCOMBATWOMBAT@PROTONMAIL.COM', 1, N'AQAAAAEAACcQAAAAEDyvgwVxPo7Ya1uy96LJAVf+d2uNUVTPZ5Rin7fujuffzcSugTb67jtXP5Cko5S5Ng==', N'6WWR5SHTF4ERWW7EW2BUGIDSOUDEFS5K', N'e330f569-8b7b-4077-acfd-07eb91d77790', NULL, 0, 0, NULL, 1, 0)
+GO
+INSERT [dbo].[AspNetUsers] ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount]) VALUES (N'58c9f0b6-2a32-484d-949c-0478191859a6', N'zanardojack21@gmail.com', N'ZANARDOJACK21@GMAIL.COM', N'zanardojack21@gmail.com', N'ZANARDOJACK21@GMAIL.COM', 0, N'AQAAAAEAACcQAAAAEFD+jeqxF3NFUAf9e9bBUIkjB+Gp7/B1eOmBxE6LW4ObPjL5cG8liOwH33MRpvGujA==', N'ZQDK4VCTW7JMYTL542KDDZTYKWIBXBC7', N'e436b487-1725-464e-928d-6cb8fcb1df23', NULL, 0, 0, NULL, 1, 0)
+GO
+INSERT [dbo].[AspNetUsers] ([Id], [UserName], [NormalizedUserName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [SecurityStamp], [ConcurrencyStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEnd], [LockoutEnabled], [AccessFailedCount]) VALUES (N'9f4bca38-777e-4667-9cfb-7ee59e6dceb4', N'Admin2', N'ADMIN2', N'vincentrosslee@gmail.com', N'VINCENTROSSLEE@GMAIL.COM', 1, N'AQAAAAEAACcQAAAAEO1MpLXeGRCzbhdwS6gtaNEWEFCMilhU2Wnx7lAHbFv49pN0RPBBHVEMKxdMOtZRHg==', N'LBQRKGF4MYB7TUGFS5GYHC7W5ERXZKBQ', N'99ca078d-fa70-4975-b876-a0e243077475', NULL, 0, 0, NULL, 1, 0)
+GO
+SET IDENTITY_INSERT [dbo].[People] ON 
+GO
+INSERT [dbo].[People] ([Id], [FirstName], [LastName], [Email], [MobileNumber], [UserId]) VALUES (1, N'Jack', N'Zanardo', N'zanardojack21@gmail.com', N'0404 040 101', N'58c9f0b6-2a32-484d-949c-0478191859a6')
+GO
+INSERT [dbo].[People] ([Id], [FirstName], [LastName], [Email], [MobileNumber], [UserId]) VALUES (2, N'John', N'Smith', N'JohnSmith@gmail.com', N'0404 040 101', NULL)
+GO
+INSERT [dbo].[People] ([Id], [FirstName], [LastName], [Email], [MobileNumber], [UserId]) VALUES (3, N'Walk', N'In', N'WalkIn@Beanscene.com', N'0000000000', NULL)
+GO
+SET IDENTITY_INSERT [dbo].[People] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ReservationOrigins] ON 
+GO
+INSERT [dbo].[ReservationOrigins] ([Id], [Name]) VALUES (1, N'Website')
+GO
+INSERT [dbo].[ReservationOrigins] ([Id], [Name]) VALUES (2, N'Phone')
+GO
+INSERT [dbo].[ReservationOrigins] ([Id], [Name]) VALUES (3, N'Email')
+GO
+INSERT [dbo].[ReservationOrigins] ([Id], [Name]) VALUES (4, N'InPerson')
+GO
+SET IDENTITY_INSERT [dbo].[ReservationOrigins] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Reservations] ON 
+GO
+INSERT [dbo].[Reservations] ([Id], [Start], [CustomerNum], [Duration], [Notes], [ReservationStatus], [ReservationOriginId], [SittingId], [PersonId]) VALUES (3, CAST(N'2021-11-22T12:45:00.0000000' AS DateTime2), 2, 60, NULL, 2, 3, 3, 1)
+GO
+INSERT [dbo].[Reservations] ([Id], [Start], [CustomerNum], [Duration], [Notes], [ReservationStatus], [ReservationOriginId], [SittingId], [PersonId]) VALUES (4, CAST(N'2021-11-23T13:00:00.0000000' AS DateTime2), 2, 60, NULL, 1, 1, 4, 1)
+GO
+INSERT [dbo].[Reservations] ([Id], [Start], [CustomerNum], [Duration], [Notes], [ReservationStatus], [ReservationOriginId], [SittingId], [PersonId]) VALUES (5, CAST(N'2021-11-23T20:00:00.0000000' AS DateTime2), 4, 60, N'Inside table please', 1, 1, 8, 1)
+GO
+INSERT [dbo].[Reservations] ([Id], [Start], [CustomerNum], [Duration], [Notes], [ReservationStatus], [ReservationOriginId], [SittingId], [PersonId]) VALUES (6, CAST(N'2021-11-23T08:45:00.0000000' AS DateTime2), 2, 30, N'Balcony table please', 1, 1, 7, 1)
+GO
+INSERT [dbo].[Reservations] ([Id], [Start], [CustomerNum], [Duration], [Notes], [ReservationStatus], [ReservationOriginId], [SittingId], [PersonId]) VALUES (7, CAST(N'2021-11-22T19:00:00.0000000' AS DateTime2), 0, 60, NULL, 5, 2, 6, 1)
+GO
+INSERT [dbo].[Reservations] ([Id], [Start], [CustomerNum], [Duration], [Notes], [ReservationStatus], [ReservationOriginId], [SittingId], [PersonId]) VALUES (8, CAST(N'2021-11-21T22:56:59.5140024' AS DateTime2), 4, 30, NULL, 3, 4, 10, 1)
+GO
+INSERT [dbo].[Reservations] ([Id], [Start], [CustomerNum], [Duration], [Notes], [ReservationStatus], [ReservationOriginId], [SittingId], [PersonId]) VALUES (9, CAST(N'2021-11-24T18:00:00.0000000' AS DateTime2), 2, 60, N'Balcony Table', 1, 1, 9, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Reservations] OFF
+GO
+INSERT [dbo].[ReservationTable] ([ReservationsId], [TablesId]) VALUES (7, 1)
+GO
+INSERT [dbo].[ReservationTable] ([ReservationsId], [TablesId]) VALUES (3, 10)
+GO
+INSERT [dbo].[ReservationTable] ([ReservationsId], [TablesId]) VALUES (8, 18)
+GO
+INSERT [dbo].[ReservationTable] ([ReservationsId], [TablesId]) VALUES (8, 19)
+GO
+INSERT [dbo].[ReservationTable] ([ReservationsId], [TablesId]) VALUES (7, 27)
+GO
+SET IDENTITY_INSERT [dbo].[Restaurants] ON 
+GO
+INSERT [dbo].[Restaurants] ([Id], [Name], [Address_StreetNumber], [Address_StreetName], [Address_Suburb], [Address_State], [Address_PostCode]) VALUES (1, N'Bean Scene Petersham', N'27', N'Crystal Street', N'Petersham', N'NSW', 2049)
+GO
+SET IDENTITY_INSERT [dbo].[Restaurants] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Sittings] ON 
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (3, CAST(N'2021-11-22T11:30:00.0000000' AS DateTime2), CAST(N'2021-11-22T16:00:00.0000000' AS DateTime2), 0, 40, 1, 2)
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (4, CAST(N'2021-11-23T11:30:00.0000000' AS DateTime2), CAST(N'2021-11-23T16:00:00.0000000' AS DateTime2), 0, 40, 1, 2)
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (5, CAST(N'2021-11-22T08:00:00.0000000' AS DateTime2), CAST(N'2021-11-22T10:30:00.0000000' AS DateTime2), 0, 40, 1, 1)
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (6, CAST(N'2021-11-22T17:00:00.0000000' AS DateTime2), CAST(N'2021-11-22T21:00:00.0000000' AS DateTime2), 0, 40, 1, 3)
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (7, CAST(N'2021-11-23T08:00:00.0000000' AS DateTime2), CAST(N'2021-11-23T10:30:00.0000000' AS DateTime2), 0, 40, 1, 1)
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (8, CAST(N'2021-11-23T17:00:00.0000000' AS DateTime2), CAST(N'2021-11-23T21:00:00.0000000' AS DateTime2), 0, 40, 1, 3)
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (9, CAST(N'2021-11-24T17:00:00.0000000' AS DateTime2), CAST(N'2021-11-24T22:00:00.0000000' AS DateTime2), 0, 40, 1, 3)
+GO
+INSERT [dbo].[Sittings] ([Id], [Open], [Close], [IsClosed], [Capacity], [RestaurantId], [SittingTypeId]) VALUES (10, CAST(N'2021-11-21T22:55:00.0000000' AS DateTime2), CAST(N'2021-11-21T23:45:00.0000000' AS DateTime2), 0, 40, 1, 4)
+GO
+SET IDENTITY_INSERT [dbo].[Sittings] OFF
+GO
+SET IDENTITY_INSERT [dbo].[SittingTypes] ON 
+GO
+INSERT [dbo].[SittingTypes] ([Id], [Name], [DefaultOpenTime], [DefaultCloseTime]) VALUES (1, N'Breakfast', N'08:00', N'10:30')
+GO
+INSERT [dbo].[SittingTypes] ([Id], [Name], [DefaultOpenTime], [DefaultCloseTime]) VALUES (2, N'Lunch', N'11:30', N'16:00')
+GO
+INSERT [dbo].[SittingTypes] ([Id], [Name], [DefaultOpenTime], [DefaultCloseTime]) VALUES (3, N'Dinner', N'17:00', N'21:00')
+GO
+INSERT [dbo].[SittingTypes] ([Id], [Name], [DefaultOpenTime], [DefaultCloseTime]) VALUES (4, N'Special', N'08:00', N'17:00')
+GO
+SET IDENTITY_INSERT [dbo].[SittingTypes] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Tables] ON 
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (1, N'M1', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (2, N'B8', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (3, N'B7', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (4, N'B6', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (5, N'B5', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (6, N'B4', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (7, N'B3', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (8, N'B2', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (9, N'B1', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (10, N'O10', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (11, N'O9', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (12, N'O8', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (13, N'O7', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (14, N'O6', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (15, N'O5', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (16, N'O4', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (17, N'O3', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (18, N'O2', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (19, N'O1', 2)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (20, N'M10', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (21, N'M9', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (22, N'M8', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (23, N'M7', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (24, N'M6', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (25, N'M5', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (26, N'M4', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (27, N'M3', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (28, N'M2', 1)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (29, N'B9', 3)
+GO
+INSERT [dbo].[Tables] ([Id], [Name], [AreaId]) VALUES (30, N'B10', 3)
+GO
+SET IDENTITY_INSERT [dbo].[Tables] OFF
+GO
+/****** Object:  Index [IX_Areas_RestaurantId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_Areas_RestaurantId] ON [dbo].[Areas]
+(
+	[RestaurantId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [IX_AspNetRoleClaims_RoleId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AspNetRoleClaims_RoleId] ON [dbo].[AspNetRoleClaims]
+(
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [RoleNameIndex]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [RoleNameIndex] ON [dbo].[AspNetRoles]
+(
+	[NormalizedName] ASC
+)
+WHERE ([NormalizedName] IS NOT NULL)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [IX_AspNetUserClaims_UserId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AspNetUserClaims_UserId] ON [dbo].[AspNetUserClaims]
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [IX_AspNetUserLogins_UserId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AspNetUserLogins_UserId] ON [dbo].[AspNetUserLogins]
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [IX_AspNetUserRoles_RoleId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AspNetUserRoles_RoleId] ON [dbo].[AspNetUserRoles]
+(
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [EmailIndex]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [EmailIndex] ON [dbo].[AspNetUsers]
+(
+	[NormalizedEmail] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UserNameIndex]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [UserNameIndex] ON [dbo].[AspNetUsers]
+(
+	[NormalizedUserName] ASC
+)
+WHERE ([NormalizedUserName] IS NOT NULL)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [IX_People_UserId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_People_UserId] ON [dbo].[People]
+(
+	[UserId] ASC
+)
+WHERE ([UserId] IS NOT NULL)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Reservations_PersonId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_Reservations_PersonId] ON [dbo].[Reservations]
+(
+	[PersonId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Reservations_ReservationOriginId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_Reservations_ReservationOriginId] ON [dbo].[Reservations]
+(
+	[ReservationOriginId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Reservations_SittingId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_Reservations_SittingId] ON [dbo].[Reservations]
+(
+	[SittingId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_ReservationTable_TablesId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_ReservationTable_TablesId] ON [dbo].[ReservationTable]
+(
+	[TablesId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Sittings_RestaurantId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_Sittings_RestaurantId] ON [dbo].[Sittings]
+(
+	[RestaurantId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Sittings_SittingTypeId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_Sittings_SittingTypeId] ON [dbo].[Sittings]
+(
+	[SittingTypeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_Tables_AreaId]    Script Date: 25/11/2021 5:29:11 PM ******/
+CREATE NONCLUSTERED INDEX [IX_Tables_AreaId] ON [dbo].[Tables]
+(
+	[AreaId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Areas]  WITH CHECK ADD  CONSTRAINT [FK_Areas_Restaurants_RestaurantId] FOREIGN KEY([RestaurantId])
+REFERENCES [dbo].[Restaurants] ([Id])
+GO
+ALTER TABLE [dbo].[Areas] CHECK CONSTRAINT [FK_Areas_Restaurants_RestaurantId]
+GO
+ALTER TABLE [dbo].[AspNetRoleClaims]  WITH CHECK ADD  CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[AspNetRoles] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AspNetRoleClaims] CHECK CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId]
+GO
+ALTER TABLE [dbo].[AspNetUserClaims]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AspNetUserClaims] CHECK CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId]
+GO
+ALTER TABLE [dbo].[AspNetUserLogins]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AspNetUserLogins] CHECK CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId]
+GO
+ALTER TABLE [dbo].[AspNetUserRoles]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[AspNetRoles] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AspNetUserRoles] CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId]
+GO
+ALTER TABLE [dbo].[AspNetUserRoles]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AspNetUserRoles] CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId]
+GO
+ALTER TABLE [dbo].[AspNetUserTokens]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AspNetUserTokens] CHECK CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId]
+GO
+ALTER TABLE [dbo].[People]  WITH CHECK ADD  CONSTRAINT [FK_People_AspNetUsers_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+GO
+ALTER TABLE [dbo].[People] CHECK CONSTRAINT [FK_People_AspNetUsers_UserId]
+GO
+ALTER TABLE [dbo].[Reservations]  WITH CHECK ADD  CONSTRAINT [FK_Reservations_People_PersonId] FOREIGN KEY([PersonId])
+REFERENCES [dbo].[People] ([Id])
+GO
+ALTER TABLE [dbo].[Reservations] CHECK CONSTRAINT [FK_Reservations_People_PersonId]
+GO
+ALTER TABLE [dbo].[Reservations]  WITH CHECK ADD  CONSTRAINT [FK_Reservations_ReservationOrigins_ReservationOriginId] FOREIGN KEY([ReservationOriginId])
+REFERENCES [dbo].[ReservationOrigins] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Reservations] CHECK CONSTRAINT [FK_Reservations_ReservationOrigins_ReservationOriginId]
+GO
+ALTER TABLE [dbo].[Reservations]  WITH CHECK ADD  CONSTRAINT [FK_Reservations_Sittings_SittingId] FOREIGN KEY([SittingId])
+REFERENCES [dbo].[Sittings] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Reservations] CHECK CONSTRAINT [FK_Reservations_Sittings_SittingId]
+GO
+ALTER TABLE [dbo].[ReservationTable]  WITH CHECK ADD  CONSTRAINT [FK_ReservationTable_Reservations_ReservationsId] FOREIGN KEY([ReservationsId])
+REFERENCES [dbo].[Reservations] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ReservationTable] CHECK CONSTRAINT [FK_ReservationTable_Reservations_ReservationsId]
+GO
+ALTER TABLE [dbo].[ReservationTable]  WITH CHECK ADD  CONSTRAINT [FK_ReservationTable_Tables_TablesId] FOREIGN KEY([TablesId])
+REFERENCES [dbo].[Tables] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ReservationTable] CHECK CONSTRAINT [FK_ReservationTable_Tables_TablesId]
+GO
+ALTER TABLE [dbo].[Sittings]  WITH CHECK ADD  CONSTRAINT [FK_Sittings_Restaurants_RestaurantId] FOREIGN KEY([RestaurantId])
+REFERENCES [dbo].[Restaurants] ([Id])
+GO
+ALTER TABLE [dbo].[Sittings] CHECK CONSTRAINT [FK_Sittings_Restaurants_RestaurantId]
+GO
+ALTER TABLE [dbo].[Sittings]  WITH CHECK ADD  CONSTRAINT [FK_Sittings_SittingTypes_SittingTypeId] FOREIGN KEY([SittingTypeId])
+REFERENCES [dbo].[SittingTypes] ([Id])
+GO
+ALTER TABLE [dbo].[Sittings] CHECK CONSTRAINT [FK_Sittings_SittingTypes_SittingTypeId]
+GO
+ALTER TABLE [dbo].[Tables]  WITH CHECK ADD  CONSTRAINT [FK_Tables_Areas_AreaId] FOREIGN KEY([AreaId])
+REFERENCES [dbo].[Areas] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Tables] CHECK CONSTRAINT [FK_Tables_Areas_AreaId]
+GO
+/****** Object:  StoredProcedure [dbo].[up_generate_data_dictionary]    Script Date: 25/11/2021 5:29:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[up_generate_data_dictionary]
+AS
+BEGIN
+
+	Set nocount on
+
+	DECLARE @TableName nvarchar(35)
+
+	DECLARE Tbls CURSOR 
+	FOR
+
+	Select distinct Table_name
+	FROM INFORMATION_SCHEMA.COLUMNS
+	--put any exclusions here
+	--where table_name not like '%old' 
+	order by Table_name
+
+	OPEN Tbls
+
+	PRINT '<HTML><head>'
+	print '<style type=''text/css''>/* v1.0 | 20080212 */html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, font, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td {	margin: 0;	padding: 0;	border: 0;	outline: 0;	font-size: 100%;	vertical-align: baseline;	background: transparent;}body {	line-height: 1;}ol, ul {	list-style: none;}blockquote, q {	quotes: none;}blockquote:before, blockquote:after,q:before, q:after {	content: '''';	content: none;}/* remember to define focus styles! */:focus {	outline: 0;}/* remember to highlight inserts somehow! */ins {	text-decoration: none;}del {	text-decoration: line-through;}table {	border-collapse: collapse;	border-spacing: 0;}body { font-family: Helvetica, Arial, sans-serif; padding: 20px; }h1 { font: bold 32px Helvetica, Arial, sans-serif; }h2 { font: bold 24px Helvetica, Arial, sans-serif; }th { background: #ddd; font-weight: bold; }th, td { padding: 5px; } h1 { margin: 10px 10px 30px; } h2 { margin: 10px 10px 5px; } td { border: 1px solid #666; }</style>'
+	print '</head><body>'
+
+	print '<h1>Data Dictionary: ' + db_name() + '</h1>';
+	print '<p>Autogenerated from database metadata at '
+	select GETDATE();
+	print '</p>'
+
+	FETCH NEXT FROM Tbls
+	INTO @TableName
+
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+
+	Print '<h2>' + @TableName + '</h2>'
+	PRINT '<table>'
+	--Get the Description of the table
+	--Characters 1-250
+	Select substring(cast(Value as varchar(1000)),1,250) FROM 
+	sys.extended_properties A
+	WHERE A.major_id = OBJECT_ID(@TableName)
+	and name = 'MS_Description' and minor_id = 0
+
+	--Characters 251-500
+	Select substring(cast(Value as varchar(1000)),251, 250) FROM 
+	sys.extended_properties A
+	WHERE A.major_id = OBJECT_ID(@TableName)
+	and name = 'MS_Description' and minor_id = 0
+
+	PRINT '<tr>'
+	--Set up the Column Headers for the Table
+	PRINT '<th>Column Name</th>'
+	PRINT '<th>Description</th>'
+	PRINT '<th>InPrimaryKey</th>'
+	PRINT '<th>IsForeignKey</th>'
+	PRINT '<th>DataType</th>'
+	PRINT '<th>Length</th>'
+	PRINT '<th>Numeric Precision</th>'
+	PRINT '<th>Numeric Scale</th>'
+	PRINT '<th>Nullable</th>'
+	PRINT '<th>Computed</th>'
+	PRINT '<th>Identity</th>'
+	PRINT '<th>Default Value</th>'
+
+	--Get the Table Data
+	SELECT '</tr>',
+	'<tr>',
+	'<td><strong>' + CAST(clmns.name AS VARCHAR(35)) + '</strong></td>',
+	'<td>' + substring(ISNULL(CAST(exprop.value AS VARCHAR(255)),''),1,250),
+	substring(ISNULL(CAST(exprop.value AS VARCHAR(500)),''),251,250) + '</td>',
+	'<td>' + CAST(ISNULL(idxcol.index_column_id, 0)AS VARCHAR(20)) + '</td>',
+	'<td>' + CAST(ISNULL(
+	(SELECT TOP 1 1
+	FROM sys.foreign_key_columns AS fkclmn
+	WHERE fkclmn.parent_column_id = clmns.column_id
+	AND fkclmn.parent_object_id = clmns.object_id
+	), 0) AS VARCHAR(20)) + '</td>',
+	'<td>' + CAST(udt.name AS CHAR(15)) + '</td>' ,
+	'<td>' + CAST(CAST(CASE WHEN typ.name IN (N'nchar', N'nvarchar') AND clmns.max_length <> -1
+	THEN clmns.max_length/2
+	ELSE clmns.max_length END AS INT) AS VARCHAR(20)) + '</td>',
+	'<td>' + CAST(CAST(clmns.precision AS INT) AS VARCHAR(20)) + '</td>',
+	'<td>' + CAST(CAST(clmns.scale AS INT) AS VARCHAR(20)) + '</td>',
+	'<td>' + CAST(clmns.is_nullable AS VARCHAR(20)) + '</td>' ,
+	'<td>' + CAST(clmns.is_computed AS VARCHAR(20)) + '</td>' ,
+	'<td>' + CAST(clmns.is_identity AS VARCHAR(20)) + '</td>' ,
+	'<td>' + isnull(CAST(cnstr.definition AS VARCHAR(20)),'') + '</td>'
+	FROM sys.tables AS tbl
+	INNER JOIN sys.all_columns AS clmns
+	ON clmns.object_id=tbl.object_id
+	LEFT OUTER JOIN sys.indexes AS idx
+	ON idx.object_id = clmns.object_id
+	AND 1 =idx.is_primary_key
+	LEFT OUTER JOIN sys.index_columns AS idxcol
+	ON idxcol.index_id = idx.index_id
+	AND idxcol.column_id = clmns.column_id
+	AND idxcol.object_id = clmns.object_id
+	AND 0 = idxcol.is_included_column
+	LEFT OUTER JOIN sys.types AS udt
+	ON udt.user_type_id = clmns.user_type_id
+	LEFT OUTER JOIN sys.types AS typ
+	ON typ.user_type_id = clmns.system_type_id
+	AND typ.user_type_id = typ.system_type_id
+	LEFT JOIN sys.default_constraints AS cnstr
+	ON cnstr.object_id=clmns.default_object_id
+	LEFT OUTER JOIN sys.extended_properties exprop
+	ON exprop.major_id = clmns.object_id
+	AND exprop.minor_id = clmns.column_id
+	AND exprop.name = 'MS_Description'
+	WHERE (tbl.name = @TableName and 
+	exprop.class = 1) --I don't want to include comments on indexes
+	ORDER BY clmns.column_id ASC
+
+
+	PRINT '</tr></table>'
+
+	FETCH NEXT FROM Tbls
+	INTO @TableName
+	END
+
+
+	PRINT '</body></HTML>'
+
+	CLOSE Tbls
+	DEALLOCATE Tbls
+
+END
+GO
+USE [master]
+GO
+ALTER DATABASE [BeanSceneDatabase] SET  READ_WRITE 
+GO
